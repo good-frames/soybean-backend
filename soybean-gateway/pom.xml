@@ -30,10 +30,10 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
         <!--鉴权-->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot3-starter</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.dev33</groupId>-->
+<!--            <artifactId>sa-token-spring-boot3-starter</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

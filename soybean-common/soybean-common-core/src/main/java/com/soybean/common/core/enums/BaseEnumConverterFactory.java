@@ -27,19 +27,28 @@ public class BaseEnumConverterFactory implements ConverterFactory<String, BaseEn
                     @Override
                     public BaseEnum<?> convert(String source) {
                         if (source.isBlank()) return null;
+                        
+                        // 1. 先尝试按字符串值匹配
+                        for (BaseEnum<?> e : ((Class<BaseEnum<?>>) type).getEnumConstants()) {
+                            if (e.getValue().toString().equals(source)) return e;
+                        }
+                        
+                        // 2. 尝试按枚举名匹配
+                        for (BaseEnum<?> e : ((Class<BaseEnum<?>>) type).getEnumConstants()) {
+                            String enumName = ((Enum<?>) e).name();
+                            if (enumName.equalsIgnoreCase(source)) return e;
+                        }
+                        
+                        // 3. 尝试按数字匹配（兼容旧的Integer类型枚举）
                         try {
-                            // 1. 先按数字转
                             int val = Integer.parseInt(source);
                             for (BaseEnum<?> e : ((Class<BaseEnum<?>>) type).getEnumConstants()) {
-                                if (e.getValue().equals(val)) return e;
+                                if (e.getValue() instanceof Integer && e.getValue().equals(val)) return e;
                             }
                         } catch (NumberFormatException ignore) {
-                            // 2. 按枚举名转
-                            for (BaseEnum<?> e : ((Class<BaseEnum<?>>) type).getEnumConstants()) {
-                                String enumName = ((Enum<?>) e).name();
-                                if (enumName.equalsIgnoreCase(source)) return e;
-                            }
+                            // 忽略数字解析错误
                         }
+                        
                         throw new IllegalArgumentException("Unknown value " + source + " for " + type.getSimpleName());
                     }
                 });

@@ -1,0 +1,182 @@
+package com.soybean.user.controller;
+
+import com.soybean.common.core.utils.Result;
+import com.soybean.common.mybatis.dto.PageDTO;
+import com.soybean.user.api.dto.SysUserDTO;
+import com.soybean.user.api.dto.PasswordUpdateDTO;
+import com.soybean.user.api.enums.SysUserStatusEnum;
+import com.soybean.user.api.query.SysUserQuery;
+import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.common.core.annotation.ValidatedBy;
+import com.soybean.user.service.ISysUserService;
+import jakarta.validation.Valid;
+import lombok.Data;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * <p>
+ * 系统用户表 前端控制器
+ * </p>
+ *
+ * @author soybean
+ * @since 2024-07-07
+ */
+@Data
+@RestController
+@RequestMapping("/user/admin")
+public class SysUserController {
+
+    private final ISysUserService sysUserService;
+
+    /**
+     * 新增系统用户
+     */
+    @PostMapping
+    public Result<Void> add(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
+
+        try {
+            if (sysUserService.addSysUser(sysUserDTO)) {
+                return Result.ok();
+            } else {
+                return Result.fail("添加失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 删除系统用户
+     */
+    @DeleteMapping("/{ids}")
+    public Result<Void> delete(@PathVariable String ids) {
+        try {
+            List<String> idList = Arrays.asList(ids.split(","));
+            if (sysUserService.deleteSysUsers(idList)) {
+                return Result.ok();
+            } else {
+                return Result.fail("删除失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改系统用户
+     */
+    @PutMapping
+    public Result<Void> update(@ValidatedBy("adminUserValidator") @RequestBody SysUserDTO sysUserDTO) {
+        try {
+            if (sysUserService.updateSysUser(sysUserDTO)) {
+                return Result.ok();
+            } else {
+                return Result.fail("更新失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据ID查询系统用户
+     */
+    @GetMapping("/{id}")
+    public Result<SysUserVO> getById(@PathVariable String id) {
+        try {
+            SysUserVO sysUserVO = sysUserService.getSysUserVOById(id);
+            if (sysUserVO != null) {
+                return Result.ok(sysUserVO);
+            } else {
+                return Result.fail("用户不存在");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 分页查询系统用户列表
+     */
+    @GetMapping("/page")
+    public Result<PageDTO<SysUserVO>> page(SysUserQuery query) {
+        try {
+            PageDTO<SysUserVO> userPage = sysUserService.getSysUserPage(query);
+            return Result.ok(userPage);
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 查询所有系统用户
+     */
+    @GetMapping("/list")
+    public Result<List<SysUserVO>> list() {
+        try {
+            List<SysUserVO> list = sysUserService.getAllSysUsers();
+            return Result.ok(list);
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改状态
+     */
+    @PutMapping("/status/{id}/{status}")
+    public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
+        try {
+            if (sysUserService.updateSysUserStatus(id, SysUserStatusEnum.fromValue(status))) {
+                return Result.ok();
+            } else {
+                return Result.fail("状态更新失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 系统用户登录
+     */
+    @PostMapping("/login")
+    public Result<SysUserVO> login(@Valid @RequestBody SysUserDTO sysUserDTO, BindingResult bindingResult) {
+        // 验证参数
+        if (bindingResult.hasErrors()) {
+            String errorMsg = bindingResult.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return Result.fail(errorMsg);
+        }
+
+        try {
+            SysUserVO sysUserVO = sysUserService.login(sysUserDTO);
+            return Result.ok(sysUserVO);
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改密码
+     */
+    @PutMapping("/password")
+    public Result<Void> updatePassword(@Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+        try {
+            if (sysUserService.updatePassword(passwordUpdateDTO)) {
+                return Result.ok();
+            } else {
+                return Result.fail("密码修改失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+}

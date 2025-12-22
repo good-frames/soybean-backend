@@ -11,6 +11,10 @@ spring:
       password: nacos
     gateway:
       routes: # 路由配置
+        - id: soybean-auth
+          uri: lb://soybean-auth
+          predicates: # 断言
+            - Path=/test/**
         - id: soybean-user
           uri: lb://soybean-user
           predicates: # 断言

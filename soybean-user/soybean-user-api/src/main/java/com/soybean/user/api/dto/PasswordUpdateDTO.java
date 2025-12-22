@@ -18,7 +18,7 @@ public class PasswordUpdateDTO implements Serializable {
      * 用户ID
      */
     @NotBlank(message = "用户ID不能为空")
-    private String uid;
+    private String userId;
 
     /**
      * 原密码

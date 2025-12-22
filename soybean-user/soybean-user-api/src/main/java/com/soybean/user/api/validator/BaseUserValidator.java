@@ -80,4 +80,24 @@ public class BaseUserValidator {
             errors.rejectValue("status", "status.type", "状态必须是0或1");
         }
     }
+
+    /**
+     * 验证性别
+     */
+    protected void validateGender(Object gender, Errors errors) {
+        // 性别可以为空，如果不为空则必须是BaseEnum的实例
+        if (gender != null && !(gender instanceof BaseEnum)) {
+            errors.rejectValue("gender", "gender.type", "性别必须是0(男)、1(女)或2(未知)");
+        }
+    }
+
+    /**
+     * 验证删除标记
+     */
+    protected void validateDelFlag(Object delFlag, Errors errors) {
+        // 删除标记可以为空，如果不为空则必须是BaseEnum的实例
+        if (delFlag != null && !(delFlag instanceof BaseEnum)) {
+            errors.rejectValue("delFlag", "delFlag.type", "删除标记必须是0(正常)或2(删除)");
+        }
+    }
 }
