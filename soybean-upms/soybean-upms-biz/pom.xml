@@ -13,9 +13,22 @@
     <description>soybean-upms-biz</description>
 
     <dependencies>
+        <!--soybean-upms-api-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-upms-api</artifactId>
+        </dependency>
+
+        <!--soybean-user-api-->
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-user-api</artifactId>
+        </dependency>
+
+        <!--soybean-common-core-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-core</artifactId>
         </dependency>
 
         <!-- soybean-common-mybatis -->
@@ -23,6 +36,8 @@
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
+
+
 
         <!--注册中心客户端-->
         <dependency>
@@ -51,15 +66,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-    </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    </dependencies>
 
 </project>

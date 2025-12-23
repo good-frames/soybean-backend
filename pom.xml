@@ -17,7 +17,9 @@
 
     <modules>
         <module>soybean-common</module>
+        <module>soybean-gateway</module>
         <module>soybean-user</module>
+        <module>soybean-upms</module>
     </modules>
 
     <properties>
@@ -64,6 +66,12 @@
             <dependency>
                 <groupId>com.soybean</groupId>
                 <artifactId>soybean-user-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soybean</groupId>
+                <artifactId>soybean-upms-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

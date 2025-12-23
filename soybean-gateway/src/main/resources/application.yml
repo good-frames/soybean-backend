@@ -19,3 +19,7 @@ spring:
           uri: lb://soybean-user
           predicates: # 断言
             - Path=/user/**
+        - id: soybean-upms
+          uri: lb://soybean-upms
+          predicates: # 断言
+            - Path=/sys/menu/**,/sys/role/**,/sys/permission/**

@@ -1,0 +1,133 @@
+
+package com.soybean.upms.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.soybean.upms.api.dto.SysMenuDTO;
+import com.soybean.upms.api.po.SysMenu;
+import com.soybean.upms.api.query.SysMenuQuery;
+import com.soybean.upms.api.vo.SysMenuVO;
+
+import java.util.List;
+import java.util.Set;
+
+/**
+ * 菜单权限表 服务类
+ *
+ * @author soybean
+ * @since 2024-07-07
+ */
+public interface ISysMenuService extends IService<SysMenu> {
+
+    /**
+     * 根据用户查询系统菜单列表
+     *
+     * @param userId 用户ID
+     * @return 菜单列表
+     */
+    List<SysMenuVO> selectMenuList(Long userId);
+
+    /**
+     * 根据用户查询系统菜单列表
+     *
+     * @param menuQuery 菜单查询条件
+     * @param userId 用户ID
+     * @return 菜单列表
+     */
+    List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, Long userId);
+
+    /**
+     * 根据用户ID查询权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    Set<String> selectPermsByUserId(Long userId);
+
+    /**
+     * 根据角色ID查询权限
+     *
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    Set<String> selectPermsByRoleId(Long roleId);
+
+    /**
+     * 根据角色ID查询菜单树信息
+     *
+     * @param roleId 角色ID
+     * @return 选中菜单列表
+     */
+    List<Long> selectMenuListByRoleId(Long roleId);
+
+    /**
+     * 构建前端所需要下拉树结构
+     *
+     * @param menus 菜单列表
+     * @return 下拉树结构列表
+     */
+    List<SysMenuVO> buildMenuTree(List<SysMenuVO> menus);
+
+    /**
+     * 构建前端所需要树结构
+     *
+     * @param menus 菜单列表
+     * @return 树结构列表
+     */
+    List<SysMenuVO> buildMenuTreeSelect(List<SysMenuVO> menus);
+
+    /**
+     * 根据菜单ID查询信息
+     *
+     * @param menuId 菜单ID
+     * @return 菜单信息
+     */
+    SysMenuVO selectMenuById(Long menuId);
+
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    boolean hasChildByMenuId(Long menuId);
+
+    /**
+     * 查询菜单使用数量
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    boolean checkMenuExistRole(Long menuId);
+
+    /**
+     * 新增保存菜单信息
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    boolean insertMenu(SysMenuDTO menu);
+
+    /**
+     * 修改保存菜单信息
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    boolean updateMenu(SysMenuDTO menu);
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    boolean deleteMenuById(Long menuId);
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    boolean checkMenuNameUnique(SysMenuDTO menu);
+}
