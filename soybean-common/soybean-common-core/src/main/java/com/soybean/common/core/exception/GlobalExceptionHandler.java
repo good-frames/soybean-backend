@@ -22,13 +22,22 @@ public class GlobalExceptionHandler {
         log.error("参数验证失败: {}", e.getMessage());
         return Result.fail(e.getMessage());
     }
+    
+    /**
+     * 处理类型转换异常
+     */
+    @ExceptionHandler(org.springframework.core.convert.ConversionFailedException.class)
+    public Result<Void> handleConversionFailedException(org.springframework.core.convert.ConversionFailedException e) {
+        log.error("类型转换失败: {}", e.getMessage());
+        return Result.fail("参数类型错误: " + e.getMessage());
+    }
 
     /**
      * 处理其他异常
      */
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {
-        log.error("系统异常: {}", e.getMessage());
-        return Result.fail(e.getMessage());
+        log.error("系统异常: {}", e.getMessage(), e);
+        return Result.fail("系统异常: " + e.getMessage());
     }
 }

@@ -14,15 +14,12 @@ import com.soybean.upms.api.enums.SysDelFlagEnum;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.po.SysRoleMenu;
-import com.soybean.upms.api.po.SysUserRole;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.mapper.SysRoleMapper;
 import com.soybean.upms.mapper.SysRoleMenuMapper;
 import com.soybean.upms.mapper.SysUserRoleMapper;
 import com.soybean.upms.service.ISysRoleService;
-import com.soybean.user.api.po.SysUser;
-import com.soybean.user.api.vo.SysUserVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,7 +163,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public boolean updateRoleStatus(Long roleId, SysRoleStatusEnum status) {
         LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(SysRole::getRoleId, roleId).set(SysRole::getStatus, status);
+        wrapper.eq(SysRole::getRoleId, roleId).set(SysRole::getStatus, status.getValue());
         return update(wrapper);
     }
 
@@ -206,7 +203,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         // 删除角色与菜单关联
         for (Long roleId : roleIds) {
             roleMenuMapper.deleteRoleMenuByRoleId(roleId);
-            userRoleMapper.deleteUserRoleByUserId(roleId);
+            userRoleMapper.deleteUserRoleByRoleId(roleId);
         }
 
         // 删除角色

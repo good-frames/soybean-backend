@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
+import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.service.ISysRoleService;
@@ -90,6 +91,7 @@ public class SysRoleController {
     @PutMapping("/changeStatus")
     public Result<Void> changeStatus(@RequestBody SysRoleDTO roleDTO) {
         roleService.checkRoleAllowed(roleDTO);
+
         return roleService.updateRoleStatus(roleDTO.getRoleId(), roleDTO.getStatus()) ? Result.ok() : Result.fail();
     }
 

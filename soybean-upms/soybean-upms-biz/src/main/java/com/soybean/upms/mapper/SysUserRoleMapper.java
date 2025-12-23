@@ -34,6 +34,14 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
     int deleteUserRoleByUserIds(@Param("userIds") List<Long> ids);
 
     /**
+     * 通过角色ID删除用户和角色关联
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    int deleteUserRoleByRoleId(@Param("roleId") Long roleId);
+    
+    /**
      * 通过角色ID查询角色使用数量
      *
      * @param roleId 角色ID
