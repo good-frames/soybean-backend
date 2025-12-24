@@ -3,6 +3,7 @@ package com.soybean.upms.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.soybean.common.core.utils.Result;
+import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
@@ -29,10 +30,10 @@ public class SysRoleController {
     private final ISysRoleService roleService;
 
     /**
-     * 获取角色列表
+     * 获取所有角色
      */
-    @GetMapping("/list")
-    public Result<PageDTO<SysRoleVO>> list(SysRoleQuery query) {
+    @GetMapping("/page")
+    public Result<PageDTO<SysRoleVO>> page(SysRoleQuery query) {
         PageDTO<SysRoleVO> result = roleService.getRolePage(query);
         return Result.ok(result);
     }
@@ -82,6 +83,10 @@ public class SysRoleController {
      */
     @PutMapping("/dataScope")
     public Result<Void> dataScope(@RequestBody SysRoleDTO roleDTO) {
+        // 检查角色是否存在
+        if (!roleService.checkRoleExists(roleDTO.getRoleId())) {
+            throw new BusinessException("角色不存在");
+        }
         return roleService.authDataScope(roleDTO) ? Result.ok() : Result.fail();
     }
 
@@ -92,7 +97,11 @@ public class SysRoleController {
     public Result<Void> changeStatus(@RequestBody SysRoleDTO roleDTO) {
         roleService.checkRoleAllowed(roleDTO);
 
-        return roleService.updateRoleStatus(roleDTO.getRoleId(), roleDTO.getStatus()) ? Result.ok() : Result.fail();
+        try {
+            return roleService.updateRoleStatus(roleDTO.getRoleId(), roleDTO.getStatus()) ? Result.ok() : Result.fail();
+        } catch (RuntimeException e) {
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
@@ -100,34 +109,21 @@ public class SysRoleController {
      */
     @DeleteMapping("/{roleIds}")
     public Result<Void> remove(@PathVariable List<Long> roleIds) {
-        return roleService.deleteRoleByIds(roleIds) ? Result.ok() : Result.fail();
+        try {
+            return roleService.deleteRoleByIds(roleIds) ? Result.ok() : Result.fail();
+        } catch (RuntimeException e) {
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
      * 获取角色选择框列表
      */
-    @GetMapping("/optionselect")
+    @GetMapping("/list")
     public Result<List<SysRoleVO>> optionselect() {
         return Result.ok(roleService.selectRoleAll());
     }
 
-    /**
-     * 查询已分配用户角色列表
-     */
-    @GetMapping("/authUser/allocatedList")
-    public Result<PageDTO<SysRoleVO>> allocatedList(SysRoleQuery query) {
-        PageDTO<SysRoleVO> result = roleService.getRolePage(query);
-        return Result.ok(result);
-    }
-
-    /**
-     * 查询未分配用户角色列表
-     */
-    @GetMapping("/authUser/unallocatedList")
-    public Result<PageDTO<SysRoleVO>> unallocatedList(SysRoleQuery query) {
-        PageDTO<SysRoleVO> result = roleService.getRolePage(query);
-        return Result.ok(result);
-    }
 
     /**
      * 取消授权用户角色

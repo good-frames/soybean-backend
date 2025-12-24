@@ -122,6 +122,22 @@ public interface ISysRoleService extends IService<SysRole> {
      */
     void checkRoleDataScope(Long roleId);
 
+    /**
+     * 校验角色是否存在
+     *
+     * @param roleId 角色ID
+     * @return 是否存在
+     */
+    boolean checkRoleExists(Long roleId);
+
+    /**
+     * 校验多个角色是否都存在
+     *
+     * @param roleIds 角色ID列表
+     * @return 是否全部存在
+     */
+    boolean checkRolesExists(List<Long> roleIds);
+
 
     /**
      * 根据用户ID获取角色权限

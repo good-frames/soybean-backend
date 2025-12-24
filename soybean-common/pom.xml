@@ -16,6 +16,7 @@
     <modules>
         <module>soybean-common-core</module>
         <module>soybean-common-mybatis</module>
+        <module>soybean-common-redis</module>
         <module>soybean-common-security</module>
 
     </modules>

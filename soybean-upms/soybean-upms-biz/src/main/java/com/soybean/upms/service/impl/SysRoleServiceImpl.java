@@ -162,6 +162,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public boolean updateRoleStatus(Long roleId, SysRoleStatusEnum status) {
+        // 检查角色是否存在
+        if (!checkRoleExists(roleId)) {
+            throw new RuntimeException("角色不存在");
+        }
+
         LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(SysRole::getRoleId, roleId).set(SysRole::getStatus, status.getValue());
         return update(wrapper);
@@ -200,6 +205,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteRoleByIds(List<Long> roleIds) {
+        // 检查角色是否全部存在
+        if (!checkRolesExists(roleIds)) {
+            throw new RuntimeException("部分角色不存在");
+        }
+
         // 删除角色与菜单关联
         for (Long roleId : roleIds) {
             roleMenuMapper.deleteRoleMenuByRoleId(roleId);
@@ -307,6 +317,37 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (CollUtil.isNotEmpty(list)) {
             roleMenuMapper.batchRoleMenu(list);
         }
+    }
+
+    /**
+     * 校验角色是否存在
+     *
+     * @param roleId 角色ID
+     * @return 是否存在
+     */
+    @Override
+    public boolean checkRoleExists(Long roleId) {
+        return getById(roleId) != null;
+    }
+
+    /**
+     * 校验多个角色是否都存在
+     *
+     * @param roleIds 角色ID列表
+     * @return 是否全部存在
+     */
+    @Override
+    public boolean checkRolesExists(List<Long> roleIds) {
+        if (CollUtil.isEmpty(roleIds)) {
+            return false;
+        }
+
+        for (Long roleId : roleIds) {
+            if (!checkRoleExists(roleId)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

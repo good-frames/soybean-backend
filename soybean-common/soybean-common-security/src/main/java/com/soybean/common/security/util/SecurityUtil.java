@@ -1,13 +1,22 @@
 package com.soybean.common.security.util;
 
+import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import com.soybean.common.security.constant.SecurityConstant;
+import com.soybean.common.security.enums.UserTypeEnum;
 import com.soybean.common.security.model.LoginUser;
+
+import java.util.List;
 
 /**
  * 安全工具类
  */
 public class SecurityUtil {
+    public static void login(LoginUser user) {
+        SaHolder.getStorage().set(SecurityConstant.USER_SESSION_KEY, user);
+        StpUtil.login(user.getUserId());
+        StpUtil.getTokenSession().set(SecurityConstant.USER_SESSION_KEY, user);
+    }
 
     /**
      * 获取当前登录用户ID
@@ -20,7 +29,7 @@ public class SecurityUtil {
      * 获取当前登录用户
      */
     public static LoginUser getCurrentUser() {
-        return StpUtil.getSession().getModel(SecurityConstant.USER_SESSION_KEY, LoginUser.class);
+        return StpUtil.getTokenSession().getModel(SecurityConstant.USER_SESSION_KEY, LoginUser.class);
     }
 
     /**
@@ -47,14 +56,14 @@ public class SecurityUtil {
     /**
      * 获取当前登录用户的角色列表
      */
-    public static java.util.List<String> getRoles() {
+    public static List<String> getRoles() {
         return StpUtil.getRoleList();
     }
 
     /**
      * 获取当前登录用户的权限列表
      */
-    public static java.util.List<String> getPermissions() {
+    public static List<String> getPermissions() {
         return StpUtil.getPermissionList();
     }
 

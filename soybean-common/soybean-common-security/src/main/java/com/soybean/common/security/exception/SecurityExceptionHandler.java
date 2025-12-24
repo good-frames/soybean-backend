@@ -3,6 +3,7 @@ package com.soybean.common.security.exception;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
+import com.soybean.common.core.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,7 +45,7 @@ public class SecurityExceptionHandler {
                 break;
         }
         log.error("认证异常: {}", message, e);
-        return createResult(HttpStatus.UNAUTHORIZED.value(), message, null);
+        return Result.unauthorized(e.getMessage());
     }
 
     /**
@@ -55,7 +56,7 @@ public class SecurityExceptionHandler {
     public Object handleNotPermissionException(NotPermissionException e) {
         String message = "缺少权限:" + e.getPermission();
         log.error("权限异常: {}", message, e);
-        return createResult(HttpStatus.FORBIDDEN.value(), message, null);
+        return Result.forbidden(e.getMessage());
     }
 
     /**
@@ -66,19 +67,6 @@ public class SecurityExceptionHandler {
     public Object handleNotRoleException(NotRoleException e) {
         String message = "缺少角色:" + e.getRole();
         log.error("角色异常: {}", message, e);
-        return createResult(HttpStatus.FORBIDDEN.value(), message, null);
-    }
-
-    /**
-     * 创建统一响应结果
-     */
-    private Object createResult(int code, String message, Object data) {
-        // 这里应该使用项目中统一的响应对象，这里仅作示例
-        return new Object() {
-            public final int code = code;
-            public final String message = message;
-            public final Object data = data;
-            public final long timestamp = System.currentTimeMillis();
-        };
+        return Result.forbidden(e.getMessage());
     }
 }

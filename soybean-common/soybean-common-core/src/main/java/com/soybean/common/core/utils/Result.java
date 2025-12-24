@@ -1,6 +1,7 @@
 package com.soybean.common.core.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.soybean.common.core.constant.ResultCode;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -41,7 +42,7 @@ public class Result<T> implements Serializable {
         this();
         this.code = code;
         this.msg = msg;
-        this.success = code == 200;
+        this.success = code.equals(ResultCode.SUCCESS);
     }
 
     public Result(Integer code, String msg, T data) {
@@ -53,7 +54,7 @@ public class Result<T> implements Serializable {
      * 成功返回结果
      */
     public static <T> Result<T> ok() {
-        return new Result<>(200, "操作成功");
+        return new Result<>(ResultCode.SUCCESS, "操作成功");
     }
 
     /**
@@ -62,7 +63,7 @@ public class Result<T> implements Serializable {
      * @param data 返回的数据
      */
     public static <T> Result<T> ok(T data) {
-        return new Result<>(200, "操作成功", data);
+        return new Result<>(ResultCode.SUCCESS, "操作成功", data);
     }
 
     /**
@@ -72,14 +73,14 @@ public class Result<T> implements Serializable {
      * @param data 返回的数据
      */
     public static <T> Result<T> ok(String msg, T data) {
-        return new Result<>(200, msg, data);
+        return new Result<>(ResultCode.SUCCESS, msg, data);
     }
 
     /**
      * 失败返回结果
      */
     public static <T> Result<T> fail() {
-        return new Result<>(500, "操作失败");
+        return new Result<>(ResultCode.ERROR, "操作失败");
     }
 
     /**
@@ -88,7 +89,7 @@ public class Result<T> implements Serializable {
      * @param msg 返回的消息
      */
     public static <T> Result<T> fail(String msg) {
-        return new Result<>(500, msg);
+        return new Result<>(ResultCode.PARAM_ERROR, msg);
     }
 
     /**
@@ -116,28 +117,28 @@ public class Result<T> implements Serializable {
      * 参数校验失败返回结果
      */
     public static <T> Result<T> paramError(String msg) {
-        return new Result<>(400, msg);
+        return new Result<>(ResultCode.PARAM_ERROR, msg);
     }
 
     /**
      * 未授权返回结果
      */
     public static <T> Result<T> unauthorized(String msg) {
-        return new Result<>(401, msg);
+        return new Result<>(ResultCode.UNAUTHORIZED, msg);
     }
 
     /**
      * 未授权返回结果
      */
     public static <T> Result<T> unauthorized() {
-        return new Result<>(401, "未授权");
+        return new Result<>(ResultCode.UNAUTHORIZED, "未授权");
     }
 
     /**
      * 禁止访问返回结果
      */
     public static <T> Result<T> forbidden() {
-        return new Result<>(403, "禁止访问");
+        return new Result<>(ResultCode.FORBIDDEN, "禁止访问");
     }
 
     /**
@@ -146,14 +147,14 @@ public class Result<T> implements Serializable {
      * @param msg 返回的消息
      */
     public static <T> Result<T> forbidden(String msg) {
-        return new Result<>(403, msg);
+        return new Result<>(ResultCode.FORBIDDEN, msg);
     }
 
     /**
      * 资源未找到返回结果
      */
     public static <T> Result<T> notFound() {
-        return new Result<>(404, "资源未找到");
+        return new Result<>(ResultCode.NOT_FOUND, "资源未找到");
     }
 
     /**
@@ -162,14 +163,14 @@ public class Result<T> implements Serializable {
      * @param msg 返回的消息
      */
     public static <T> Result<T> notFound(String msg) {
-        return new Result<>(404, msg);
+        return new Result<>(ResultCode.NOT_FOUND, msg);
     }
 
     /**
      * 服务器内部错误返回结果
      */
     public static <T> Result<T> error() {
-        return new Result<>(500, "服务器内部错误");
+        return new Result<>(ResultCode.ERROR, "服务器内部错误");
     }
 
     /**
@@ -178,6 +179,15 @@ public class Result<T> implements Serializable {
      * @param msg 返回的消息
      */
     public static <T> Result<T> error(String msg) {
-        return new Result<>(500, msg);
+        return new Result<>(ResultCode.ERROR, msg);
+    }
+
+    /**
+     * 判断请求是否成功
+     *
+     * @return 是否成功
+     */
+    public Boolean isSuccess() {
+        return this.success != null && this.success;
     }
 }

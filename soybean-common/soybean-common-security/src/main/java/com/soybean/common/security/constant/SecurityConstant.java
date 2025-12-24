@@ -19,14 +19,4 @@ public class SecurityConstant {
      */
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    /**
-     * 无需认证的路径
-     */
-    public static final String[] EXCLUDE_PATH_PATTERNS = {
-        "/login",
-        "/logout",
-        "/captcha",
-        "/error",
-        "/actuator/**"
-    };
 }

@@ -46,10 +46,6 @@ public class LoginUser implements Serializable {
      */
     private List<String> permissions;
 
-    /**
-     * 登录设备
-     */
-    private LoginDevice loginDevice;
 
     /**
      * 登录时间

@@ -1,0 +1,3 @@
+com.soybean.common.security.config.SaTokenConfig
+com.soybean.common.security.aspect.SecurityAnnotationAspect
+com.soybean.common.security.exception.SecurityExceptionHandler

@@ -70,14 +70,6 @@ public interface ISysUserService extends IService<SysUser> {
     boolean updateSysUserStatus(String id, SysUserStatusEnum status);
 
     /**
-     * 系统用户登录
-     *
-     * @param sysUserDTO 登录信息
-     * @return 用户信息（不含密码）
-     */
-    SysUserVO login(SysUserDTO sysUserDTO);
-
-    /**
      * 修改密码
      *
      * @param passwordUpdateDTO 密码更新信息
@@ -92,4 +84,12 @@ public interface ISysUserService extends IService<SysUser> {
      * @return 用户VO
      */
     SysUserVO getSysUserVOById(String id);
+    
+    /**
+     * 根据用户名获取用户信息
+     *
+     * @param username 用户名
+     * @return 用户信息
+     */
+    SysUser getUserByUsername(String username);
 }

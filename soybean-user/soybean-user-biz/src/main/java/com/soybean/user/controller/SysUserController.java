@@ -126,6 +126,23 @@ public class SysUserController {
             return Result.fail(e.getMessage());
         }
     }
+    
+    /**
+     * 根据用户名获取用户信息
+     */
+    @GetMapping("/getByUsername")
+    public Result<com.soybean.user.api.po.SysUser> getByUsername(@RequestParam("username") String username) {
+        try {
+            com.soybean.user.api.po.SysUser user = sysUserService.getUserByUsername(username);
+            if (user != null) {
+                return Result.ok(user);
+            } else {
+                return Result.fail("用户不存在");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
 
     /**
      * 修改状态
@@ -138,27 +155,6 @@ public class SysUserController {
             } else {
                 return Result.fail("状态更新失败");
             }
-        } catch (Exception e) {
-            return Result.fail(e.getMessage());
-        }
-    }
-
-    /**
-     * 系统用户登录
-     */
-    @PostMapping("/login")
-    public Result<SysUserVO> login(@Valid @RequestBody SysUserDTO sysUserDTO, BindingResult bindingResult) {
-        // 验证参数
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getAllErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
-            return Result.fail(errorMsg);
-        }
-
-        try {
-            SysUserVO sysUserVO = sysUserService.login(sysUserDTO);
-            return Result.ok(sysUserVO);
         } catch (Exception e) {
             return Result.fail(e.getMessage());
         }

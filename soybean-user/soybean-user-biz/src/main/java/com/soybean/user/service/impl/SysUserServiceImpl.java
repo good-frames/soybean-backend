@@ -16,6 +16,7 @@ import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
 import com.soybean.user.mapper.SysUserMapper;
 import com.soybean.user.service.ISysUserService;
+import com.soybean.common.core.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +75,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL.getValue());
         SysUser existUser = this.getOne(queryWrapper);
         if (existUser != null) {
-            throw new RuntimeException("用户名已存在");
+            throw new BusinessException("用户名已存在");
         }
 
         // 转换DTO为实体
@@ -116,7 +117,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 检查用户是否存在
         SysUser existUser = this.getById(sysUserDTO.getUserId());
         if (existUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(existUser.getDelFlag())) {
-            throw new RuntimeException("用户不存在");
+            throw new BusinessException("用户不存在");
         }
 
         // 如果修改了用户名，检查新用户名是否已存在
@@ -127,7 +128,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     .ne(SysUser::getUserId, Long.valueOf(sysUserDTO.getUserId()));
             SysUser userWithSameName = this.getOne(queryWrapper);
             if (userWithSameName != null) {
-                throw new RuntimeException("用户名已存在");
+                throw new BusinessException("用户名已存在");
             }
         }
 
@@ -203,49 +204,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUserVO login(SysUserDTO sysUserDTO) {
-        // 查询用户
-        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getUsername, sysUserDTO.getUsername())
-                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL); // 只查询未删除的用户
-        SysUser sysUser = this.getOne(queryWrapper);
-
-        if (sysUser == null) {
-            throw new RuntimeException("用户不存在");
-        }
-
-        if (SysUserStatusEnum.DISABLE.equals(sysUser.getStatus())) {
-            throw new RuntimeException("账户已被禁用");
-        }
-
-        // 验证密码
-        if (!PasswordUtil.verify(sysUserDTO.getPassword(), sysUser.getPassword())) {
-            throw new RuntimeException("密码错误");
-        }
-
-        // 更新最后登录时间和IP
-        SysUser updateUser = new SysUser();
-        updateUser.setUserId(sysUser.getUserId());
-        updateUser.setLoginIp(sysUserDTO.getLoginIp());
-        updateUser.setLoginDate(java.time.LocalDateTime.now());
-        this.updateById(updateUser);
-
-        // 转换为VO对象
-        return convertToVO(sysUser);
-    }
-
-    @Override
     public boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
         String userId = passwordUpdateDTO.getUserId();
         SysUser sysUser = this.getById(userId);
         if (sysUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
-            throw new RuntimeException("用户不存在");
+            throw new BusinessException("用户不存在");
         }
 
         // 验证原密码
         if (!PasswordUtil.verify(passwordUpdateDTO.getOldPassword(), sysUser.getPassword())) {
-            throw new RuntimeException("原密码错误");
+            throw new BusinessException("原密码错误");
         }
 
         // 加密新密码
@@ -264,5 +233,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             return convertToVO(sysUser);
         }
         return null;
+    }
+    
+    @Override
+    public SysUser getUserByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        
+        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getUsername, username)
+                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL);
+        
+        return this.getOne(queryWrapper);
     }
 }
