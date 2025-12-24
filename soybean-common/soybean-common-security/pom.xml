@@ -24,10 +24,10 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
         </dependency>
-        <!-- Sa-Token 整合 Redis （使用jackson序列化方式） -->
+        <!-- Sa-Token 整合 RedisTemplate -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-redis-jackson</artifactId>
+            <artifactId>sa-token-redis-template</artifactId>
         </dependency>
         <!-- 提供Redis连接池 -->
         <dependency>
