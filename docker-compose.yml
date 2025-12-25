@@ -25,7 +25,7 @@ services:
     volumes:
       - ./docker/redis_data:/data    # 持久化
   nacos:
-    image: nacos/nacos-server:v3.1.1
+    image: nacos/nacos-server:v2.2.3
     container_name: soybean-nacos
     restart: always
     environment:
@@ -43,7 +43,6 @@ services:
       NACOS_AUTH_IDENTITY_VALUE: soybean
       TZ: Asia/Shanghai
     ports:
-      - "8080:8080"
       - "8848:8848"
       - "9848:9848"
     depends_on:
