@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@EnableFeignClients(basePackages = "com.soybean.user.api.clients")
+@EnableFeignClients(basePackages = "com.soybean.user.api.clients", defaultConfiguration = com.soybean.common.security.config.FeignConfig.class)
 @SpringBootApplication
 public class SoybeanAuthApplication {
 

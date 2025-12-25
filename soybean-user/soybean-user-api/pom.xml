@@ -17,10 +17,16 @@
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.soybean</groupId>-->
+<!--            <artifactId>soybean-common-security</artifactId>-->
+<!--        </dependency>-->
 
         <!--openFeign-->
         <dependency>

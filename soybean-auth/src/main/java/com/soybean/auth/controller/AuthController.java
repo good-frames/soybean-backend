@@ -8,6 +8,7 @@ import com.soybean.common.core.utils.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author soybean
  */
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class AuthController {
     @Operation(summary = "用户登录", description = "用户登录接口")
     @PostMapping("/login")
     public Result<LoginVO> login(@Validated @RequestBody LoginDTO loginDTO) {
+        log.info("用户登录，用户名：{}", loginDTO.getUsername());
         LoginVO loginVO = authService.login(loginDTO);
         return Result.ok(loginVO);
     }

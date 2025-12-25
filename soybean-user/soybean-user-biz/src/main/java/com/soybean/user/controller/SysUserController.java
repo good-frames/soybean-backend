@@ -5,12 +5,14 @@ import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
 import com.soybean.user.api.enums.SysUserStatusEnum;
+import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
 import jakarta.validation.Valid;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  * @author soybean
  * @since 2024-07-07
  */
+@Slf4j
 @Data
 @RestController
 @RequestMapping("/user/admin")
@@ -133,7 +136,8 @@ public class SysUserController {
     @GetMapping("/getByUsername")
     public Result<com.soybean.user.api.po.SysUser> getByUsername(@RequestParam("username") String username) {
         try {
-            com.soybean.user.api.po.SysUser user = sysUserService.getUserByUsername(username);
+            log.info("username: ========="+username);
+            SysUser user = sysUserService.getUserByUsername(username);
             if (user != null) {
                 return Result.ok(user);
             } else {

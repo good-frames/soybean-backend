@@ -38,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginVO login(LoginDTO loginDTO) {
         // 获取用户信息
         Result<SysUser> userResult = sysUserClient.getUserByUsername(loginDTO.getUsername());
+        log.info("获取用户信息结果: {}", userResult);
         if (!userResult.isSuccess() || userResult.getData() == null) {
             throw new BusinessException("用户不存在");
         }

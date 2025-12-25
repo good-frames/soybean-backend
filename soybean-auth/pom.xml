@@ -19,10 +19,6 @@
             <artifactId>soybean-user-api</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.soybean</groupId>
-            <artifactId>soybean-common-security</artifactId>
-        </dependency>
 
         <!--soybean-common-core-->
         <dependency>
@@ -35,7 +31,6 @@
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
-
 
 
         <dependency>

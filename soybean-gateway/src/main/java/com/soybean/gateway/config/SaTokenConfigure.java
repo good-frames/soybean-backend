@@ -6,6 +6,7 @@ import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.soybean.gateway.filter.ForwardAuthFilter;
 import com.soybean.gateway.properties.PermitAllUrlProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,5 +66,10 @@ public class SaTokenConfigure {
                 // 如果是预检请求，则立即返回到前端
                 SaRouter.match(SaHttpMethod.OPTIONS).free(r -> log.warn("--------OPTIONS预检请求，不做处理")).back();
             });
+    }
+
+    @Bean
+    public ForwardAuthFilter forwardAuthFilter() {
+        return new ForwardAuthFilter();
     }
 }
