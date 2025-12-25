@@ -34,10 +34,10 @@
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.soybean</groupId>-->
-<!--            <artifactId>soybean-common-security</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-security</artifactId>
+        </dependency>
 
         <!-- ========================= 服务间调用 ============================ -->
         <!--openFeign-->
@@ -51,6 +51,14 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
         <!-- ========================= 服务间调用 ============================ -->
+
+        <!-- ========================= 持久层 ============================ -->
+        <!-- Redis客户端 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- ========================= 持久层 ============================ -->
 
 
         <!-- ========================= cloud ============================ -->

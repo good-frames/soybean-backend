@@ -19,7 +19,6 @@
             <artifactId>soybean-user-api</artifactId>
         </dependency>
 
-
         <!--soybean-common-core-->
         <dependency>
             <groupId>com.soybean</groupId>
@@ -32,28 +31,12 @@
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
 
-
         <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot3-starter</artifactId>
-        </dependency>
-        <!-- Sa-Token 整合 RedisTemplate -->
-        <dependency>
-            <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-redis-template</artifactId>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-security</artifactId>
         </dependency>
 
-        <!-- Redis客户端 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
-        <!--注册中心客户端-->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
+        <!-- ========================= 服务间调用 ============================ -->
         <!--openFeign-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -64,11 +47,41 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
+        <!-- ========================= 服务间调用 ============================ -->
+
+        <!-- ========================= 鉴权 ============================ -->
+        <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+        </dependency>
+        <!-- Sa-Token 整合 RedisTemplate -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-template</artifactId>
+        </dependency>
+        <!-- ========================= 鉴权 ============================ -->
+
+        <!-- ========================= 持久层 ============================ -->
+        <!-- Redis客户端 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- ========================= 持久层 ============================ -->
+
+        <!-- ========================= cloud ============================ -->
+        <!--注册中心客户端-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
         <!--web 模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- ========================= cloud ============================ -->
 
     </dependencies>
 
