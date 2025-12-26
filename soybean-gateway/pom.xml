@@ -15,6 +15,12 @@
 
     <dependencies>
 
+        <!-- Redis客户端 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!-- ========================= 鉴权 ============================ -->
         <!--鉴权-->
         <dependency>
@@ -38,10 +44,15 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
-        <!--nacos discovery-->
+        <!--nacos服务注册-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--nacos配置管理-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
         <!--负载均衡-->
         <dependency>
@@ -49,12 +60,6 @@
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
         <!-- ========================= cloud ============================ -->
-
-        <!-- Redis客户端 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

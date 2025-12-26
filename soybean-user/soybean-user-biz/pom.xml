@@ -20,8 +20,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-
-
         <!-- soybean-user-api -->
         <dependency>
             <groupId>com.soybean</groupId>
@@ -50,6 +48,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
+        <!--OK http 的依赖 -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+        </dependency>
         <!-- ========================= 服务间调用 ============================ -->
 
         <!-- ========================= 持久层 ============================ -->
@@ -62,18 +65,22 @@
 
 
         <!-- ========================= cloud ============================ -->
+        <!--nacos服务注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--nacos配置管理-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
         <!--web 模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--注册中心客户端-->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <!--配置中心客户端-->
-        <!-- ========================= 鉴权 ============================ -->
+        <!-- ========================= cloud ============================ -->
     </dependencies>
 
 </project>

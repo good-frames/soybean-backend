@@ -129,24 +129,6 @@ public class SysUserController {
             return Result.fail(e.getMessage());
         }
     }
-    
-    /**
-     * 根据用户名获取用户信息
-     */
-    @GetMapping("/getByUsername")
-    public Result<com.soybean.user.api.po.SysUser> getByUsername(@RequestParam("username") String username) {
-        try {
-            log.info("username: ========="+username);
-            SysUser user = sysUserService.getUserByUsername(username);
-            if (user != null) {
-                return Result.ok(user);
-            } else {
-                return Result.fail("用户不存在");
-            }
-        } catch (Exception e) {
-            return Result.fail(e.getMessage());
-        }
-    }
 
     /**
      * 修改状态

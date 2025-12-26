@@ -37,28 +37,26 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginVO login(LoginDTO loginDTO) {
         // 获取用户信息
-        Result<SysUser> userResult = sysUserClient.getUserByUsername(loginDTO.getUsername());
+        SysUser userResult = sysUserClient.getUserByUsername(loginDTO.getUsername());
         log.info("获取用户信息结果: {}", userResult);
-        if (!userResult.isSuccess() || userResult.getData() == null) {
+        if (userResult == null) {
             throw new BusinessException("用户不存在");
         }
 
-
-        SysUser authInfo = userResult.getData();
         // 验证用户状态
-        if (SysUserStatusEnum.DISABLE.equals(authInfo.getStatus())) {
+        if (SysUserStatusEnum.DISABLE.equals(userResult.getStatus())) {
             throw new BusinessException("账户已被禁用");
         }
         // 验证密码
-        if (!PasswordUtil.verify(loginDTO.getPassword(), authInfo.getPassword())) {
+        if (!PasswordUtil.verify(loginDTO.getPassword(), userResult.getPassword())) {
             throw new BusinessException("密码错误");
         }
         
         // 转换为LoginUser
         LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(authInfo.getUserId().toString());
-        loginUser.setUsername(authInfo.getUsername());
-        loginUser.setNickname(authInfo.getNickname());
+        loginUser.setUserId(userResult.getUserId().toString());
+        loginUser.setUsername(userResult.getUsername());
+        loginUser.setNickname(userResult.getNickname());
         loginUser.setUserType(UserTypeEnum.ADMIN);
         loginUser.setLoginTime(new Date());
         
