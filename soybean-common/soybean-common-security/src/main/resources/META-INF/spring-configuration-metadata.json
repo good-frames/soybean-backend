@@ -1,0 +1,11 @@
+
+{
+  "properties": [
+    {
+      "name": "soybean.security.enable-same-token",
+      "type": "java.lang.Boolean",
+      "description": "是否启用内部服务Same-Token验证，默认为true",
+      "defaultValue": true
+    }
+  ]
+}

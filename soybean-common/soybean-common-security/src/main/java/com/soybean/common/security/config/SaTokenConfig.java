@@ -5,6 +5,7 @@ import cn.dev33.satoken.filter.SaServletFilter;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.same.SaSameUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.soybean.common.security.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 @Configuration
 public class SaTokenConfig implements WebMvcConfigurer {
+
+    private final SecurityProperties securityProperties;
 
     /**
      * 注册Sa-Token拦截器
@@ -36,9 +39,12 @@ public class SaTokenConfig implements WebMvcConfigurer {
                 .addInclude("/**")
                 .addExclude("/favicon.ico")
                 .setAuth(obj -> {
-                    // 校验 Same-Token 身份凭证     —— 以下两句代码可简化为：SaSameUtil.checkCurrentRequestToken();
-                    String token = SaHolder.getRequest().getHeader(SaSameUtil.SAME_TOKEN);
-                    SaSameUtil.checkToken(token);
+                    // 根据配置决定是否校验 Same-Token 身份凭证
+                    if (securityProperties.isEnableSameToken()) {
+                        // 校验 Same-Token 身份凭证     —— 以下两句代码可简化为：SaSameUtil.checkCurrentRequestToken();
+                        String token = SaHolder.getRequest().getHeader(SaSameUtil.SAME_TOKEN);
+                        SaSameUtil.checkToken(token);
+                    }
                 })
                 .setError(e -> {
                     return SaResult.error(e.getMessage());
