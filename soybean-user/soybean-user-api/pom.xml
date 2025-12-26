@@ -23,11 +23,6 @@
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.soybean</groupId>-->
-<!--            <artifactId>soybean-common-security</artifactId>-->
-<!--        </dependency>-->
-
         <!--openFeign-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

@@ -25,25 +25,25 @@
             <artifactId>soybean-user-api</artifactId>
         </dependency>
 
-        <!--soybean-common-core-->
-        <dependency>
-            <groupId>com.soybean</groupId>
-            <artifactId>soybean-common-core</artifactId>
-        </dependency>
-
         <!-- soybean-common-mybatis -->
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
 
-
-
-        <!--注册中心客户端-->
+        <!--soybean-common-core-->
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-core</artifactId>
         </dependency>
+
+        <!-- 数据校验 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ========================= 服务间调用 ============================ -->
         <!--openFeign-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -54,18 +54,20 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
+        <!-- ========================= 服务间调用 ============================ -->
 
-        <!-- 数据校验 -->
+        <!-- ========================= cloud ============================ -->
+        <!--注册中心客户端-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-
         <!--web 模块-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- ========================= cloud ============================ -->
 
     </dependencies>
 

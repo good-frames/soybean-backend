@@ -13,14 +13,15 @@
     <description>soybean-upms-api</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.soybean</groupId>
-            <artifactId>soybean-common-core</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-core</artifactId>
         </dependency>
 
         <!--openFeign-->
