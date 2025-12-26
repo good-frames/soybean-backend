@@ -1,0 +1,21 @@
+metadata:
+- appName: ''
+  dataId: soybean.common.yaml
+  desc: 基础配置
+  group: DEFAULT_GROUP
+  type: yaml
+- appName: ''
+  dataId: soybean.sa-token.yaml
+  desc: sa-token鉴权配置
+  group: DEFAULT_GROUP
+  type: yaml
+- appName: ''
+  dataId: soybean.jdbc.yaml
+  desc: 数据持久层配置
+  group: DEFAULT_GROUP
+  type: yaml
+- appName: ''
+  dataId: soybean.gateway.yaml
+  desc: 网关配置
+  group: DEFAULT_GROUP
+  type: yaml
