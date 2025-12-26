@@ -7,7 +7,7 @@ import com.soybean.common.core.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 删除标志枚举
+ * 删除标志枚举（0：存在；1：删除）
  *
  * @author soybean
  * @since 2024-07-07
@@ -22,7 +22,7 @@ public enum SysDelFlagEnum implements BaseEnum<String> {
     /**
      * 删除
      */
-    DELETED("2", "删除");
+    DELETED("1", "删除");
 
     @EnumValue
     @JsonValue

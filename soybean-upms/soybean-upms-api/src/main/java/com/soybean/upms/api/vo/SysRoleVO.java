@@ -41,7 +41,7 @@ public class SysRoleVO implements Serializable {
     private Integer roleSort;
 
     /**
-     * 角色状态（0正常 1停用）
+     * 角色状态（0停用 1正常）
      */
     private SysRoleStatusEnum status;
 

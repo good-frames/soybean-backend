@@ -7,7 +7,7 @@ import com.soybean.common.core.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 菜单状态枚举
+ * 菜单状态枚举（0：停用；1：正常）
  *
  * @author soybean
  * @since 2024-07-07
@@ -15,14 +15,14 @@ import lombok.Getter;
 @Getter
 public enum SysMenuStatusEnum implements BaseEnum<String> {
     /**
-     * 正常
-     */
-    NORMAL("0", "正常"),
-
-    /**
      * 停用
      */
-    DISABLE("1", "停用");
+    DISABLE("0", "停用"),
+
+    /**
+     * 正常
+     */
+    NORMAL("1", "正常");
 
     @EnumValue
     @JsonValue

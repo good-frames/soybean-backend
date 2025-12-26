@@ -15,14 +15,14 @@ import lombok.Getter;
 @Getter
 public enum SysMenuVisibleEnum implements BaseEnum<String> {
     /**
-     * 显示
-     */
-    SHOW("0", "显示"),
-
-    /**
      * 隐藏
      */
-    HIDE("1", "隐藏");
+    HIDE("0", "隐藏"),
+
+    /**
+     * 显示
+     */
+    SHOW("1", "显示");
 
     @EnumValue
     @JsonValue

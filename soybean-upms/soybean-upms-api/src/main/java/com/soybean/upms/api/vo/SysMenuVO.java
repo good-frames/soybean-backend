@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
 import com.soybean.upms.api.enums.SysMenuVisibleEnum;
+import com.soybean.upms.api.enums.SysMenuFrameEnum;
+import com.soybean.upms.api.enums.SysMenuCacheEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -58,14 +60,14 @@ public class SysMenuVO implements Serializable {
     private String query;
 
     /**
-     * 是否为外链（0是 1否）
+     * 是否为外链（0不是外链 1是外链）
      */
-    private Integer isFrame;
+    private SysMenuFrameEnum isFrame;
 
     /**
-     * 是否缓存（0缓存 1不缓存）
+     * 是否缓存（0不缓存 1缓存）
      */
-    private Integer isCache;
+    private SysMenuCacheEnum isCache;
 
     /**
      * 菜单类型（M目录 C菜单 F按钮）
@@ -73,12 +75,12 @@ public class SysMenuVO implements Serializable {
     private SysMenuTypeEnum menuType;
 
     /**
-     * 菜单状态（0显示 1隐藏）
+     * 菜单状态（0隐藏 1显示）
      */
     private SysMenuVisibleEnum visible;
 
     /**
-     * 菜单状态（0正常 1停用）
+     * 菜单状态（0停用 1正常）
      */
     private SysMenuStatusEnum status;
 

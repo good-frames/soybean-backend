@@ -41,14 +41,18 @@ public class SysMenuController {
      */
     @GetMapping(value = "/{menuId}")
     public Result<SysMenuVO> getInfo(@PathVariable Long menuId) {
-        return Result.ok(menuService.selectMenuById(menuId));
+        SysMenuVO menuVO = menuService.selectMenuById(menuId);
+        if (menuVO == null) {
+            return Result.fail("菜单不存在");
+        }
+        return Result.ok(menuVO);
     }
 
     /**
      * 获取菜单下拉树列表
      */
-    @GetMapping("/treeselect")
-    public Result<List<SysMenuVO>> treeselect(SysMenuQuery query) {
+    @GetMapping("/tree")
+    public Result<List<SysMenuVO>> treeList(SysMenuQuery query) {
         List<SysMenuVO> menus = menuService.selectMenuList(query, null);
         return Result.ok(menuService.buildMenuTreeSelect(menus));
     }

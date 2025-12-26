@@ -21,7 +21,6 @@ public class SecurityExceptionHandler {
      * 处理未登录异常
      */
     @ExceptionHandler(NotLoginException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Object handleNotLoginException(NotLoginException e) {
         String message = "";
         switch (e.getType()) {
@@ -52,7 +51,6 @@ public class SecurityExceptionHandler {
      * 处理无权限异常
      */
     @ExceptionHandler(NotPermissionException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Object handleNotPermissionException(NotPermissionException e) {
         String message = "缺少权限:" + e.getPermission();
         log.error("权限异常: {}", message, e);
@@ -63,7 +61,6 @@ public class SecurityExceptionHandler {
      * 处理无角色异常
      */
     @ExceptionHandler(NotRoleException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Object handleNotRoleException(NotRoleException e) {
         String message = "缺少角色:" + e.getRole();
         log.error("角色异常: {}", message, e);

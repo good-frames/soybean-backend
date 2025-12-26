@@ -7,23 +7,22 @@ import com.soybean.common.core.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 角色状态枚举（0：停用；1：正常）
+ * 菜单是否缓存枚举（0：不缓存；1：缓存）
  *
  * @author soybean
  * @since 2024-07-07
  */
 @Getter
-public enum SysRoleStatusEnum implements BaseEnum<String> {
+public enum SysMenuCacheEnum implements BaseEnum<String> {
+    /**
+     * 不缓存
+     */
+    NO_CACHE("0", "不缓存"),
 
     /**
-     * 停用
+     * 缓存
      */
-    DISABLE("0", "停用"),
-
-    /**
-     * 正常
-     */
-    NORMAL("1", "正常");
+    CACHE("1", "缓存");
 
     @EnumValue
     @JsonValue
@@ -31,7 +30,7 @@ public enum SysRoleStatusEnum implements BaseEnum<String> {
 
     private final String desc;
 
-    SysRoleStatusEnum(String value, String desc) {
+    SysMenuCacheEnum(String value, String desc) {
         this.value = value;
         this.desc = desc;
     }
@@ -42,15 +41,15 @@ public enum SysRoleStatusEnum implements BaseEnum<String> {
      * @param value 值
      * @return 枚举
      */
-    public static SysRoleStatusEnum fromValue(String value) {
+    public static SysMenuCacheEnum fromValue(String value) {
         if (value == null) {
             return null;
         }
-        for (SysRoleStatusEnum statusEnum : values()) {
-            if (statusEnum.getValue().equals(value)) {
-                return statusEnum;
+        for (SysMenuCacheEnum cacheEnum : values()) {
+            if (cacheEnum.getValue().equals(value)) {
+                return cacheEnum;
             }
         }
-        throw new IllegalArgumentException("Unknown status value: " + value);
+        throw new IllegalArgumentException("Unknown menu cache value: " + value);
     }
 }

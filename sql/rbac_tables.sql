@@ -13,7 +13,7 @@ CREATE TABLE `sys_user` (
   `gender` char(1) DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
   `avatar` varchar(100) DEFAULT '' COMMENT '头像地址',
   `password` varchar(100) DEFAULT '' COMMENT '密码',
-  `status` char(1) DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
+  `status` char(1) DEFAULT '0' COMMENT '帐号状态（0停用 1正常）',
   `login_ip` varchar(128) DEFAULT '' COMMENT '最后登录IP',
   `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
@@ -21,7 +21,7 @@ CREATE TABLE `sys_user` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `idx_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';
@@ -32,8 +32,8 @@ CREATE TABLE `sys_role` (
   `role_name` varchar(30) NOT NULL COMMENT '角色名称',
   `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
   `role_sort` int NOT NULL COMMENT '显示顺序',
-  `status` char(1) NOT NULL COMMENT '角色状态（0正常 1停用）',
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+  `status` char(1) NOT NULL COMMENT '角色状态（0停用 1正常）',
+  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
@@ -51,11 +51,11 @@ CREATE TABLE `sys_menu` (
   `path` varchar(200) DEFAULT '' COMMENT '路由地址',
   `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
   `query` varchar(255) DEFAULT NULL COMMENT '路由参数',
-  `is_frame` int DEFAULT 1 COMMENT '是否为外链（0是 1否）',
-  `is_cache` int DEFAULT 0 COMMENT '是否缓存（0缓存 1不缓存）',
+  `is_frame` char(1) DEFAULT '0' COMMENT '是否为外链（0不是外链 1是外链）',
+  `is_cache` char(1) DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
   `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
-  `visible` int DEFAULT 0 COMMENT '菜单状态（0显示 1隐藏）',
-  `status` int DEFAULT 0 COMMENT '菜单状态（0正常 1停用）',
+  `visible` char(1) DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
+  `status` char(1) DEFAULT '0' COMMENT '菜单状态（0停用 1正常）',
   `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
   `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
@@ -98,7 +98,7 @@ CREATE TABLE `sys_oper_log` (
   `oper_location` varchar(255) DEFAULT '' COMMENT '操作地点',
   `oper_param` varchar(2000) DEFAULT '' COMMENT '请求参数',
   `json_result` varchar(2000) DEFAULT '' COMMENT '返回参数',
-  `status` int DEFAULT 0 COMMENT '操作状态（0正常 1异常）',
+  `status` char(1) DEFAULT '0' COMMENT '操作状态（0异常 1正常）',
   `error_msg` varchar(2000) DEFAULT '' COMMENT '错误消息',
   `oper_time` datetime DEFAULT NULL COMMENT '操作时间',
   `cost_time` bigint DEFAULT 0 COMMENT '消耗时间',
@@ -113,7 +113,7 @@ CREATE TABLE `sys_logininfor` (
   `login_location` varchar(255) DEFAULT '' COMMENT '登录地点',
   `browser` varchar(50) DEFAULT '' COMMENT '浏览器类型',
   `os` varchar(50) DEFAULT '' COMMENT '操作系统',
-  `status` char(1) DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
+  `status` char(1) DEFAULT '1' COMMENT '登录状态（0失败 1成功）',
   `msg` varchar(255) DEFAULT '' COMMENT '提示消息',
   `login_time` datetime DEFAULT NULL COMMENT '访问时间',
   PRIMARY KEY (`info_id`)
@@ -143,7 +143,7 @@ CREATE TABLE `sys_job` (
   `cron_expression` varchar(255) DEFAULT '' COMMENT 'cron执行表达式',
   `misfire_policy` int DEFAULT 3 COMMENT '计划执行错误策略（1立即执行 2执行一次 3放弃执行）',
   `concurrent` char(1) DEFAULT '1' COMMENT '是否并发执行（0允许 1禁止）',
-  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1暂停）',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0停用 1正常）',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
@@ -159,7 +159,7 @@ CREATE TABLE `sys_job_log` (
   `job_group` varchar(64) NOT NULL COMMENT '任务组名',
   `invoke_target` varchar(500) NOT NULL COMMENT '调用目标字符串',
   `job_message` varchar(500) DEFAULT NULL COMMENT '日志信息',
-  `status` char(1) DEFAULT '0' COMMENT '执行状态（0正常 1失败）',
+  `status` char(1) DEFAULT '0' COMMENT '执行状态（0失败 1正常）',
   `exception_info` varchar(2000) DEFAULT '' COMMENT '异常信息',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`job_log_id`)
@@ -170,7 +170,7 @@ CREATE TABLE `sys_dict_type` (
   `dict_id` bigint NOT NULL AUTO_INCREMENT COMMENT '字典主键',
   `dict_name` varchar(100) DEFAULT '' COMMENT '字典名称',
   `dict_type` varchar(100) DEFAULT '' COMMENT '字典类型',
-  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0停用 1正常）',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
@@ -190,7 +190,7 @@ CREATE TABLE `sys_dict_data` (
   `css_class` varchar(100) DEFAULT NULL COMMENT '样式属性（其他样式扩展）',
   `list_class` varchar(100) DEFAULT NULL COMMENT '表格回显样式',
   `is_default` char(1) DEFAULT 'N' COMMENT '是否默认（Y是 N否）',
-  `status` char(1) DEFAULT '0' COMMENT '状态（0正常 1停用）',
+  `status` char(1) DEFAULT '0' COMMENT '状态（0停用 1正常）',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
@@ -220,7 +220,7 @@ CREATE TABLE `sys_notice` (
   `notice_title` varchar(50) NOT NULL COMMENT '公告标题',
   `notice_type` char(1) NOT NULL COMMENT '公告类型（1通知 2公告）',
   `notice_content` longblob COMMENT '公告内容',
-  `status` char(1) DEFAULT '0' COMMENT '公告状态（0正常 1关闭）',
+  `status` char(1) DEFAULT '0' COMMENT '公告状态（0停用 1正常）',
   `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
@@ -243,18 +243,18 @@ INSERT INTO `sys_user_role` VALUES (1, 1);
 
 
 -- 默认菜单
-INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', NULL, '', 1, 0, 'M', '0', '0', '', 'system', 'admin', sysdate(), '', NULL, '系统管理目录');
-INSERT INTO `sys_menu` VALUES (2, '用户管理', 1, 1, 'user', 'system/user/index', '', 1, 0, 'C', '0', '0', 'system:user:list', 'user', 'admin', sysdate(), '', NULL, '用户管理菜单');
-INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, 'role', 'system/role/index', '', 1, 0, 'C', '0', '0', 'system:role:list', 'peoples', 'admin', sysdate(), '', NULL, '角色管理菜单');
-INSERT INTO `sys_menu` VALUES (4, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', 1, 0, 'C', '0', '0', 'system:menu:list', 'tree-table', 'admin', sysdate(), '', NULL, '菜单管理菜单');
+INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', NULL, '', '0', 0, 'M', '0', '1', 'system', 'system', 'admin', sysdate(), '', NULL, '系统管理目录');
+INSERT INTO `sys_menu` VALUES (2, '用户管理', 1, 1, 'user', 'system/user/index', '', '0', '0', 'C', '1', '0', 'system:user:list', 'user', 'admin', sysdate(), '', NULL, '用户管理菜单');
+INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, 'role', 'system/role/index', '', '0', '0', 'C', '1', '0', 'system:role:list', 'peoples', 'admin', sysdate(), '', NULL, '角色管理菜单');
+INSERT INTO `sys_menu` VALUES (4, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '0', '0', 'C', '1', '0', 'system:menu:list', 'tree-table', 'admin', sysdate(), '', NULL, '菜单管理菜单');
 
-INSERT INTO `sys_menu` VALUES (6, '岗位管理', 1, 5, 'post', 'system/post/index', '', 1, 0, 'C', '0', '0', 'system:post:list', 'post', 'admin', sysdate(), '', NULL, '岗位管理菜单');
-INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 6, 'dict', 'system/dict/index', '', 1, 0, 'C', '0', '0', 'system:dict:list', 'dict', 'admin', sysdate(), '', NULL, '字典管理菜单');
-INSERT INTO `sys_menu` VALUES (8, '参数设置', 1, 7, 'config', 'system/config/index', '', 1, 0, 'C', '0', '0', 'system:config:list', 'edit', 'admin', sysdate(), '', NULL, '参数设置菜单');
-INSERT INTO `sys_menu` VALUES (9, '通知公告', 1, 8, 'notice', 'system/notice/index', '', 1, 0, 'C', '0', '0', 'system:notice:list', 'message', 'admin', sysdate(), '', NULL, '通知公告菜单');
+INSERT INTO `sys_menu` VALUES (6, '岗位管理', 1, 5, 'post', 'system/post/index', '', '0', '0', 'C', '1', '0', 'system:post:list', 'post', 'admin', sysdate(), '', NULL, '岗位管理菜单');
+INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 6, 'dict', 'system/dict/index', '', '0', '0', 'C', '1', '0', 'system:dict:list', 'dict', 'admin', sysdate(), '', NULL, '字典管理菜单');
+INSERT INTO `sys_menu` VALUES (8, '参数设置', 1, 7, 'config', 'system/config/index', '', '0', '0', 'C', '1', '0', 'system:config:list', 'edit', 'admin', sysdate(), '', NULL, '参数设置菜单');
+INSERT INTO `sys_menu` VALUES (9, '通知公告', 1, 8, 'notice', 'system/notice/index', '', '0', '0', 'C', '1', '0', 'system:notice:list', 'message', 'admin', sysdate(), '', NULL, '通知公告菜单');
 INSERT INTO `sys_menu` VALUES (10, '日志管理', 1, 9, 'log', '', '', 1, 0, 'M', '0', '0', '', 'log', 'admin', sysdate(), '', NULL, '日志管理菜单');
-INSERT INTO `sys_menu` VALUES (11, '操作日志', 10, 1, 'operlog', 'monitor/operlog/index', '', 1, 0, 'C', '0', '0', 'system:operlog:list', 'form', 'admin', sysdate(), '', NULL, '操作日志菜单');
-INSERT INTO `sys_menu` VALUES (12, '登录日志', 10, 2, 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', NULL, '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (11, '操作日志', 10, 1, 'operlog', 'monitor/operlog/index', '', '0', '0', 'C', '1', '0', 'system:operlog:list', 'form', 'admin', sysdate(), '', NULL, '操作日志菜单');
+INSERT INTO `sys_menu` VALUES (12, '登录日志', 10, 2, 'logininfor', 'monitor/logininfor/index', '', '0', '0', 'C', '1', '0', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', NULL, '登录日志菜单');
 
 -- 角色菜单关联
 INSERT INTO `sys_role_menu` VALUES (1, 1);

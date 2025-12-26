@@ -1,5 +1,6 @@
 package com.soybean.common.security.aspect;
 
+import cn.dev33.satoken.annotation.handler.SaCheckPermissionHandler;
 import com.soybean.common.security.annotation.RequireLogin;
 import com.soybean.common.security.annotation.RequirePermission;
 import com.soybean.common.security.annotation.RequireRole;
@@ -21,28 +22,59 @@ import java.util.Arrays;
 @Slf4j
 @Aspect
 @Component
-@Order(1) // 确保在Sa-Token的拦截器之前执行
 public class SecurityAnnotationAspect {
 
     /**
-     * 处理RequirePermission注解
+     * 处理RequirePermission注解（方法级别）
      */
     @Around("@annotation(requirePermission)")
-    public Object handleRequirePermission(ProceedingJoinPoint point, RequirePermission requirePermission) throws Throwable {
+    public Object handleRequirePermissionMethod(ProceedingJoinPoint point, RequirePermission requirePermission) throws Throwable {
+        return handleRequirePermissionInternal(point, requirePermission);
+    }
+
+    /**
+     * 处理RequirePermission注解（类级别）
+     */
+    @Around("@within(requirePermission)")
+    public Object handleRequirePermissionClass(ProceedingJoinPoint point, RequirePermission requirePermission) throws Throwable {
+        return handleRequirePermissionInternal(point, requirePermission);
+    }
+
+    /**
+     * 内部处理RequirePermission注解的通用方法
+     */
+    private Object handleRequirePermissionInternal(ProceedingJoinPoint point, RequirePermission requirePermission) throws Throwable {
         // 记录操作日志（如果需要）
         if (requirePermission.log()) {
             logOperation(point, requirePermission.module(), requirePermission.operation());
         }
+
+        SaCheckPermissionHandler._checkMethod(requirePermission.type(), requirePermission.value(), requirePermission.mode(), requirePermission.orRole());
 
         // 执行原方法
         return point.proceed();
     }
 
     /**
-     * 处理RequireRole注解
+     * 处理RequireRole注解（方法级别）
      */
     @Around("@annotation(requireRole)")
-    public Object handleRequireRole(ProceedingJoinPoint point, RequireRole requireRole) throws Throwable {
+    public Object handleRequireRoleMethod(ProceedingJoinPoint point, RequireRole requireRole) throws Throwable {
+        return handleRequireRoleInternal(point, requireRole);
+    }
+
+    /**
+     * 处理RequireRole注解（类级别）
+     */
+    @Around("@within(requireRole)")
+    public Object handleRequireRoleClass(ProceedingJoinPoint point, RequireRole requireRole) throws Throwable {
+        return handleRequireRoleInternal(point, requireRole);
+    }
+
+    /**
+     * 内部处理RequireRole注解的通用方法
+     */
+    private Object handleRequireRoleInternal(ProceedingJoinPoint point, RequireRole requireRole) throws Throwable {
         // 记录操作日志（如果需要）
         if (requireRole.log()) {
             logOperation(point, requireRole.module(), requireRole.operation());
@@ -53,10 +85,25 @@ public class SecurityAnnotationAspect {
     }
 
     /**
-     * 处理RequireLogin注解
+     * 处理RequireLogin注解（方法级别）
      */
     @Around("@annotation(requireLogin)")
-    public Object handleRequireLogin(ProceedingJoinPoint point, RequireLogin requireLogin) throws Throwable {
+    public Object handleRequireLoginMethod(ProceedingJoinPoint point, RequireLogin requireLogin) throws Throwable {
+        return handleRequireLoginInternal(point, requireLogin);
+    }
+
+    /**
+     * 处理RequireLogin注解（类级别）
+     */
+    @Around("@within(requireLogin)")
+    public Object handleRequireLoginClass(ProceedingJoinPoint point, RequireLogin requireLogin) throws Throwable {
+        return handleRequireLoginInternal(point, requireLogin);
+    }
+
+    /**
+     * 内部处理RequireLogin注解的通用方法
+     */
+    private Object handleRequireLoginInternal(ProceedingJoinPoint point, RequireLogin requireLogin) throws Throwable {
         // 记录操作日志（如果需要）
         if (requireLogin.log()) {
             logOperation(point, requireLogin.module(), requireLogin.operation());

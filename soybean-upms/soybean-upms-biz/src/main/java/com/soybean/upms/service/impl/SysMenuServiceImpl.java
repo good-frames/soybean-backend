@@ -69,7 +69,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             menuList = list(wrapper);
         }
 
-        return buildMenuTree(BeanUtil.copyToList(menuList, SysMenuVO.class));
+        return BeanUtil.copyToList(menuList, SysMenuVO.class);
     }
 
     /**
@@ -163,6 +163,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public SysMenuVO selectMenuById(Long menuId) {
         SysMenu menu = getById(menuId);
+        if (menu == null) {
+            return null;
+        }
         return BeanUtil.copyProperties(menu, SysMenuVO.class);
     }
 
@@ -276,6 +279,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * 判断是否有子节点
      */
     private boolean hasChild(List<SysMenuVO> list, SysMenuVO t) {
-        return getChildList(list, t).size() > 0;
+        return !getChildList(list, t).isEmpty();
     }
 }

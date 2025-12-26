@@ -48,13 +48,13 @@ public class SysRole implements Serializable {
     private Integer roleSort;
 
     /**
-     * 角色状态（0正常 1停用）
+     * 角色状态（0停用 1正常）
      */
     @TableField("status")
     private SysRoleStatusEnum status;
 
     /**
-     * 删除标志（0代表存在 2代表删除）
+     * 删除标志（0代表存在 1代表删除）
      */
     @TableField("del_flag")
     private SysDelFlagEnum delFlag;

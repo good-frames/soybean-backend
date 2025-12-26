@@ -27,7 +27,7 @@ public class SysRoleQuery extends PageQuery {
     private String roleKey;
 
     /**
-     * 角色状态（0正常 1停用）
+     * 角色状态（0停用 1正常）
      */
     private SysRoleStatusEnum status;
 
