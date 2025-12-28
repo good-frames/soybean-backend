@@ -2,12 +2,9 @@
 package com.soybean.upms.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.soybean.upms.api.dto.SysMenuDTO;
-import com.soybean.upms.api.enums.SysDelFlagEnum;
-import com.soybean.upms.api.enums.SysMenuTypeEnum;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.query.SysMenuQuery;

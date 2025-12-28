@@ -1,6 +1,5 @@
 package com.soybean.common.security.annotation;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 
 import java.lang.annotation.ElementType;

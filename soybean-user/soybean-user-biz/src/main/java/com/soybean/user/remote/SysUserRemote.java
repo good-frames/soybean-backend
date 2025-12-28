@@ -1,6 +1,5 @@
 package com.soybean.user.remote;
 
-import com.soybean.common.core.utils.Result;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.service.ISysUserService;
 import lombok.Data;

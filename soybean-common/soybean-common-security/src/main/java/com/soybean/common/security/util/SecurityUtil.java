@@ -3,7 +3,6 @@ package com.soybean.common.security.util;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.StpUtil;
 import com.soybean.common.security.constant.SecurityConstant;
-import com.soybean.common.security.enums.UserTypeEnum;
 import com.soybean.common.security.model.LoginUser;
 
 import java.util.List;

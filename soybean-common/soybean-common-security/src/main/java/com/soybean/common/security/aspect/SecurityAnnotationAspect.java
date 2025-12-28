@@ -1,6 +1,8 @@
 package com.soybean.common.security.aspect;
 
+import cn.dev33.satoken.annotation.handler.SaCheckLoginHandler;
 import cn.dev33.satoken.annotation.handler.SaCheckPermissionHandler;
+import cn.dev33.satoken.annotation.handler.SaCheckRoleHandler;
 import com.soybean.common.security.annotation.RequireLogin;
 import com.soybean.common.security.annotation.RequirePermission;
 import com.soybean.common.security.annotation.RequireRole;
@@ -10,7 +12,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -80,6 +81,8 @@ public class SecurityAnnotationAspect {
             logOperation(point, requireRole.module(), requireRole.operation());
         }
 
+        SaCheckRoleHandler._checkMethod(requireRole.type(), requireRole.value(), requireRole.mode());
+
         // 执行原方法
         return point.proceed();
     }
@@ -108,6 +111,9 @@ public class SecurityAnnotationAspect {
         if (requireLogin.log()) {
             logOperation(point, requireLogin.module(), requireLogin.operation());
         }
+
+
+        SaCheckLoginHandler._checkMethod(requireLogin.type());
 
         // 执行原方法
         return point.proceed();

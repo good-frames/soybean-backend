@@ -5,9 +5,9 @@ import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
 import com.soybean.common.core.utils.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
@@ -15,13 +15,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class SecurityExceptionHandler {
 
     /**
      * 处理未登录异常
      */
     @ExceptionHandler(NotLoginException.class)
-    public Object handleNotLoginException(NotLoginException e) {
+    public Result<Void> handleNotLoginException(NotLoginException e) {
         String message = "";
         switch (e.getType()) {
             case NotLoginException.NOT_TOKEN:
@@ -51,9 +52,9 @@ public class SecurityExceptionHandler {
      * 处理无权限异常
      */
     @ExceptionHandler(NotPermissionException.class)
-    public Object handleNotPermissionException(NotPermissionException e) {
+    public Result<Void> handleNotPermissionException(NotPermissionException e) {
         String message = "缺少权限:" + e.getPermission();
-        log.error("权限异常: {}", message, e);
+        log.error("权限异常: {}", message);
         return Result.forbidden(e.getMessage());
     }
 
@@ -61,9 +62,9 @@ public class SecurityExceptionHandler {
      * 处理无角色异常
      */
     @ExceptionHandler(NotRoleException.class)
-    public Object handleNotRoleException(NotRoleException e) {
+    public Result<Void> handleNotRoleException(NotRoleException e) {
         String message = "缺少角色:" + e.getRole();
-        log.error("角色异常: {}", message, e);
+        log.error("角色异常: {}", message);
         return Result.forbidden(e.getMessage());
     }
 }

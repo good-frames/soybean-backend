@@ -10,7 +10,6 @@ import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
 import com.soybean.user.api.enums.SysUserDelFlagEnum;
 import com.soybean.user.api.enums.SysUserStatusEnum;
-import com.soybean.user.api.enums.SysUserGenderEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;

@@ -6,7 +6,6 @@ import com.soybean.common.core.utils.Result;
 import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.service.ISysRoleService;

@@ -1,27 +1,21 @@
 package com.soybean.user.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.mybatis.dto.PageDTO;
-import com.soybean.common.security.annotation.RequirePermission;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
 import com.soybean.user.api.enums.SysUserStatusEnum;
-import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
-import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -35,7 +29,6 @@ import java.util.stream.Collectors;
 @Data
 @RestController
 @RequestMapping("/user/admin")
-@RequirePermission("system:user123")
 public class SysUserController {
 
     private final ISysUserService sysUserService;
@@ -124,7 +117,6 @@ public class SysUserController {
      * 查询所有系统用户
      */
     @GetMapping("/list")
-
     public Result<List<SysUserVO>> list() {
         try {
             List<SysUserVO> list = sysUserService.getAllSysUsers();
