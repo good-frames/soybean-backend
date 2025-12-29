@@ -2,6 +2,7 @@ package com.soybean.user.controller;
 
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.mybatis.dto.PageDTO;
+import com.soybean.common.security.annotation.RequirePermission;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
 import com.soybean.user.api.enums.SysUserStatusEnum;
@@ -117,6 +118,7 @@ public class SysUserController {
      * 查询所有系统用户
      */
     @GetMapping("/list")
+    @RequirePermission("system")
     public Result<List<SysUserVO>> list() {
         try {
             List<SysUserVO> list = sysUserService.getAllSysUsers();

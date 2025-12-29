@@ -77,19 +77,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 权限列表
      */
     @Override
-    public Set<String> selectPermissionsByUserId(String userId) {
+    public List<String> selectPermissionsByUserId(String userId) {
         return baseMapper.selectPermissionsByUserId(userId);
-    }
-
-    /**
-     * 根据角色ID查询权限
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    @Override
-    public Set<String> selectPermsByRoleId(Long roleId) {
-        return baseMapper.selectPermsByRoleId(roleId);
     }
 
     /**

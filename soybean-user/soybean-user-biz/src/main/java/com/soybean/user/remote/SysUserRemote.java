@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Data
 @RestController
-@RequestMapping("/remote/user/admin")
+@RequestMapping("/remote")
 public class SysUserRemote {
     private final ISysUserService sysUserService;
 
     /**
      * 根据用户名获取用户信息
      */
-    @GetMapping("/getByUsername")
+    @GetMapping("/user/admin/getByUsername")
     public SysUser getByUsername(@RequestParam("username") String username) {
         try {
             return sysUserService.getUserByUsername(username);

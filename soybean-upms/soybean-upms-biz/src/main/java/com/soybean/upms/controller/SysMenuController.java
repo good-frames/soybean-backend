@@ -114,10 +114,9 @@ public class SysMenuController {
      * 获取当前登录用户所拥有的权限集合
      */
     @GetMapping("/permission/user")
-    public Result<Set<String>> getCurrentUserPermissions() {
+    public Result<List<String>> getCurrentUserPermissions() {
         // 从当前登录用户的token中获取userId
         String userId = SecurityUtil.getUserId();
-        log.info("userId::{}", userId);
         return Result.ok(menuService.selectPermissionsByUserId(userId));
     }
 }

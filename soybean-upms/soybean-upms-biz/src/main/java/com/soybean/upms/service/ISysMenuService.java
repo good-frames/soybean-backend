@@ -41,15 +41,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 权限集合
      */
-    Set<String> selectPermissionsByUserId(String userId);
-
-    /**
-     * 根据角色ID查询权限
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    Set<String> selectPermsByRoleId(Long roleId);
+    List<String> selectPermissionsByUserId(String userId);
 
     /**
      * 根据角色ID查询菜单树信息

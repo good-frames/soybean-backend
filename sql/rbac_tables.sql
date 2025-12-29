@@ -5,7 +5,7 @@
 
 -- 用户表
 CREATE TABLE `sys_user` (
-  `user_id` varchar(32) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
   `username` varchar(30) NOT NULL COMMENT '用户账号',
   `nickname` varchar(30) NOT NULL COMMENT '用户昵称',
   `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
@@ -70,7 +70,7 @@ CREATE TABLE `sys_menu` (
 
 -- 用户和角色关联表
 CREATE TABLE `sys_user_role` (
-  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
   `role_id` bigint NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户和角色关联表';
@@ -232,7 +232,7 @@ CREATE TABLE `sys_notice` (
 -- 初始化数据
 -- ----------------------------
 -- 默认超级管理员用户
-INSERT INTO `sys_user` VALUES (1, 'admin', '超级管理员', 'admin@soybean.com', '15888888888', '1', '', '$2a$10$7JB720yubVSOfvVWbfXCOOxjTOQcQjmrJF1ZM4nAVccp/.rkMlDWy', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', NULL, '管理员', '0');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'admin@soybean.com', '15888888888', '1', '', '$2a$10$7JB720yubVSOfvVWbfXCOOxjTOQcQjmrJF1ZM4nAVccp/.rkMlDWy', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', NULL, '管理员', '0');
 
 -- 默认角色
 INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '0', '0', 'admin', sysdate(), 'admin', sysdate(), '超级管理员');
@@ -244,17 +244,17 @@ INSERT INTO `sys_user_role` VALUES (1, 1);
 
 -- 默认菜单
 INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', NULL, '', '0', 0, 'M', '0', '1', 'system', 'system', 'admin', sysdate(), '', NULL, '系统管理目录');
-INSERT INTO `sys_menu` VALUES (2, '用户管理', 1, 1, 'user', 'system/user/index', '', '0', '0', 'C', '1', '0', 'system:user:list', 'user', 'admin', sysdate(), '', NULL, '用户管理菜单');
-INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, 'role', 'system/role/index', '', '0', '0', 'C', '1', '0', 'system:role:list', 'peoples', 'admin', sysdate(), '', NULL, '角色管理菜单');
-INSERT INTO `sys_menu` VALUES (4, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '0', '0', 'C', '1', '0', 'system:menu:list', 'tree-table', 'admin', sysdate(), '', NULL, '菜单管理菜单');
+INSERT INTO `sys_menu` VALUES (2, '用户管理', 1, 1, 'user', 'system/user/index', '', '0', '0', 'C', '0', '1', 'system:user:list', 'user', 'admin', sysdate(), '', NULL, '用户管理菜单');
+INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, 'role', 'system/role/index', '', '0', '0', 'C', '0', '1', 'system:role:list', 'peoples', 'admin', sysdate(), '', NULL, '角色管理菜单');
+INSERT INTO `sys_menu` VALUES (4, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '0', '0', 'C', '0', '1', 'system:menu:list', 'tree-table', 'admin', sysdate(), '', NULL, '菜单管理菜单');
 
-INSERT INTO `sys_menu` VALUES (6, '岗位管理', 1, 5, 'post', 'system/post/index', '', '0', '0', 'C', '1', '0', 'system:post:list', 'post', 'admin', sysdate(), '', NULL, '岗位管理菜单');
-INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 6, 'dict', 'system/dict/index', '', '0', '0', 'C', '1', '0', 'system:dict:list', 'dict', 'admin', sysdate(), '', NULL, '字典管理菜单');
-INSERT INTO `sys_menu` VALUES (8, '参数设置', 1, 7, 'config', 'system/config/index', '', '0', '0', 'C', '1', '0', 'system:config:list', 'edit', 'admin', sysdate(), '', NULL, '参数设置菜单');
-INSERT INTO `sys_menu` VALUES (9, '通知公告', 1, 8, 'notice', 'system/notice/index', '', '0', '0', 'C', '1', '0', 'system:notice:list', 'message', 'admin', sysdate(), '', NULL, '通知公告菜单');
+INSERT INTO `sys_menu` VALUES (6, '岗位管理', 1, 5, 'post', 'system/post/index', '', '0', '0', 'C', '0', '1', 'system:post:list', 'post', 'admin', sysdate(), '', NULL, '岗位管理菜单');
+INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 6, 'dict', 'system/dict/index', '', '0', '0', 'C', '0', '1', 'system:dict:list', 'dict', 'admin', sysdate(), '', NULL, '字典管理菜单');
+INSERT INTO `sys_menu` VALUES (8, '参数设置', 1, 7, 'config', 'system/config/index', '', '0', '0', 'C', '0', '1', 'system:config:list', 'edit', 'admin', sysdate(), '', NULL, '参数设置菜单');
+INSERT INTO `sys_menu` VALUES (9, '通知公告', 1, 8, 'notice', 'system/notice/index', '', '0', '0', 'C', '0', '1', 'system:notice:list', 'message', 'admin', sysdate(), '', NULL, '通知公告菜单');
 INSERT INTO `sys_menu` VALUES (10, '日志管理', 1, 9, 'log', '', '', 1, 0, 'M', '0', '0', '', 'log', 'admin', sysdate(), '', NULL, '日志管理菜单');
-INSERT INTO `sys_menu` VALUES (11, '操作日志', 10, 1, 'operlog', 'monitor/operlog/index', '', '0', '0', 'C', '1', '0', 'system:operlog:list', 'form', 'admin', sysdate(), '', NULL, '操作日志菜单');
-INSERT INTO `sys_menu` VALUES (12, '登录日志', 10, 2, 'logininfor', 'monitor/logininfor/index', '', '0', '0', 'C', '1', '0', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', NULL, '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (11, '操作日志', 10, 1, 'operlog', 'monitor/operlog/index', '', '0', '0', 'C', '0', '1', 'system:operlog:list', 'form', 'admin', sysdate(), '', NULL, '操作日志菜单');
+INSERT INTO `sys_menu` VALUES (12, '登录日志', 10, 2, 'logininfor', 'monitor/logininfor/index', '', '0', '0', 'C', '0', '1', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', NULL, '登录日志菜单');
 
 -- 角色菜单关联
 INSERT INTO `sys_role_menu` VALUES (1, 1);

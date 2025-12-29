@@ -2,6 +2,7 @@ package com.soybean.common.security.handler;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.soybean.common.security.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,8 +10,9 @@ import java.util.List;
 /**
  * Sa-Token权限接口实现
  */
+@Slf4j
 @Component
-public class SaTokenPermissionHandlerImpl implements StpInterface {
+public class SaTokenPermissionHandler implements StpInterface {
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {

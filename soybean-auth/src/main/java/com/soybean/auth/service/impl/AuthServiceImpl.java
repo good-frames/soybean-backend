@@ -14,12 +14,15 @@ import com.soybean.common.security.enums.UserTypeEnum;
 import com.soybean.user.api.clients.SysUserClient;
 import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
+import com.soybean.upms.api.clients.SysPermissionClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 认证服务实现
@@ -32,6 +35,7 @@ import java.util.Date;
 public class AuthServiceImpl implements AuthService {
 
     private final SysUserClient sysUserClient;
+    private final SysPermissionClient sysPermissionClient;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -52,13 +56,18 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException("密码错误");
         }
         
+        // 获取用户权限
+        List<String> permissions = sysPermissionClient.selectPermissionsByUserId(userResult.getUserId());
+        log.info("获取用户权限结果: {}", permissions);
+
         // 转换为LoginUser
         LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(userResult.getUserId().toString());
+        loginUser.setUserId(userResult.getUserId());
         loginUser.setUsername(userResult.getUsername());
         loginUser.setNickname(userResult.getNickname());
         loginUser.setUserType(UserTypeEnum.ADMIN);
         loginUser.setLoginTime(new Date());
+        loginUser.setPermissions(permissions);
         
         // 使用SecurityUtil进行登录
         SecurityUtil.login(loginUser);
