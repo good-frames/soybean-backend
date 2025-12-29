@@ -31,6 +31,12 @@
             <artifactId>soybean-common-mybatis</artifactId>
         </dependency>
 
+        <!--soybean-common-security-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-security</artifactId>
+        </dependency>
+
         <!--soybean-common-core-->
         <dependency>
             <groupId>com.soybean</groupId>

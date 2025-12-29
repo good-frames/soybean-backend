@@ -2,6 +2,8 @@
 package com.soybean.upms.controller;
 
 import com.soybean.common.core.utils.Result;
+import com.soybean.common.security.util.SecurityUtil;
+import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.api.query.SysMenuQuery;
@@ -10,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * 菜单信息控制器
@@ -57,16 +58,26 @@ public class SysMenuController {
         return Result.ok(menuService.buildMenuTreeSelect(menus));
     }
 
+
     /**
-     * 加载对应角色菜单列表树
+     * 获取多个角色关联的菜单列表（扁平化）
      */
-    @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public Result<Object> roleMenuTreeselect(@PathVariable Long roleId) {
-        List<SysMenuVO> menus = menuService.selectMenuList(null, null);
-        Map<String, Object> data = new HashMap<>();
-        data.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        data.put("menus", menuService.buildMenuTreeSelect(menus));
-        return Result.ok(data);
+    @PostMapping(value = "/roleMenuFlatList")
+    public Result<List<SysMenuVO>> roleMenuFlatList(@Validated @RequestBody RoleIdsDTO roleIdsDTO) {
+        List<Long> roleIds = roleIdsDTO.getRoleIds();
+        Long[] roleIdArray = roleIds.toArray(new Long[0]);
+        List<SysMenuVO> menus = menuService.selectMenuFlatListByRoleIds(roleIdArray);
+        return Result.ok(menus);
+    }
+
+    /**
+     * 获取当前登录用户所拥有的权限集合
+     */
+    @GetMapping("/remote/sys/permission/user")
+    public Set<String> getCurrentUserPermissions() {
+        // 从当前登录用户的token中获取userId
+        String userId = SecurityUtil.getUserId();
+        return menuService.selectPermissionsByUserId(userId);
     }
 
     /**

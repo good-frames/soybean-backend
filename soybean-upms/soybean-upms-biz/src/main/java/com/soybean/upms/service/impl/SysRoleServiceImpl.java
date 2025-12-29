@@ -73,7 +73,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 角色列表
      */
     @Override
-    public List<SysRoleVO> selectRolesByUserId(Long userId) {
+    public List<SysRoleVO> selectRolesByUserId(String userId) {
         List<SysRole> roleList = baseMapper.selectRoleListByUserId(userId);
         return BeanUtil.copyToList(roleList, SysRoleVO.class);
     }
@@ -96,7 +96,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 选中角色ID列表
      */
     @Override
-    public List<Long> selectRoleListByUserId(Long userId) {
+    public List<Long> selectRoleListByUserId(String userId) {
         List<SysRole> roleList = baseMapper.selectRoleListByUserId(userId);
         if (CollUtil.isEmpty(roleList)) {
             return CollUtil.newArrayList();
@@ -289,7 +289,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 权限列表
      */
     @Override
-    public Set<String> selectRolePermissionByUserId(Long userId) {
+    public Set<String> selectRolePermissionByUserId(String userId) {
         List<SysRole> perms = baseMapper.selectRoleListByUserId(userId);
         Set<String> permsSet = new HashSet<>();
         for (SysRole perm : perms) {

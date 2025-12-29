@@ -36,12 +36,12 @@ public interface ISysMenuService extends IService<SysMenu> {
     List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, Long userId);
 
     /**
-     * 根据用户ID查询权限
+     * 根据用户ID获取用户所拥有的权限集合
      *
      * @param userId 用户ID
-     * @return 权限列表
+     * @return 权限集合
      */
-    Set<String> selectPermsByUserId(Long userId);
+    Set<String> selectPermissionsByUserId(String userId);
 
     /**
      * 根据角色ID查询权限
@@ -58,6 +58,14 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @return 选中菜单列表
      */
     List<Long> selectMenuListByRoleId(Long roleId);
+
+    /**
+     * 根据角色ID数组查询菜单列表（扁平化）
+     *
+     * @param roleIds 角色ID数组
+     * @return 菜单列表
+     */
+    List<SysMenuVO> selectMenuFlatListByRoleIds(Long[] roleIds);
 
     /**
      * 构建前端所需要下拉树结构

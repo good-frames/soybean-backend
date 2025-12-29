@@ -34,7 +34,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRoleVO> selectRolesByUserId(Long userId);
+    List<SysRoleVO> selectRolesByUserId(String userId);
 
     /**
      * 查询所有角色
@@ -49,7 +49,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 选中角色ID列表
      */
-    List<Long> selectRoleListByUserId(Long userId);
+    List<Long> selectRoleListByUserId(String userId);
 
     /**
      * 新增保存角色信息
@@ -145,5 +145,5 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 权限列表
      */
-    Set<String> selectRolePermissionByUserId(Long userId);
+    Set<String> selectRolePermissionByUserId(String userId);
 }

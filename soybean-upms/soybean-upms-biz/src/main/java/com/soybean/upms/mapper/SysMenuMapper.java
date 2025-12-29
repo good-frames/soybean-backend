@@ -19,20 +19,12 @@ import java.util.Set;
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
     /**
-     * 根据用户ID查询权限
+     * 根据用户ID获取用户所拥有的权限集合
      *
      * @param userId 用户ID
-     * @return 权限列表
+     * @return 权限集合
      */
-    Set<String> selectPermsByUserId(@Param("userId") Long userId);
-
-    /**
-     * 根据角色ID查询权限
-     *
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    Set<String> selectPermsByRoleId(@Param("roleId") Long roleId);
+    Set<String> selectPermissionsByUserId(@Param("userId") String userId);
 
     /**
      * 根据用户ID查询菜单
@@ -43,18 +35,10 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     List<SysMenu> selectMenuListByUserId(@Param("userId") Long userId);
 
     /**
-     * 根据角色ID查询菜单树信息
+     * 根据角色ID查询权限
      *
      * @param roleId 角色ID
-     * @return 选中菜单列表
+     * @return 权限集合
      */
-    List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId);
-
-    /**
-     * 构建前端所需要下拉树结构
-     *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
-     */
-    List<SysMenu> buildMenuTree(List<SysMenu> menus);
+    Set<String> selectPermsByRoleId(@Param("roleId") Long roleId);
 }

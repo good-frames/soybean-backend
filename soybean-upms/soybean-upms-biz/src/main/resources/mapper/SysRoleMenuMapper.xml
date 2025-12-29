@@ -18,7 +18,7 @@
         </foreach>
     </delete>
 
-    <select id="countMenuByRoleId" parameterType="Long" resultType="Integer">
+    <select id="countMenuByRoleId" parameterType="Long" resultType="java.lang.Integer">
         select count(1) from sys_role_menu where menu_id = #{menuId}
     </select>
 

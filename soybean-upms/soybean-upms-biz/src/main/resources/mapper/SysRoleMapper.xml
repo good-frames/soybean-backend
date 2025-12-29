@@ -18,7 +18,7 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
-    <select id="selectRoleListByUserId" parameterType="Long" resultMap="SysRoleResult">
+    <select id="selectRoleListByUserId" parameterType="String" resultMap="SysRoleResult">
         select r.role_id, r.role_name, r.role_key, r.role_sort, r.status, r.del_flag, r.create_time, r.remark
         from sys_role r
         left join sys_user_role ur on ur.role_id = r.role_id

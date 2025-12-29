@@ -5,7 +5,7 @@
 
 -- 用户表
 CREATE TABLE `sys_user` (
-  `user_id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `user_id` varchar(32) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `username` varchar(30) NOT NULL COMMENT '用户账号',
   `nickname` varchar(30) NOT NULL COMMENT '用户昵称',
   `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',

@@ -26,7 +26,7 @@ public class SysUserRole implements Serializable {
      * 用户ID
      */
     @TableField("user_id")
-    private Long userId;
+    private String userId;
 
     /**
      * 角色ID

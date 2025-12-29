@@ -123,6 +123,14 @@ public class SysRoleController {
         return Result.ok(roleService.selectRoleAll());
     }
 
+    /**
+     * 根据用户ID获取角色列表
+     */
+    @GetMapping("/user/{userId}")
+    public Result<List<SysRoleVO>> getRolesByUserId(@PathVariable String userId) {
+        List<SysRoleVO> roles = roleService.selectRolesByUserId(userId);
+        return Result.ok(roles);
+    }
 
     /**
      * 取消授权用户角色

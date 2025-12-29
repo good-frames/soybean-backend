@@ -45,7 +45,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         SysUserVO sysUserVO = new SysUserVO();
-        sysUserVO.setUserId(sysUser.getUserId().toString());
+        sysUserVO.setUserId(sysUser.getUserId());
         sysUserVO.setUsername(sysUser.getUsername());
         sysUserVO.setNickname(sysUser.getNickname());
         sysUserVO.setPhone(sysUser.getPhone());
@@ -105,7 +105,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 逻辑删除，将del_flag设置为2
         return ids.stream().allMatch(id -> {
             SysUser sysUser = new SysUser();
-            sysUser.setUserId(Long.valueOf(id));
+            sysUser.setUserId(id);
             sysUser.setDelFlag(SysUserDelFlagEnum.DELETED);
             return this.updateById(sysUser);
         });
@@ -133,7 +133,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
-        sysUser.setUserId(Long.valueOf(sysUserDTO.getUserId()));
+        sysUser.setUserId(sysUserDTO.getUserId());
         sysUser.setUsername(sysUserDTO.getUsername());
 
         // 如果DTO中提供了密码，则更新密码，否则保留原密码
@@ -197,7 +197,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updateSysUserStatus(String id, SysUserStatusEnum status) {
         SysUser sysUser = new SysUser();
-        sysUser.setUserId(Long.valueOf(id));
+        sysUser.setUserId(id);
         sysUser.setStatus(status);
         return this.updateById(sysUser);
     }

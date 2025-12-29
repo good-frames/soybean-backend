@@ -2,6 +2,7 @@
 package com.soybean.upms.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.soybean.upms.api.dto.SysMenuDTO;
@@ -76,8 +77,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 权限列表
      */
     @Override
-    public Set<String> selectPermsByUserId(Long userId) {
-        return baseMapper.selectPermsByUserId(userId);
+    public Set<String> selectPermissionsByUserId(String userId) {
+        return baseMapper.selectPermissionsByUserId(userId);
     }
 
     /**
@@ -112,6 +113,52 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             }
         }
         return menuIds;
+    }
+
+    /**
+     * 根据角色ID数组查询菜单列表（扁平化）
+     *
+     * @param roleIds 角色ID数组
+     * @return 菜单列表
+     */
+    @Override
+    public List<SysMenuVO> selectMenuFlatListByRoleIds(Long[] roleIds) {
+        if (roleIds == null || roleIds.length == 0) {
+            return CollUtil.newArrayList();
+        }
+
+        // 获取所有角色关联的菜单ID列表（去重）
+        Set<Long> menuIdSet = new HashSet<>();
+        for (Long roleId : roleIds) {
+            List<Long> menuIds = selectMenuListByRoleId(roleId);
+            if (CollUtil.isNotEmpty(menuIds)) {
+                menuIdSet.addAll(menuIds);
+            }
+        }
+
+        if (CollUtil.isEmpty(menuIdSet)) {
+            return CollUtil.newArrayList();
+        }
+
+        // 查询菜单详情
+        List<SysMenu> menuList = listByIds(menuIdSet);
+        if (CollUtil.isEmpty(menuList)) {
+            return CollUtil.newArrayList();
+        }
+
+        // 转换为VO并按排序
+        List<SysMenuVO> menuVOList = BeanUtil.copyToList(menuList, SysMenuVO.class);
+        menuVOList.sort((a, b) -> {
+            // 先按父ID排序
+            int parentCompare = a.getParentId().compareTo(b.getParentId());
+            if (parentCompare != 0) {
+                return parentCompare;
+            }
+            // 再按排序号排序
+            return a.getOrderNum().compareTo(b.getOrderNum());
+        });
+
+        return menuVOList;
     }
 
     /**
