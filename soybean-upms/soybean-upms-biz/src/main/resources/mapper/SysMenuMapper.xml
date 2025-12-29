@@ -32,7 +32,7 @@
     </sql>
 
 
-    <select id="selectPermissionsByUserId" parameterType="String" resultType="java.lang.String">
+    <select id="selectPermissionsByUserId" parameterType="java.lang.String" resultType="java.lang.String">
         select distinct m.perms
         from sys_menu m
                  left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -41,7 +41,7 @@
     </select>
 
 
-    <select id="selectMenuListByUserId" parameterType="Long" resultMap="SysMenuResult">
+    <select id="selectMenuListByUserId">
         select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.is_frame, m.is_cache, m.menu_type, m.visible, m.status, m.perms, m.icon, m.create_time, m.update_time, m.remark
         from sys_menu m
                  left join sys_role_menu rm on m.menu_id = rm.menu_id
@@ -50,7 +50,7 @@
         order by m.parent_id, m.order_num
     </select>
 
-    <select id="selectPermsByRoleId" parameterType="Long" resultType="java.lang.String">
+    <select id="selectPermsByRoleId">
         select distinct m.perms
         from sys_menu m
                  left join sys_role_menu rm on m.menu_id = rm.menu_id

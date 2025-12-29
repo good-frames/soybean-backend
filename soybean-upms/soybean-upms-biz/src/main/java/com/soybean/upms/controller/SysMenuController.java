@@ -9,6 +9,7 @@ import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.service.ISysMenuService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ import java.util.Set;
  * @author soybean
  * @since 2024-07-07
  */
+@Slf4j
 @RestController
 @RequestMapping("/sys/menu")
 @RequiredArgsConstructor
@@ -71,16 +73,6 @@ public class SysMenuController {
     }
 
     /**
-     * 获取当前登录用户所拥有的权限集合
-     */
-    @GetMapping("/remote/sys/permission/user")
-    public Set<String> getCurrentUserPermissions() {
-        // 从当前登录用户的token中获取userId
-        String userId = SecurityUtil.getUserId();
-        return menuService.selectPermissionsByUserId(userId);
-    }
-
-    /**
      * 新增菜单
      */
     @PostMapping
@@ -116,5 +108,16 @@ public class SysMenuController {
             return Result.fail("菜单已分配,不允许删除");
         }
         return menuService.deleteMenuById(menuId) ? Result.ok() : Result.fail();
+    }
+
+    /**
+     * 获取当前登录用户所拥有的权限集合
+     */
+    @GetMapping("/permission/user")
+    public Result<Set<String>> getCurrentUserPermissions() {
+        // 从当前登录用户的token中获取userId
+        String userId = SecurityUtil.getUserId();
+        log.info("userId::{}", userId);
+        return Result.ok(menuService.selectPermissionsByUserId(userId));
     }
 }
