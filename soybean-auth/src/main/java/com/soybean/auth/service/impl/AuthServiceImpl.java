@@ -11,10 +11,12 @@ import com.soybean.common.core.utils.Result;
 import com.soybean.common.security.model.LoginUser;
 import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.common.security.enums.UserTypeEnum;
+import com.soybean.upms.api.clients.SysMenuClient;
+import com.soybean.upms.api.clients.SysRoleClient;
+import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.user.api.clients.SysUserClient;
 import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
-import com.soybean.upms.api.clients.SysPermissionClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 认证服务实现
@@ -35,39 +36,40 @@ import java.util.Set;
 public class AuthServiceImpl implements AuthService {
 
     private final SysUserClient sysUserClient;
-    private final SysPermissionClient sysPermissionClient;
+    private final SysMenuClient sysMenuClient;
+    private final SysRoleClient sysRoleClient;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public LoginVO login(LoginDTO loginDTO) {
         // 获取用户信息
-        SysUser userResult = sysUserClient.getUserByUsername(loginDTO.getUsername());
-        log.info("获取用户信息结果: {}", userResult);
-        if (userResult == null) {
+        Result<SysUser> userResult = sysUserClient.getByUsername(loginDTO.getUsername());
+        if (userResult == null || !userResult.isSuccess() || userResult.getData() == null) {
             throw new BusinessException("用户不存在");
         }
 
         // 验证用户状态
-        if (SysUserStatusEnum.DISABLE.equals(userResult.getStatus())) {
+        if (SysUserStatusEnum.DISABLE.equals(userResult.getData().getStatus())) {
             throw new BusinessException("账户已被禁用");
         }
         // 验证密码
-        if (!PasswordUtil.verify(loginDTO.getPassword(), userResult.getPassword())) {
+        if (!PasswordUtil.verify(loginDTO.getPassword(), userResult.getData().getPassword())) {
             throw new BusinessException("密码错误");
         }
         
         // 获取用户权限
-        List<String> permissions = sysPermissionClient.selectPermissionsByUserId(userResult.getUserId());
-        log.info("获取用户权限结果: {}", permissions);
+        Result<List<String>> permissionsResult = sysMenuClient.getCurrentUserPermissions(userResult.getData().getUserId());
+        Result<List<String>> roleKeysResult = sysRoleClient.getRoleKeysByUserId(userResult.getData().getUserId());
 
         // 转换为LoginUser
         LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(userResult.getUserId());
-        loginUser.setUsername(userResult.getUsername());
-        loginUser.setNickname(userResult.getNickname());
+        loginUser.setUserId(userResult.getData().getUserId());
+        loginUser.setUsername(userResult.getData().getUsername());
+        loginUser.setNickname(userResult.getData().getNickname());
         loginUser.setUserType(UserTypeEnum.ADMIN);
         loginUser.setLoginTime(new Date());
-        loginUser.setPermissions(permissions);
+        loginUser.setPermissions(permissionsResult.getData());
+        loginUser.setRoles(roleKeysResult.getData());
         
         // 使用SecurityUtil进行登录
         SecurityUtil.login(loginUser);

@@ -79,6 +79,18 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     /**
+     * 根据用户ID获取角色权限字符串列表
+     *
+     * @param userId 用户ID
+     * @return 角色权限字符串列表
+     */
+    @Override
+    public List<String> selectRoleKeysByUserId(String userId) {
+        List<SysRole> roleList = baseMapper.selectRoleListByUserId(userId);
+        return roleList.stream().map(SysRole::getRoleKey).toList();
+    }
+
+    /**
      * 查询所有角色
      *
      * @return 角色列表

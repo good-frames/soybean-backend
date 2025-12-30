@@ -37,6 +37,14 @@ public interface ISysRoleService extends IService<SysRole> {
     List<SysRoleVO> selectRolesByUserId(String userId);
 
     /**
+     * 根据用户ID获取角色权限字符串列表
+     *
+     * @param userId 用户ID
+     * @return 角色权限字符串列表
+     */
+    List<String> selectRoleKeysByUserId(String userId);
+
+    /**
      * 查询所有角色
      *
      * @return 角色列表

@@ -3,6 +3,7 @@ package com.soybean.upms.controller;
 
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.security.util.SecurityUtil;
+import com.soybean.upms.api.clients.SysMenuClient;
 import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.vo.SysMenuVO;
@@ -24,9 +25,9 @@ import java.util.Set;
  */
 @Slf4j
 @RestController
-@RequestMapping("/sys/menu")
+@RequestMapping("/upms/menu")
 @RequiredArgsConstructor
-public class SysMenuController {
+public class SysMenuController implements SysMenuClient {
 
     private final ISysMenuService menuService;
 
@@ -49,27 +50,6 @@ public class SysMenuController {
             return Result.fail("菜单不存在");
         }
         return Result.ok(menuVO);
-    }
-
-    /**
-     * 获取菜单下拉树列表
-     */
-    @GetMapping("/tree")
-    public Result<List<SysMenuVO>> treeList(SysMenuQuery query) {
-        List<SysMenuVO> menus = menuService.selectMenuList(query, null);
-        return Result.ok(menuService.buildMenuTreeSelect(menus));
-    }
-
-
-    /**
-     * 获取多个角色关联的菜单列表（扁平化）
-     */
-    @PostMapping(value = "/roleMenuFlatList")
-    public Result<List<SysMenuVO>> roleMenuFlatList(@Validated @RequestBody RoleIdsDTO roleIdsDTO) {
-        List<Long> roleIds = roleIdsDTO.getRoleIds();
-        Long[] roleIdArray = roleIds.toArray(new Long[0]);
-        List<SysMenuVO> menus = menuService.selectMenuFlatListByRoleIds(roleIdArray);
-        return Result.ok(menus);
     }
 
     /**
@@ -111,12 +91,31 @@ public class SysMenuController {
     }
 
     /**
+     * 获取菜单下拉树列表
+     */
+    @GetMapping("/tree")
+    public Result<List<SysMenuVO>> treeList(SysMenuQuery query) {
+        List<SysMenuVO> menus = menuService.selectMenuList(query, null);
+        return Result.ok(menuService.buildMenuTreeSelect(menus));
+    }
+
+
+    /**
+     * 获取多个角色关联的菜单列表（扁平化）
+     */
+    @PostMapping(value = "/roleMenuFlatList")
+    public Result<List<SysMenuVO>> roleMenuFlatList(@Validated @RequestBody RoleIdsDTO roleIdsDTO) {
+        List<Long> roleIds = roleIdsDTO.getRoleIds();
+        Long[] roleIdArray = roleIds.toArray(new Long[0]);
+        List<SysMenuVO> menus = menuService.selectMenuFlatListByRoleIds(roleIdArray);
+        return Result.ok(menus);
+    }
+
+    /**
      * 获取当前登录用户所拥有的权限集合
      */
-    @GetMapping("/permission/user")
-    public Result<List<String>> getCurrentUserPermissions() {
-        // 从当前登录用户的token中获取userId
-        String userId = SecurityUtil.getUserId();
+    @GetMapping("/permission/user/{userId}")
+    public Result<List<String>> getCurrentUserPermissions(@PathVariable String userId) {
         return Result.ok(menuService.selectPermissionsByUserId(userId));
     }
 }

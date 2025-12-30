@@ -5,6 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
+import com.soybean.upms.api.clients.SysRoleClient;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.api.query.SysRoleQuery;
@@ -22,9 +23,9 @@ import java.util.List;
  * @since 2024-07-07
  */
 @RestController
-@RequestMapping("/sys/role")
+@RequestMapping("/upms/role")
 @RequiredArgsConstructor
-public class SysRoleController {
+public class SysRoleController implements SysRoleClient {
 
     private final ISysRoleService roleService;
 
@@ -119,17 +120,8 @@ public class SysRoleController {
      * 获取角色选择框列表
      */
     @GetMapping("/list")
-    public Result<List<SysRoleVO>> optionselect() {
+    public Result<List<SysRoleVO>> allList() {
         return Result.ok(roleService.selectRoleAll());
-    }
-
-    /**
-     * 根据用户ID获取角色列表
-     */
-    @GetMapping("/user/{userId}")
-    public Result<List<SysRoleVO>> getRolesByUserId(@PathVariable String userId) {
-        List<SysRoleVO> roles = roleService.selectRolesByUserId(userId);
-        return Result.ok(roles);
     }
 
     /**
@@ -154,5 +146,23 @@ public class SysRoleController {
     @PutMapping("/authUser/selectAll")
     public Result<Void> selectAuthUserAll(Long roleId, Long[] userIds) {
         return Result.ok();
+    }
+
+    /**
+     * 根据用户ID获取角色列表
+     */
+    @GetMapping("/user/{userId}")
+    public Result<List<SysRoleVO>> getRolesByUserId(@PathVariable String userId) {
+        List<SysRoleVO> roles = roleService.selectRolesByUserId(userId);
+        return Result.ok(roles);
+    }
+
+    /**
+     * 根据用户ID获取角色权限字符串列表
+     */
+    @GetMapping("/user/{userId}/keys")
+    public Result<List<String>> getRoleKeysByUserId(@PathVariable String userId) {
+        List<String> roleKeys = roleService.selectRoleKeysByUserId(userId);
+        return Result.ok(roleKeys);
     }
 }

@@ -16,12 +16,12 @@ public enum SysUserStatusEnum implements BaseEnum<String> {
     /**
      * 正常
      */
-    NORMAL("0", "正常"),
+    NORMAL("1", "正常"),
 
     /**
      * 停用
      */
-    DISABLE("1", "停用");
+    DISABLE("0", "停用");
 
     @EnumValue
     @JsonValue

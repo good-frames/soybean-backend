@@ -21,7 +21,7 @@ public enum SysUserDelFlagEnum implements BaseEnum<String> {
     /**
      * 删除
      */
-    DELETED("2", "删除");
+    DELETED("1", "删除");
 
     @EnumValue
     @JsonValue
