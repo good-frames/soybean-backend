@@ -7,6 +7,7 @@ import com.soybean.upms.api.clients.SysMenuClient;
 import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.vo.UserMenuVO;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.service.ISysMenuService;
@@ -127,10 +128,8 @@ public class SysMenuController implements SysMenuClient {
     public Result<UserMenuVO> getCurrentUserMenus() {
         // 获取当前登录用户ID
         String userId = SecurityUtil.getUserId();
-        // 查询用户菜单列表
-        List<SysMenuVO> menus = menuService.selectMenuList(userId);
-        // 构建树形结构
-        List<SysMenuVO> menuTree = menuService.buildMenuTree(menus);
+        // 构建前端路由菜单树
+        List<MenuTreeVO> menuTree = menuService.buildMenuTreeForRouter(userId);
         
         // 创建用户菜单VO
         UserMenuVO userMenu = new UserMenuVO();

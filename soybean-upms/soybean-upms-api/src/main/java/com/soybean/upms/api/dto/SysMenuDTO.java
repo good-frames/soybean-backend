@@ -38,6 +38,18 @@ public class SysMenuDTO implements Serializable {
     private String menuName;
 
     /**
+     * 菜单标题
+     */
+    @Size(max = 50, message = "菜单标题长度不能超过50个字符")
+    private String title;
+
+    /**
+     * 国际化键
+     */
+    @Size(max = 100, message = "国际化键长度不能超过100个字符")
+    private String i18nKey;
+
+    /**
      * 父菜单ID
      */
     private Long parentId;

@@ -44,27 +44,29 @@ CREATE TABLE `sys_role` (
 
 -- 菜单权限表
 CREATE TABLE `sys_menu` (
-  `menu_id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-  `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
-  `parent_id` bigint DEFAULT 0 COMMENT '父菜单ID',
-  `order_num` int DEFAULT 0 COMMENT '显示顺序',
-  `path` varchar(200) DEFAULT '' COMMENT '路由地址',
-  `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
-  `query` varchar(255) DEFAULT NULL COMMENT '路由参数',
-  `is_frame` char(1) DEFAULT '0' COMMENT '是否为外链（0不是外链 1是外链）',
-  `is_cache` char(1) DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
-  `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
-  `visible` char(1) DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
-  `status` char(1) DEFAULT '0' COMMENT '菜单状态（0停用 1正常）',
-  `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
-  `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
-  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `remark` varchar(500) DEFAULT '' COMMENT '备注',
-  PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
+    `menu_id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+    `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
+    `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单名称',
+    `i18n_key` varchar(100) DEFAULT '' COMMENT '国际化键',
+    `path` varchar(200) DEFAULT '' COMMENT '路由地址',
+    `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+    `query` varchar(255) DEFAULT NULL COMMENT '路由参数',
+    `parent_id` bigint DEFAULT '0' COMMENT '父菜单ID',
+    `order_num` int DEFAULT '0' COMMENT '显示顺序',
+    `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否为外链（0否 1是）',
+    `is_cache` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
+    `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+    `visible` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
+    `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
+    `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
+    `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(500) DEFAULT '' COMMENT '备注',
+    PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
 
 
 
@@ -240,35 +242,19 @@ INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '0', '0', 'admi
 -- 用户角色关联
 INSERT INTO `sys_user_role` VALUES (1, 1);
 
-
-
 -- 默认菜单
-INSERT INTO `sys_menu` VALUES (1, '系统管理', 0, 1, 'system', NULL, '', '0', 0, 'M', '0', '1', 'system', 'system', 'admin', sysdate(), '', NULL, '系统管理目录');
-INSERT INTO `sys_menu` VALUES (2, '用户管理', 1, 1, 'user', 'system/user/index', '', '0', '0', 'C', '0', '1', 'system:user:list', 'user', 'admin', sysdate(), '', NULL, '用户管理菜单');
-INSERT INTO `sys_menu` VALUES (3, '角色管理', 1, 2, 'role', 'system/role/index', '', '0', '0', 'C', '0', '1', 'system:role:list', 'peoples', 'admin', sysdate(), '', NULL, '角色管理菜单');
-INSERT INTO `sys_menu` VALUES (4, '菜单管理', 1, 3, 'menu', 'system/menu/index', '', '0', '0', 'C', '0', '1', 'system:menu:list', 'tree-table', 'admin', sysdate(), '', NULL, '菜单管理菜单');
-
-INSERT INTO `sys_menu` VALUES (6, '岗位管理', 1, 5, 'post', 'system/post/index', '', '0', '0', 'C', '0', '1', 'system:post:list', 'post', 'admin', sysdate(), '', NULL, '岗位管理菜单');
-INSERT INTO `sys_menu` VALUES (7, '字典管理', 1, 6, 'dict', 'system/dict/index', '', '0', '0', 'C', '0', '1', 'system:dict:list', 'dict', 'admin', sysdate(), '', NULL, '字典管理菜单');
-INSERT INTO `sys_menu` VALUES (8, '参数设置', 1, 7, 'config', 'system/config/index', '', '0', '0', 'C', '0', '1', 'system:config:list', 'edit', 'admin', sysdate(), '', NULL, '参数设置菜单');
-INSERT INTO `sys_menu` VALUES (9, '通知公告', 1, 8, 'notice', 'system/notice/index', '', '0', '0', 'C', '0', '1', 'system:notice:list', 'message', 'admin', sysdate(), '', NULL, '通知公告菜单');
-INSERT INTO `sys_menu` VALUES (10, '日志管理', 1, 9, 'log', '', '', 1, 0, 'M', '0', '0', '', 'log', 'admin', sysdate(), '', NULL, '日志管理菜单');
-INSERT INTO `sys_menu` VALUES (11, '操作日志', 10, 1, 'operlog', 'monitor/operlog/index', '', '0', '0', 'C', '0', '1', 'system:operlog:list', 'form', 'admin', sysdate(), '', NULL, '操作日志菜单');
-INSERT INTO `sys_menu` VALUES (12, '登录日志', 10, 2, 'logininfor', 'monitor/logininfor/index', '', '0', '0', 'C', '0', '1', 'system:logininfor:list', 'logininfor', 'admin', sysdate(), '', NULL, '登录日志菜单');
+INSERT INTO `sys_menu` VALUES (1, 'home', '首页', 'route.home', '/home', 'layout.base$view.home', NULL, 0, 0, '0', '0', 'C', '1', '1', NULL, 'mdi:monitor-dashboard', '', NULL, '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2, 'manage', '系统管理', 'route.manage', '/manage', 'layout.base', '', 0, 1, '0', '0', 'M', '1', '1', 'manage', 'carbon:cloud-service-management', 'admin', '2025-12-22 15:02:37', '', NULL, '系统管理目录');
+INSERT INTO `sys_menu` VALUES (3, 'manage_menu', '菜单管理', 'route.manage_menu', '/manage/menu', 'view.manage_menu', NULL, 2, 1, '0', '0', 'C', '1', '1', 'manage:menu:list', 'material-symbols:route', '', NULL, '', NULL, '');
+INSERT INTO `sys_menu` VALUES (4, 'manage_role', '权限管理', 'route.manage_role', '/manage/role', 'view.manage_role', NULL, 2, 2, '0', '0', 'C', '1', '1', 'manage:role:list', 'carbon:user-role', '', NULL, '', NULL, '');
+INSERT INTO `sys_menu` VALUES (5, 'manage_user', '用户管理', 'route.manage_user', '/manage/user', 'view.manage_user', NULL, 2, 3, '0', '0', 'C', '1', '1', 'manage:user:list', 'ic:round-manage-accounts', '', NULL, '', NULL, '');
 
 -- 角色菜单关联
 INSERT INTO `sys_role_menu` VALUES (1, 1);
 INSERT INTO `sys_role_menu` VALUES (1, 2);
 INSERT INTO `sys_role_menu` VALUES (1, 3);
 INSERT INTO `sys_role_menu` VALUES (1, 4);
-
-INSERT INTO `sys_role_menu` VALUES (1, 6);
-INSERT INTO `sys_role_menu` VALUES (1, 7);
-INSERT INTO `sys_role_menu` VALUES (1, 8);
-INSERT INTO `sys_role_menu` VALUES (1, 9);
-INSERT INTO `sys_role_menu` VALUES (1, 10);
-INSERT INTO `sys_role_menu` VALUES (1, 11);
-INSERT INTO `sys_role_menu` VALUES (1, 12);
+INSERT INTO `sys_role_menu` VALUES (1, 5);
 
 -- 字典类型
 INSERT INTO `sys_dict_type` VALUES (1, '用户性别', 'sys_user_sex', '0', 'admin', sysdate(), '', NULL, '用户性别列表');

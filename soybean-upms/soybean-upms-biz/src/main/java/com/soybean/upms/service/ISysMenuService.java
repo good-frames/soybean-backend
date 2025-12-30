@@ -6,6 +6,7 @@ import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.api.vo.MenuTreeVO;
 
 import java.util.List;
 import java.util.Set;
@@ -130,4 +131,12 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @return 结果
      */
     boolean checkMenuNameUnique(SysMenuDTO menu);
+
+    /**
+     * 构建前端路由菜单树
+     *
+     * @param userId 用户ID
+     * @return 前端路由菜单树
+     */
+    List<MenuTreeVO> buildMenuTreeForRouter(String userId);
 }

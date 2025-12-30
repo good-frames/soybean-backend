@@ -10,6 +10,8 @@ import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.api.vo.MenuTreeVO;
+import com.soybean.upms.api.vo.MenuMetaVO;
 import com.soybean.upms.mapper.SysMenuMapper;
 import com.soybean.upms.mapper.SysRoleMenuMapper;
 import com.soybean.upms.service.ISysMenuService;
@@ -313,5 +315,75 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     private boolean hasChild(List<SysMenuVO> list, SysMenuVO t) {
         return !getChildList(list, t).isEmpty();
+    }
+
+    @Override
+    public List<MenuTreeVO> buildMenuTreeForRouter(String userId) {
+        // 查询用户菜单列表
+        List<SysMenuVO> menus = selectMenuList(userId);
+        
+        // 转换为MenuTreeVO列表
+        List<MenuTreeVO> menuTreeList = new ArrayList<>();
+        for (SysMenuVO menu : menus) {
+            MenuTreeVO menuTree = new MenuTreeVO();
+            menuTree.setMenuId(menu.getMenuId());
+            menuTree.setParentId(menu.getParentId());
+            menuTree.setName(menu.getMenuName());
+            menuTree.setPath(menu.getPath());
+            menuTree.setComponent(menu.getComponent());
+            
+            // 设置元数据
+            MenuMetaVO meta = new MenuMetaVO();
+            meta.setTitle(menu.getTitle() != null ? menu.getTitle() : menu.getMenuName());
+            meta.setI18nKey(menu.getI18nKey() != null ? menu.getI18nKey() : "route." + menu.getMenuName());
+            meta.setIcon(menu.getIcon());
+            meta.setOrder(menu.getOrderNum());
+            menuTree.setMeta(meta);
+            
+            menuTreeList.add(menuTree);
+        }
+        
+        // 构建树形结构
+        return buildRouteTree(menuTreeList);
+    }
+    
+    /**
+     * 构建前端路由树
+     */
+    private List<MenuTreeVO> buildRouteTree(List<MenuTreeVO> menus) {
+        List<MenuTreeVO> returnList = new ArrayList<>();
+        List<Long> tempList = new ArrayList<>();
+        
+        // 先找出所有顶级菜单（父ID为0或null）
+        for (MenuTreeVO menu : menus) {
+            if (menu.getParentId() == null || menu.getParentId() == 0) {
+                tempList.add(menu.getMenuId());
+                MenuTreeVO tree = findChildren(menu, menus);
+                returnList.add(tree);
+            }
+        }
+        
+        // 如果没有顶级菜单，则返回所有菜单
+        if (returnList.isEmpty()) {
+            returnList = menus;
+        }
+        return returnList;
+    }
+    
+    /**
+     * 查找子节点
+     */
+    private MenuTreeVO findChildren(MenuTreeVO tree, List<MenuTreeVO> list) {
+        tree.setChildren(new ArrayList<>());
+        List<MenuTreeVO> childList = new ArrayList<>();
+        for (MenuTreeVO menu : list) {
+            if (menu.getParentId() != null && menu.getParentId().longValue() == tree.getMenuId().longValue()) {
+                childList.add(findChildren(menu, list));
+            }
+        }
+        if (childList.size() > 0) {
+            tree.setChildren(childList);
+        }
+        return tree;
     }
 }
