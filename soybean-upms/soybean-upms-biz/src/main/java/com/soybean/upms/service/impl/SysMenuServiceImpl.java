@@ -38,7 +38,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 菜单列表
      */
     @Override
-    public List<SysMenuVO> selectMenuList(Long userId) {
+    public List<SysMenuVO> selectMenuList(String userId) {
         return selectMenuList(new SysMenuQuery(), userId);
     }
 
@@ -50,7 +50,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 菜单列表
      */
     @Override
-    public List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, Long userId) {
+    public List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, String userId) {
         List<SysMenu> menuList;
 
         if (userId != null) {

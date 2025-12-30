@@ -7,6 +7,7 @@ import com.soybean.upms.api.clients.SysMenuClient;
 import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.api.vo.UserMenuVO;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.service.ISysMenuService;
 import lombok.RequiredArgsConstructor;
@@ -117,5 +118,25 @@ public class SysMenuController implements SysMenuClient {
     @GetMapping("/permission/user/{userId}")
     public Result<List<String>> getCurrentUserPermissions(@PathVariable String userId) {
         return Result.ok(menuService.selectPermissionsByUserId(userId));
+    }
+
+    /**
+     * 获取当前登录用户拥有的菜单列表（包括目录、菜单、按钮）
+     */
+    @GetMapping("/user/current")
+    public Result<UserMenuVO> getCurrentUserMenus() {
+        // 获取当前登录用户ID
+        String userId = SecurityUtil.getUserId();
+        // 查询用户菜单列表
+        List<SysMenuVO> menus = menuService.selectMenuList(userId);
+        // 构建树形结构
+        List<SysMenuVO> menuTree = menuService.buildMenuTree(menus);
+        
+        // 创建用户菜单VO
+        UserMenuVO userMenu = new UserMenuVO();
+        userMenu.setRoutes(menuTree);
+        userMenu.setHome("home");
+        
+        return Result.ok(userMenu);
     }
 }

@@ -32,5 +32,5 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuListByUserId(@Param("userId") Long userId);
+    List<SysMenu> selectMenuListByUserId(@Param("userId") String userId);
 }

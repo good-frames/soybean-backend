@@ -24,7 +24,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenuVO> selectMenuList(Long userId);
+    List<SysMenuVO> selectMenuList(String userId);
 
     /**
      * 根据用户查询系统菜单列表
@@ -33,7 +33,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, Long userId);
+    List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, String userId);
 
     /**
      * 根据用户ID获取用户所拥有的权限集合

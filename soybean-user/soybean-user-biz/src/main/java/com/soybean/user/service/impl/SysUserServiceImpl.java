@@ -13,12 +13,15 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.user.mapper.SysUserMapper;
 import com.soybean.user.service.ISysUserService;
 import com.soybean.common.core.exception.BusinessException;
+import com.soybean.common.security.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -245,5 +248,37 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL);
         
         return this.getOne(queryWrapper);
+    }
+
+    @Override
+    public UserInfoVO getCurrentUserInfo(String userId) {
+        // 获取用户基本信息
+        SysUser sysUser = this.getById(userId);
+        if (sysUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
+            return null;
+        }
+
+        // 转换为UserInfoVO
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setUserId(sysUser.getUserId());
+        userInfoVO.setUsername(sysUser.getUsername());
+        userInfoVO.setNickname(sysUser.getNickname());
+        userInfoVO.setPhone(sysUser.getPhone());
+        userInfoVO.setEmail(sysUser.getEmail());
+        userInfoVO.setAvatar(sysUser.getAvatar());
+        userInfoVO.setGender(sysUser.getGender());
+        userInfoVO.setStatus(sysUser.getStatus());
+        userInfoVO.setCreateTime(sysUser.getCreateTime());
+        userInfoVO.setUpdateTime(sysUser.getUpdateTime());
+
+        // 从Redis中获取用户角色列表
+        List<String> roles = SecurityUtil.getRoles();
+        userInfoVO.setRoles(roles);
+
+        // 从Redis中获取用户权限列表
+        List<String> permissions = SecurityUtil.getPermissions();
+        userInfoVO.setPermissions(permissions);
+
+        return userInfoVO;
     }
 }

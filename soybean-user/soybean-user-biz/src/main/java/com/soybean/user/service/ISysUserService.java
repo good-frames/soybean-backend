@@ -8,6 +8,7 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.user.api.vo.UserInfoVO;
 
 import java.util.List;
 
@@ -92,4 +93,12 @@ public interface ISysUserService extends IService<SysUser> {
      * @return 用户信息
      */
     SysUser getUserByUsername(String username);
+
+    /**
+     * 获取当前登录用户信息（包括基本信息、角色和权限）
+     *
+     * @param userId 用户ID
+     * @return 用户信息（包含角色和权限）
+     */
+    UserInfoVO getCurrentUserInfo(String userId);
 }

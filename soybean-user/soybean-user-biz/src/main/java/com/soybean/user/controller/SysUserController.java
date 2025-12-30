@@ -8,6 +8,7 @@ import com.soybean.common.core.utils.Result;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.common.security.annotation.RequireLogin;
 import com.soybean.common.security.annotation.RequirePermission;
+import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.user.api.clients.SysUserClient;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
@@ -15,6 +16,7 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
 import lombok.Data;
@@ -198,6 +200,26 @@ public class SysUserController implements SysUserClient {
             return Result.ok(sysUserService.getUserByUsername(username));
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /**
+     * 获取当前登录用户信息（包括基本信息、角色和权限）
+     */
+    @GetMapping("/info/current")
+    public Result<UserInfoVO> getCurrentUserInfo() {
+        try {
+            // 获取当前登录用户ID
+            String userId = SecurityUtil.getUserId();
+            // 获取用户信息（包括角色和权限）
+            UserInfoVO userInfo = sysUserService.getCurrentUserInfo(userId);
+            if (userInfo != null) {
+                return Result.ok(userInfo);
+            } else {
+                return Result.fail("获取用户信息失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
         }
     }
 }
