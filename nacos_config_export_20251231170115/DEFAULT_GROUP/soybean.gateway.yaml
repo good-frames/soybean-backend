@@ -1,0 +1,22 @@
+spring:
+    cloud:
+        gateway:
+            routes: # 路由配置
+                - id: soybean-auth
+                  uri: lb://soybean-auth
+                  predicates: # 断言
+                    - Path=/auth/**
+                - id: soybean-user
+                  uri: lb://soybean-user
+                  predicates: # 断言
+                    - Path=/systemManage/user/**
+                - id: soybean-upms
+                  uri: lb://soybean-upms
+                  predicates: # 断言
+                    - Path=/systemManage/menu/**,/systemManage/role/**
+# 放行URL配置
+security:
+  permit-all:
+    urls:
+      - /user/admin
+      - /auth/**
