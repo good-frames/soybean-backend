@@ -29,6 +29,12 @@ public class PageDTO<V> {
      */
     private Long current;
 
+
+    /**
+     * 每页数量
+     */
+    private Long size;
+
     /**
      * 总记录数
      */
@@ -42,8 +48,7 @@ public class PageDTO<V> {
     /**
      * 当前页数据列表
      */
-    private List<V> list;
-    
+    private List<V> records;
 
     
     /**
@@ -54,7 +59,7 @@ public class PageDTO<V> {
      * @return VO的分页对象
      */
     public static <V, P> PageDTO<V> empty(Page<P> p){
-        return new PageDTO<>(p.getCurrent(), p.getTotal(), p.getPages(), Collections.emptyList());
+        return new PageDTO<>(p.getCurrent(), p.getSize(), p.getTotal(), p.getPages(), Collections.emptyList());
     }
     
     /**
@@ -75,7 +80,7 @@ public class PageDTO<V> {
         // 2.数据转换
         List<V> vos = BeanUtil.copyToList(records, voClass);
         // 3.封装返回
-        return new PageDTO<>(p.getCurrent(), p.getTotal(), p.getPages(), vos);
+        return new PageDTO<>(p.getCurrent(), p.getSize(), p.getTotal(), p.getPages(), vos);
     }
     
     /**
@@ -96,6 +101,6 @@ public class PageDTO<V> {
         // 2.数据转换
         List<V> vos = records.stream().map(convertor).collect(Collectors.toList());
         // 3.封装返回
-        return new PageDTO<>(p.getCurrent(), p.getTotal(), p.getPages(), vos);
+        return new PageDTO<>(p.getCurrent(), p.getSize(), p.getTotal(), p.getPages(), vos);
     }
 }
