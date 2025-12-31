@@ -1,9 +1,0 @@
-feign:
-  okhttp:
-    enabled: true # 开启OKHttp功能
-
-# 安全配置
-soybean:
-  security:
-    # 是否启用内部服务Same-Token验证，默认为true
-    enable-same-token: true
