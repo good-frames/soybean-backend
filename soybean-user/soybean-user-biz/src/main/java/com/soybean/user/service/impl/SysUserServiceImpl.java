@@ -48,7 +48,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         SysUserVO sysUserVO = new SysUserVO();
-        sysUserVO.setUserId(sysUser.getUserId());
+        sysUserVO.setId(sysUser.getUserId());
         sysUserVO.setUsername(sysUser.getUsername());
         sysUserVO.setNickname(sysUser.getNickname());
         sysUserVO.setPhone(sysUser.getPhone());
@@ -117,7 +117,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updateSysUser(SysUserDTO sysUserDTO) {
         // 检查用户是否存在
-        SysUser existUser = this.getById(sysUserDTO.getUserId());
+        SysUser existUser = this.getById(sysUserDTO.getId());
         if (existUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(existUser.getDelFlag())) {
             throw new BusinessException("用户不存在");
         }
@@ -127,7 +127,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                     .eq(SysUser::getUsername, sysUserDTO.getUsername())
                     .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL.getValue())
-                    .ne(SysUser::getUserId, Long.valueOf(sysUserDTO.getUserId()));
+                    .ne(SysUser::getUserId, Long.valueOf(sysUserDTO.getId()));
             SysUser userWithSameName = this.getOne(queryWrapper);
             if (userWithSameName != null) {
                 throw new BusinessException("用户名已存在");
@@ -136,7 +136,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
-        sysUser.setUserId(sysUserDTO.getUserId());
+        sysUser.setUserId(sysUserDTO.getId());
         sysUser.setUsername(sysUserDTO.getUsername());
 
         // 如果DTO中提供了密码，则更新密码，否则保留原密码
@@ -208,7 +208,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
-        String userId = passwordUpdateDTO.getUserId();
+        String userId = passwordUpdateDTO.getId();
         SysUser sysUser = this.getById(userId);
         if (sysUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
             throw new BusinessException("用户不存在");
@@ -260,7 +260,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         // 转换为UserInfoVO
         UserInfoVO userInfoVO = new UserInfoVO();
-        userInfoVO.setUserId(sysUser.getUserId());
+        userInfoVO.setId(sysUser.getUserId());
         userInfoVO.setUsername(sysUser.getUsername());
         userInfoVO.setNickname(sysUser.getNickname());
         userInfoVO.setPhone(sysUser.getPhone());

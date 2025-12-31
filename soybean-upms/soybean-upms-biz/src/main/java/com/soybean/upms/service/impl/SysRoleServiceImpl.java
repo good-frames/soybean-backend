@@ -113,7 +113,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (CollUtil.isEmpty(roleList)) {
             return CollUtil.newArrayList();
         }
-        return roleList.stream().map(SysRole::getRoleId).collect(Collectors.toList());
+        return roleList.stream().map(SysRole::getId).collect(Collectors.toList());
     }
 
     /**
@@ -135,7 +135,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         // 新增角色菜单关联
         if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getRoleId(), roleDTO.getMenuIds());
+            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
         }
         return result > 0;
     }
@@ -155,12 +155,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         // 删除角色与菜单关联
         if (result > 0) {
-            roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
+            roleMenuMapper.deleteRoleMenuByRoleId(role.getId());
         }
 
         // 新增角色菜单关联
         if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getRoleId(), roleDTO.getMenuIds());
+            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
         }
         return result > 0;
     }
@@ -180,7 +180,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
 
         LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(SysRole::getRoleId, roleId).set(SysRole::getStatus, status.getValue());
+        wrapper.eq(SysRole::getId, roleId).set(SysRole::getStatus, status.getValue());
         return update(wrapper);
     }
 
@@ -198,12 +198,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         // 删除角色与菜单关联
         if (result > 0) {
-            roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
+            roleMenuMapper.deleteRoleMenuByRoleId(role.getId());
         }
 
         // 新增角色菜单关联
         if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getRoleId(), roleDTO.getMenuIds());
+            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
         }
         return result > 0;
     }
@@ -240,12 +240,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public boolean checkRoleNameUnique(SysRoleDTO role) {
-        Long roleId = role.getRoleId() == null ? -1L : role.getRoleId();
+        Long roleId = role.getId() == null ? -1L : role.getId();
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRole::getRoleName, role.getRoleName())
                 .eq(SysRole::getDelFlag, SysDelFlagEnum.EXIST);
         SysRole info = getOne(wrapper);
-        if (info != null && info.getRoleId().longValue() != roleId.longValue()) {
+        if (info != null && info.getId().longValue() != roleId.longValue()) {
             return false;
         }
         return true;
@@ -259,12 +259,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public boolean checkRoleKeyUnique(SysRoleDTO role) {
-        Long roleId = role.getRoleId() == null ? -1L : role.getRoleId();
+        Long roleId = role.getId() == null ? -1L : role.getId();
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRole::getRoleKey, role.getRoleKey())
                 .eq(SysRole::getDelFlag, SysDelFlagEnum.EXIST);
         SysRole info = getOne(wrapper);
-        if (info != null && info.getRoleId().longValue() != roleId.longValue()) {
+        if (info != null && info.getId().longValue() != roleId.longValue()) {
             return false;
         }
         return true;
@@ -277,7 +277,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public void checkRoleAllowed(SysRoleDTO role) {
-        if (role.getRoleId() != null && role.getRoleId().longValue() == 1L) {
+        if (role.getId() != null && role.getId().longValue() == 1L) {
             throw new RuntimeException("不允许操作超级管理员角色");
         }
     }
@@ -369,6 +369,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     private static boolean isAdmin(SysRole role) {
-        return (role != null && role.getRoleId() != null && role.getRoleId().longValue() == 1L);
+        return (role != null && role.getId() != null && role.getId().longValue() == 1L);
     }
 }

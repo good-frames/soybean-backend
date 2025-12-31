@@ -23,7 +23,7 @@ public class SysRoleVO implements Serializable {
     /**
      * 角色ID
      */
-    private Long roleId;
+    private Long id;
 
     /**
      * 角色名称

@@ -30,7 +30,7 @@ public class SysRole implements Serializable {
      * 角色ID
      */
     @TableId(value = "role_id", type = IdType.AUTO)
-    private Long roleId;
+    private Long id;
 
     /**
      * 角色名称

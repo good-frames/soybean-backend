@@ -3,13 +3,16 @@ package com.soybean.upms.controller;
 
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.security.util.SecurityUtil;
+import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.clients.SysMenuClient;
 import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
+import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.api.vo.MenuTreeVO;
-import com.soybean.upms.api.vo.UserMenuVO;
 import com.soybean.upms.api.query.SysMenuQuery;
+import com.soybean.upms.api.query.SysMenuTreeQuery;
+import com.soybean.upms.api.vo.UserRouteResultVO;
 import com.soybean.upms.service.ISysMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +20,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 菜单信息控制器
@@ -27,7 +29,7 @@ import java.util.Set;
  */
 @Slf4j
 @RestController
-@RequestMapping("/upms/menu")
+@RequestMapping("/systemManage/menu")
 @RequiredArgsConstructor
 public class SysMenuController implements SysMenuClient {
 
@@ -72,7 +74,7 @@ public class SysMenuController implements SysMenuClient {
     public Result<Void> edit(@Validated @RequestBody SysMenuDTO menu) {
         if (!menuService.checkMenuNameUnique(menu)) {
             return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        } else if (menu.getMenuId().equals(menu.getParentId())) {
+        } else if (menu.getId().equals(menu.getParentId())) {
             return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         return menuService.updateMenu(menu) ? Result.ok() : Result.fail();
@@ -101,6 +103,15 @@ public class SysMenuController implements SysMenuClient {
         return Result.ok(menuService.buildMenuTreeSelect(menus));
     }
 
+    /**
+     * 分页获取菜单树
+     */
+    @GetMapping("/tree/page")
+    public Result<PageDTO<MenuTreeVO>> treePage(SysMenuTreeQuery query) {
+        PageDTO<MenuTreeVO> page = menuService.getMenuTreePage(query);
+        return Result.ok(page);
+    }
+
 
     /**
      * 获取多个角色关联的菜单列表（扁平化）
@@ -125,14 +136,14 @@ public class SysMenuController implements SysMenuClient {
      * 获取当前登录用户拥有的菜单列表（包括目录、菜单、按钮）
      */
     @GetMapping("/user/current")
-    public Result<UserMenuVO> getCurrentUserMenus() {
+    public Result<UserRouteResultVO> getCurrentUserMenus() {
         // 获取当前登录用户ID
         String userId = SecurityUtil.getUserId();
         // 构建前端路由菜单树
-        List<MenuTreeVO> menuTree = menuService.buildMenuTreeForRouter(userId);
+        List<RouteTreeVO> menuTree = menuService.buildMenuTreeForRouter(userId);
         
         // 创建用户菜单VO
-        UserMenuVO userMenu = new UserMenuVO();
+        UserRouteResultVO userMenu = new UserRouteResultVO();
         userMenu.setRoutes(menuTree);
         userMenu.setHome("home");
         

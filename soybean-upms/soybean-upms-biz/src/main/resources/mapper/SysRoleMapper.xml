@@ -3,7 +3,7 @@
 <mapper namespace="com.soybean.upms.mapper.SysRoleMapper">
 
     <resultMap id="SysRoleResult" type="com.soybean.upms.api.po.SysRole">
-        <result property="roleId" column="role_id"/>
+        <result property="id" column="role_id"/>
         <result property="roleName" column="role_name"/>
         <result property="roleKey" column="role_key"/>
         <result property="roleSort" column="role_sort"/>

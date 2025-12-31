@@ -1,6 +1,5 @@
 package com.soybean.upms.api.vo;
 
-import com.soybean.upms.api.vo.MenuTreeVO;
 import lombok.Data;
 
 import java.util.List;
@@ -11,12 +10,12 @@ import java.util.List;
  * @author soybean
  */
 @Data
-public class UserMenuVO {
+public class UserRouteResultVO {
 
     /**
      * 菜单路由列表
      */
-    private List<MenuTreeVO> routes;
+    private List<RouteTreeVO> routes;
 
     /**
      * 首页路径

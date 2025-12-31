@@ -33,7 +33,7 @@ public class SysMenu implements Serializable {
      * 菜单ID
      */
     @TableId(value = "menu_id", type = IdType.AUTO)
-    private Long menuId;
+    private Long id;
 
     /**
      * 菜单名称

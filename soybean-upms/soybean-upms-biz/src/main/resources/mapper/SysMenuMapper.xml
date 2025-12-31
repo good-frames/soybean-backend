@@ -5,7 +5,7 @@
 <mapper namespace="com.soybean.upms.mapper.SysMenuMapper">
 
     <resultMap type="com.soybean.upms.api.po.SysMenu" id="SysMenuResult">
-        <id     property="menuId"       column="menu_id"      />
+        <id     property="id"       column="menu_id"      />
         <result property="menuName"     column="menu_name"    />
         <result property="title"        column="title"        />
         <result property="i18nKey"      column="i18n_key"     />

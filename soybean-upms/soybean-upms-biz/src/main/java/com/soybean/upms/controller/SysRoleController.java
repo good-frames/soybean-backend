@@ -23,7 +23,7 @@ import java.util.List;
  * @since 2024-07-07
  */
 @RestController
-@RequestMapping("/upms/role")
+@RequestMapping("/systemManage/role")
 @RequiredArgsConstructor
 public class SysRoleController implements SysRoleClient {
 
@@ -84,7 +84,7 @@ public class SysRoleController implements SysRoleClient {
     @PutMapping("/dataScope")
     public Result<Void> dataScope(@RequestBody SysRoleDTO roleDTO) {
         // 检查角色是否存在
-        if (!roleService.checkRoleExists(roleDTO.getRoleId())) {
+        if (!roleService.checkRoleExists(roleDTO.getId())) {
             throw new BusinessException("角色不存在");
         }
         return roleService.authDataScope(roleDTO) ? Result.ok() : Result.fail();
@@ -98,7 +98,7 @@ public class SysRoleController implements SysRoleClient {
         roleService.checkRoleAllowed(roleDTO);
 
         try {
-            return roleService.updateRoleStatus(roleDTO.getRoleId(), roleDTO.getStatus()) ? Result.ok() : Result.fail();
+            return roleService.updateRoleStatus(roleDTO.getId(), roleDTO.getStatus()) ? Result.ok() : Result.fail();
         } catch (RuntimeException e) {
             return Result.fail(e.getMessage());
         }
@@ -119,7 +119,7 @@ public class SysRoleController implements SysRoleClient {
     /**
      * 获取角色选择框列表
      */
-    @GetMapping("/list")
+    @GetMapping("/getAllRoles")
     public Result<List<SysRoleVO>> allList() {
         return Result.ok(roleService.selectRoleAll());
     }

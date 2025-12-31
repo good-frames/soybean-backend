@@ -38,7 +38,7 @@ import java.util.List;
 @Slf4j
 @Data
 @RestController
-@RequestMapping("/user/admin")
+@RequestMapping("/systemManage/user")
 public class SysUserController implements SysUserClient {
 
     private final ISysUserService sysUserService;

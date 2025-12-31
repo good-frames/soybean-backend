@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value = "soybean-user", contextId = "SysUserClient", path = "/user")
+@FeignClient(value = "soybean-user", contextId = "SysUserClient", path = "/systemManage/user")
 public interface SysUserClient {
 
-    @GetMapping("/admin/getByUsername")
+    @GetMapping("/getByUsername")
     Result<SysUser> getByUsername(@RequestParam("username") String username);
 }

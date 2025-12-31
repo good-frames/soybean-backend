@@ -2,14 +2,16 @@
 package com.soybean.upms.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
+import com.soybean.upms.api.query.SysMenuTreeQuery;
+import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.api.vo.MenuTreeVO;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 菜单权限表 服务类
@@ -138,5 +140,13 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 前端路由菜单树
      */
-    List<MenuTreeVO> buildMenuTreeForRouter(String userId);
+    List<RouteTreeVO> buildMenuTreeForRouter(String userId);
+
+    /**
+     * 分页查询菜单树
+     *
+     * @param query 查询条件
+     * @return 分页菜单树
+     */
+    PageDTO<MenuTreeVO> getMenuTreePage(SysMenuTreeQuery query);
 }

@@ -4,18 +4,26 @@ package com.soybean.upms.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
+import com.soybean.upms.api.enums.SysMenuVisibleEnum;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
+import com.soybean.upms.api.query.SysMenuTreeQuery;
 import com.soybean.upms.api.vo.SysMenuVO;
-import com.soybean.upms.api.vo.MenuTreeVO;
+import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.MenuMetaVO;
+import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.mapper.SysMenuMapper;
 import com.soybean.upms.mapper.SysRoleMenuMapper;
 import com.soybean.upms.service.ISysMenuService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +35,7 @@ import java.util.stream.Collectors;
  * @author soybean
  * @since 2024-07-07
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
@@ -69,6 +78,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             menuList = list(wrapper);
         }
 
+        log.info("lla:{}", menuList);
+
         return BeanUtil.copyToList(menuList, SysMenuVO.class);
     }
 
@@ -92,7 +103,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
         SysMenu menu = new SysMenu();
-        menu.setMenuId(-1L);
+        menu.setId(-1L);
         LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRoleMenu::getRoleId, roleId);
         List<SysRoleMenu> perms = roleMenuMapper.selectList(wrapper);
@@ -161,7 +172,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<SysMenuVO> buildMenuTree(List<SysMenuVO> menus) {
         List<SysMenuVO> returnList = new ArrayList<>();
-        List<Long> tempList = menus.stream().map(SysMenuVO::getMenuId).collect(Collectors.toList());
+        List<Long> tempList = menus.stream().map(SysMenuVO::getId).toList();
 
         for (SysMenuVO menu : menus) {
             // 如果是顶级节点, 遍历该父节点的所有子节点
@@ -271,12 +282,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public boolean checkMenuNameUnique(SysMenuDTO menu) {
-        Long menuId = menu.getMenuId() == null ? -1L : menu.getMenuId();
+        Long menuId = menu.getId() == null ? -1L : menu.getId();
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysMenu::getMenuName, menu.getMenuName())
                 .eq(SysMenu::getParentId, menu.getParentId());
         SysMenu info = getOne(wrapper);
-        if (info != null && info.getMenuId().longValue() != menuId.longValue()) {
+        if (info != null && info.getId().longValue() != menuId.longValue()) {
             return false;
         }
         return true;
@@ -303,7 +314,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     private List<SysMenuVO> getChildList(List<SysMenuVO> list, SysMenuVO t) {
         List<SysMenuVO> tlist = new ArrayList<>();
         for (SysMenuVO n : list) {
-            if (n.getParentId() != null && n.getParentId().longValue() == t.getMenuId().longValue()) {
+            if (n.getParentId() != null && n.getParentId().equals(t.getId())) {
                 tlist.add(n);
             }
         }
@@ -318,15 +329,17 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     }
 
     @Override
-    public List<MenuTreeVO> buildMenuTreeForRouter(String userId) {
+    public List<RouteTreeVO> buildMenuTreeForRouter(String userId) {
         // 查询用户菜单列表
         List<SysMenuVO> menus = selectMenuList(userId);
+
+        log.info("menus: {}", menus);
         
-        // 转换为MenuTreeVO列表
-        List<MenuTreeVO> menuTreeList = new ArrayList<>();
+        // 转换为RouteTreeVO列表
+        List<RouteTreeVO> menuTreeList = new ArrayList<>();
         for (SysMenuVO menu : menus) {
-            MenuTreeVO menuTree = new MenuTreeVO();
-            menuTree.setMenuId(menu.getMenuId());
+            RouteTreeVO menuTree = new RouteTreeVO();
+            menuTree.setId(menu.getId());
             menuTree.setParentId(menu.getParentId());
             menuTree.setName(menu.getMenuName());
             menuTree.setPath(menu.getPath());
@@ -350,15 +363,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     /**
      * 构建前端路由树
      */
-    private List<MenuTreeVO> buildRouteTree(List<MenuTreeVO> menus) {
-        List<MenuTreeVO> returnList = new ArrayList<>();
+    private List<RouteTreeVO> buildRouteTree(List<RouteTreeVO> menus) {
+        List<RouteTreeVO> returnList = new ArrayList<>();
         List<Long> tempList = new ArrayList<>();
         
         // 先找出所有顶级菜单（父ID为0或null）
-        for (MenuTreeVO menu : menus) {
+        for (RouteTreeVO menu : menus) {
             if (menu.getParentId() == null || menu.getParentId() == 0) {
-                tempList.add(menu.getMenuId());
-                MenuTreeVO tree = findChildren(menu, menus);
+                tempList.add(menu.getId());
+                RouteTreeVO tree = findChildren(menu, menus);
                 returnList.add(tree);
             }
         }
@@ -373,17 +386,89 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     /**
      * 查找子节点
      */
-    private MenuTreeVO findChildren(MenuTreeVO tree, List<MenuTreeVO> list) {
+    private RouteTreeVO findChildren(RouteTreeVO tree, List<RouteTreeVO> list) {
         tree.setChildren(new ArrayList<>());
-        List<MenuTreeVO> childList = new ArrayList<>();
-        for (MenuTreeVO menu : list) {
-            if (menu.getParentId() != null && menu.getParentId().longValue() == tree.getMenuId().longValue()) {
+        List<RouteTreeVO> childList = new ArrayList<>();
+        for (RouteTreeVO menu : list) {
+            if (menu.getParentId() != null && menu.getParentId().equals(tree.getId())) {
                 childList.add(findChildren(menu, list));
             }
         }
-        if (childList.size() > 0) {
+        if (!childList.isEmpty()) {
             tree.setChildren(childList);
         }
         return tree;
+    }
+
+    /**
+     * 分页查询菜单树
+     *
+     * @param query 查询条件
+     * @return 分页菜单树
+     */
+    @Override
+    public PageDTO<MenuTreeVO> getMenuTreePage(SysMenuTreeQuery query) {
+        // 1. 查询顶级菜单（父ID为0或null）
+        LambdaQueryWrapper<SysMenu> wrapper = Wrappers.<SysMenu>lambdaQuery();
+        wrapper.isNull(SysMenu::getParentId)
+                .or()
+                .eq(SysMenu::getParentId, 0)
+                .like(query.getMenuName() != null, SysMenu::getMenuName, query.getMenuName())
+                .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
+                .eq(query.getMenuType() != null, SysMenu::getMenuType, query.getMenuType())
+                .orderByAsc(SysMenu::getOrderNum);
+
+        // 创建分页对象
+        Page<SysMenu> page = query.toMpPage("order_num", true);
+        // 执行分页查询
+        IPage<SysMenu> pageResult = this.page(page, wrapper);
+
+        // 转换为MenuPageVO
+        List<MenuTreeVO> menuTreeVOList = pageResult.getRecords().stream().map(menu -> {
+            MenuTreeVO menuTreeVO = convertToMenuTreeVO(menu);
+
+            // 查询子菜单
+            LambdaQueryWrapper<SysMenu> childWrapper = Wrappers.<SysMenu>lambdaQuery();
+            childWrapper.eq(SysMenu::getParentId, menu.getId())
+                    .orderByAsc(SysMenu::getOrderNum);
+            List<SysMenu> children = this.list(childWrapper);
+            if (CollUtil.isNotEmpty(children)) {
+                List<MenuTreeVO> childMenus = children.stream().map(this::convertToMenuTreeVO).collect(Collectors.toList());
+                menuTreeVO.setChildren(childMenus);
+            }
+            
+            return menuTreeVO;
+        }).collect(Collectors.toList());
+
+        // 3. 构建分页结果
+        PageDTO<MenuTreeVO> result = new PageDTO<>();
+        result.setCurrent(pageResult.getCurrent());
+        result.setSize(pageResult.getSize());
+        result.setTotal(pageResult.getTotal());
+        result.setPages(pageResult.getPages());
+        result.setRecords(menuTreeVOList);
+
+        return result;
+    }
+
+    private MenuTreeVO convertToMenuTreeVO(SysMenu child) {
+        MenuTreeVO childMenu = new MenuTreeVO();
+        childMenu.setId(child.getId());
+
+        childMenu.setParentId(child.getParentId());
+        childMenu.setMenuType(child.getMenuType() != null ? child.getMenuType().getValue() : "");
+        childMenu.setMenuName(child.getTitle());
+        childMenu.setRouteName(child.getMenuName());
+        childMenu.setRoutePath(child.getPath());
+        childMenu.setComponent(child.getComponent());
+        childMenu.setOrder(child.getOrderNum());
+        childMenu.setI18nKey(child.getI18nKey());
+        childMenu.setIcon(child.getIcon());
+        childMenu.setIconType("1");
+        childMenu.setStatus(child.getStatus() != null ? child.getStatus().getValue(): "");
+        childMenu.setHideInMenu(SysMenuVisibleEnum.HIDE.equals(child.getVisible()));
+        childMenu.setCreateBy(child.getCreateBy());
+        childMenu.setUpdateBy(child.getUpdateBy());
+        return childMenu;
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(value = "soybean-upms", contextId = "SysRoleClient", path = "/upms/role")
+@FeignClient(value = "soybean-upms", contextId = "SysRoleClient", path = "/systemManage/role")
 public interface SysRoleClient {
     /**
      * 根据用户ID获取角色列表
