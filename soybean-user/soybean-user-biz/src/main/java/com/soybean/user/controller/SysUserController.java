@@ -12,6 +12,7 @@ import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.user.api.clients.SysUserClient;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.dto.PasswordUpdateDTO;
+import com.soybean.user.api.vo.SysUserCreateResultVO;
 import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
@@ -47,12 +48,13 @@ public class SysUserController implements SysUserClient {
      * 新增系统用户
      */
     @PostMapping
-    @RequirePermission(value = "system:user:list", orRole = "admin")
-    public Result<Void> add(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    public Result<SysUserCreateResultVO> add(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
 
         try {
-            if (sysUserService.addSysUser(sysUserDTO)) {
-                return Result.ok();
+            SysUserCreateResultVO result = sysUserService.addSysUser(sysUserDTO);
+            if (result != null) {
+                return Result.ok(result);
             } else {
                 return Result.fail("添加失败");
             }
@@ -65,7 +67,7 @@ public class SysUserController implements SysUserClient {
      * 删除系统用户
      */
     @DeleteMapping("/{ids}")
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<Void> delete(@PathVariable String ids) {
         try {
             List<String> idList = Arrays.asList(ids.split(","));
@@ -89,7 +91,7 @@ public class SysUserController implements SysUserClient {
      * 修改系统用户
      */
     @PutMapping
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<Void> update(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
         try {
             if (sysUserService.updateSysUser(sysUserDTO)) {
@@ -106,7 +108,7 @@ public class SysUserController implements SysUserClient {
      * 根据ID查询系统用户
      */
     @GetMapping("/{id}")
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<SysUserVO> getById(@PathVariable String id) {
         try {
             SysUserVO sysUserVO = sysUserService.getSysUserVOById(id);
@@ -124,7 +126,7 @@ public class SysUserController implements SysUserClient {
      * 分页查询系统用户列表
      */
     @GetMapping("/page")
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<PageDTO<SysUserVO>> page(SysUserQuery query) {
         try {
             PageDTO<SysUserVO> userPage = sysUserService.getSysUserPage(query);
@@ -138,7 +140,7 @@ public class SysUserController implements SysUserClient {
      * 查询所有系统用户
      */
     @GetMapping("/list")
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<List<SysUserVO>> list() {
         try {
             List<SysUserVO> list = sysUserService.getAllSysUsers();
@@ -152,7 +154,7 @@ public class SysUserController implements SysUserClient {
      * 修改状态
      */
     @PutMapping("/status/{id}/{status}")
-    @RequirePermission(value = "system:user:list", orRole = "admin")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
     public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
         try {
             // 检查是否为admin账号(ID为1)，不允许修改admin账号状态
@@ -177,7 +179,7 @@ public class SysUserController implements SysUserClient {
     @SaCheckOr(
             login = @SaCheckLogin,
             role = @SaCheckRole("admin"),
-            permission = @SaCheckPermission("system:user:list")
+            permission = @SaCheckPermission("manage:user:list")
     )
     public Result<Void> updatePassword(@Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
         try {

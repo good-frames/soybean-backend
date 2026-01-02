@@ -49,8 +49,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         SysUserVO sysUserVO = new SysUserVO();
         sysUserVO.setId(sysUser.getUserId());
-        sysUserVO.setUsername(sysUser.getUsername());
-        sysUserVO.setNickname(sysUser.getNickname());
+        sysUserVO.setUserName(sysUser.getUsername());
+        sysUserVO.setNickName(sysUser.getNickname());
         sysUserVO.setPhone(sysUser.getPhone());
         sysUserVO.setEmail(sysUser.getEmail());
         sysUserVO.setAvatar(sysUser.getAvatar());
@@ -70,7 +70,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public boolean addSysUser(SysUserDTO sysUserDTO) {
+    public com.soybean.user.api.vo.SysUserCreateResultVO addSysUser(SysUserDTO sysUserDTO) {
         // 检查用户名是否已存在
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getUsername, sysUserDTO.getUsername())
@@ -84,8 +84,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = new SysUser();
         sysUser.setUsername(sysUserDTO.getUsername());
 
+        // 生成随机密码（如果未提供）
+        String originalPassword = sysUserDTO.getPassword();
+        if (originalPassword == null || originalPassword.trim().isEmpty()) {
+            // 生成8位随机密码
+            originalPassword = generateRandomPassword(8);
+        }
+        
         // 加密密码
-        String encryptedPassword = PasswordUtil.encrypt(sysUserDTO.getPassword());
+        String encryptedPassword = PasswordUtil.encrypt(originalPassword);
         sysUser.setPassword(encryptedPassword);
 
         sysUser.setNickname(sysUserDTO.getNickname());
@@ -100,7 +107,38 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 设置删除标志为未删除
         sysUser.setDelFlag(SysUserDelFlagEnum.NORMAL);
 
-        return this.save(sysUser);
+        // 保存用户
+        boolean success = this.save(sysUser);
+        if (!success) {
+            return null;
+        }
+        
+        // 构建返回结果
+        com.soybean.user.api.vo.SysUserCreateResultVO result = new com.soybean.user.api.vo.SysUserCreateResultVO();
+        result.setId(sysUser.getUserId());
+        result.setUserName(sysUser.getUsername());
+        result.setGeneratedPassword(originalPassword);
+        
+        return result;
+    }
+    
+    /**
+     * 生成随机密码
+     * @param length 密码长度
+     * @return 随机密码
+     */
+    private String generateRandomPassword(int length) {
+        // 定义字符集
+        String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder password = new StringBuilder();
+        
+        // 生成随机密码
+        for (int i = 0; i < length; i++) {
+            int index = (int) (Math.random() * charSet.length());
+            password.append(charSet.charAt(index));
+        }
+        
+        return password.toString();
     }
 
     @Override
@@ -166,11 +204,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL); // 只查询未删除的用户
 
-        if (query.getUsername() != null && !query.getUsername().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getUsername, query.getUsername());
+        if (query.getUserName() != null && !query.getUserName().trim().isEmpty()) {
+            queryWrapper.like(SysUser::getUsername, query.getUserName());
         }
-        if (query.getNickname() != null && !query.getNickname().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getNickname, query.getNickname());
+        if (query.getNickName() != null && !query.getNickName().trim().isEmpty()) {
+            queryWrapper.like(SysUser::getNickname, query.getNickName());
         }
         if (query.getPhone() != null && !query.getPhone().trim().isEmpty()) {
             queryWrapper.like(SysUser::getPhone, query.getPhone());
@@ -184,8 +222,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         this.page(page, queryWrapper);
 
-        // 使用PageDTO.of方法，直接转换
-        return PageDTO.of(page, SysUserVO.class);
+        // 使用PageDTO.of方法，传入转换函数
+        return PageDTO.of(page, this::convertToVO);
     }
 
     @Override

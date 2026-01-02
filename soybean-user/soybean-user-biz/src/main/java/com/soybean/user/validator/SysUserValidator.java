@@ -27,7 +27,7 @@ public class SysUserValidator extends BaseUserValidator implements Validator {
         validateUsername(adminUser.getUsername(), errors);
 
         // 验证密码
-        validatePassword(adminUser.getPassword(), errors);
+//        validatePassword(adminUser.getPassword(), errors);
 
         // 验证昵称
         validateNickname(adminUser.getNickname(), errors);

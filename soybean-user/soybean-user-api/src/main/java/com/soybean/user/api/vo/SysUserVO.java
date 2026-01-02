@@ -28,24 +28,21 @@ public class SysUserVO {
     /**
      * 用户名
      */
-    @Desensitization(NameDesensitization.class)
-    private String username;
+    private String userName;
 
     /**
      * 昵称
      */
-    private String nickname;
+    private String nickName;
 
     /**
      * 手机号
      */
-    @Desensitization(PhoneDesensitization.class)
     private String phone;
 
     /**
      * 邮箱
      */
-    @Desensitization(EmailDesensitization.class)
     private String email;
 
     /**

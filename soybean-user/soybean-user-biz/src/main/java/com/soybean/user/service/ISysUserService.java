@@ -26,9 +26,9 @@ public interface ISysUserService extends IService<SysUser> {
      * 新增系统用户
      *
      * @param sysUserDTO 用户信息
-     * @return 是否成功
+     * @return 新增结果，包含用户ID和生成的密码
      */
-    boolean addSysUser(SysUserDTO sysUserDTO);
+    com.soybean.user.api.vo.SysUserCreateResultVO addSysUser(SysUserDTO sysUserDTO);
 
     /**
      * 删除系统用户
