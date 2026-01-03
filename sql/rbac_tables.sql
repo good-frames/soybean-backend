@@ -10,7 +10,7 @@ CREATE TABLE `sys_user` (
   `nickname` varchar(30) NOT NULL COMMENT '用户昵称',
   `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
   `phone` varchar(11) DEFAULT '' COMMENT '手机号码',
-  `gender` char(1) DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+  `gender` char(1) DEFAULT '0' COMMENT '用户性别（0女 1男 2未知）',
   `avatar` varchar(100) DEFAULT '' COMMENT '头像地址',
   `password` varchar(100) DEFAULT '' COMMENT '密码',
   `status` char(1) DEFAULT '0' COMMENT '帐号状态（0停用 1正常）',
@@ -21,7 +21,6 @@ CREATE TABLE `sys_user` (
   `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `idx_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';

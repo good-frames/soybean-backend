@@ -100,5 +100,5 @@ public interface ISysUserService extends IService<SysUser> {
      * @param userId 用户ID
      * @return 用户信息（包含角色和权限）
      */
-    UserInfoVO getCurrentUserInfo(String userId);
+    SysUserVO getCurrentUserInfo(String userId);
 }

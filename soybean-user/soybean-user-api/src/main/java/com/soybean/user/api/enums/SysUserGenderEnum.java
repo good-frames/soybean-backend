@@ -16,12 +16,12 @@ public enum SysUserGenderEnum implements BaseEnum<String> {
     /**
      * 男
      */
-    MALE("0", "男"),
+    MALE("1", "男"),
 
     /**
      * 女
      */
-    FEMALE("1", "女"),
+    FEMALE("0", "女"),
 
     /**
      * 未知

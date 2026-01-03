@@ -12,6 +12,7 @@ import com.soybean.user.api.enums.SysUserDelFlagEnum;
 import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
+import com.soybean.user.api.vo.SysUserCreateResultVO;
 import com.soybean.user.api.vo.SysUserVO;
 import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.user.mapper.SysUserMapper;
@@ -42,7 +43,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param sysUser 系统用户实体
      * @return 用户VO
      */
-    private SysUserVO convertToVO(SysUser sysUser) {
+    private SysUserVO convertToSysUserVO(SysUser sysUser) {
         if (sysUser == null) {
             return null;
         }
@@ -70,32 +71,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public com.soybean.user.api.vo.SysUserCreateResultVO addSysUser(SysUserDTO sysUserDTO) {
-        // 检查用户名是否已存在
-        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getUsername, sysUserDTO.getUsername())
-                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL.getValue());
-        SysUser existUser = this.getOne(queryWrapper);
-        if (existUser != null) {
-            throw new BusinessException("用户名已存在");
-        }
+    public SysUserCreateResultVO addSysUser(SysUserDTO sysUserDTO) {
+        // 验证用户名唯一性
+        validateUsernameUnique(sysUserDTO.getUserName(), null);
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
-        sysUser.setUsername(sysUserDTO.getUsername());
+        sysUser.setUsername(sysUserDTO.getUserName());
 
         // 生成随机密码（如果未提供）
-        String originalPassword = sysUserDTO.getPassword();
-        if (originalPassword == null || originalPassword.trim().isEmpty()) {
-            // 生成8位随机密码
-            originalPassword = generateRandomPassword(8);
-        }
+        String originalPassword = generateRandomPassword(8);
         
         // 加密密码
         String encryptedPassword = PasswordUtil.encrypt(originalPassword);
         sysUser.setPassword(encryptedPassword);
 
-        sysUser.setNickname(sysUserDTO.getNickname());
+        sysUser.setNickname(sysUserDTO.getNickName());
         sysUser.setPhone(sysUserDTO.getPhone());
         sysUser.setEmail(sysUserDTO.getEmail());
         sysUser.setAvatar(sysUserDTO.getAvatar());
@@ -114,7 +105,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         
         // 构建返回结果
-        com.soybean.user.api.vo.SysUserCreateResultVO result = new com.soybean.user.api.vo.SysUserCreateResultVO();
+        SysUserCreateResultVO result = new SysUserCreateResultVO();
         result.setId(sysUser.getUserId());
         result.setUserName(sysUser.getUsername());
         result.setGeneratedPassword(originalPassword);
@@ -122,6 +113,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return result;
     }
     
+    /**
+     * 验证用户名唯一性，如果用户名已存在则抛出异常
+     * @param username 用户名
+     * @param excludeUserId 排除的用户ID（可为null）
+     * @throws BusinessException 如果用户名已存在
+     */
+    private void validateUsernameUnique(String username, String excludeUserId) {
+        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
+                .eq(SysUser::getUsername, username);
+                
+        // 如果需要排除特定用户
+        if (excludeUserId != null) {
+            queryWrapper.ne(SysUser::getUserId, Long.valueOf(excludeUserId));
+        }
+        
+        if (this.getOne(queryWrapper) != null) {
+            throw new BusinessException("用户名已存在");
+        }
+    }
+
+    private void validateUserExists(SysUser sysUser) {
+        if (sysUser == null || SysUserDelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
+            throw new BusinessException("用户不存在");
+        }
+    }
+
     /**
      * 生成随机密码
      * @param length 密码长度
@@ -143,50 +160,32 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public boolean deleteSysUsers(List<String> ids) {
-        // 逻辑删除，将del_flag设置为2
-        return ids.stream().allMatch(id -> {
-            SysUser sysUser = new SysUser();
-            sysUser.setUserId(id);
-            sysUser.setDelFlag(SysUserDelFlagEnum.DELETED);
-            return this.updateById(sysUser);
-        });
+        // 检查是否包含admin账号(ID为1)，不允许删除admin账号
+        if (ids.contains("1")) {
+            throw new BusinessException("不允许删除admin账号");
+        }
+        
+        // 使用 MyBatis-Plus 的物理删除方法
+        return removeByIds(ids);
     }
 
     @Override
     public boolean updateSysUser(SysUserDTO sysUserDTO) {
         // 检查用户是否存在
-        SysUser existUser = this.getById(sysUserDTO.getId());
-        if (existUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(existUser.getDelFlag())) {
-            throw new BusinessException("用户不存在");
-        }
+        SysUser existUser = getById(sysUserDTO.getId());
+        validateUserExists(existUser);
 
-        // 如果修改了用户名，检查新用户名是否已存在
-        if (!existUser.getUsername().equals(sysUserDTO.getUsername())) {
-            LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
-                    .eq(SysUser::getUsername, sysUserDTO.getUsername())
-                    .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL.getValue())
-                    .ne(SysUser::getUserId, Long.valueOf(sysUserDTO.getId()));
-            SysUser userWithSameName = this.getOne(queryWrapper);
-            if (userWithSameName != null) {
-                throw new BusinessException("用户名已存在");
-            }
+        // 如果修改了用户名，验证新用户名唯一性
+        if (!existUser.getUsername().equals(sysUserDTO.getUserName())) {
+            validateUsernameUnique(sysUserDTO.getUserName(), sysUserDTO.getId());
         }
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
         sysUser.setUserId(sysUserDTO.getId());
-        sysUser.setUsername(sysUserDTO.getUsername());
+        sysUser.setUsername(sysUserDTO.getUserName());
 
-        // 如果DTO中提供了密码，则更新密码，否则保留原密码
-        if (sysUserDTO.getPassword() != null && !sysUserDTO.getPassword().isEmpty()) {
-            // 加密密码
-            String encryptedPassword = PasswordUtil.encrypt(sysUserDTO.getPassword());
-            sysUser.setPassword(encryptedPassword);
-        } else {
-            sysUser.setPassword(existUser.getPassword());
-        }
-
-        sysUser.setNickname(sysUserDTO.getNickname());
+        sysUser.setNickname(sysUserDTO.getNickName());
         sysUser.setPhone(sysUserDTO.getPhone());
         sysUser.setEmail(sysUserDTO.getEmail());
         sysUser.setAvatar(sysUserDTO.getAvatar());
@@ -201,38 +200,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public PageDTO<SysUserVO> getSysUserPage(SysUserQuery query) {
         Page<SysUser> page = query.toMpPageDefaultSortByCreateTimeDesc(); // 降序排序
-        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL); // 只查询未删除的用户
 
-        if (query.getUserName() != null && !query.getUserName().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getUsername, query.getUserName());
-        }
-        if (query.getNickName() != null && !query.getNickName().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getNickname, query.getNickName());
-        }
-        if (query.getPhone() != null && !query.getPhone().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getPhone, query.getPhone());
-        }
-        if (query.getEmail() != null && !query.getEmail().trim().isEmpty()) {
-            queryWrapper.like(SysUser::getEmail, query.getEmail());
-        }
-        if (query.getStatus() != null) {
-            queryWrapper.eq(SysUser::getStatus, query.getStatus());
-        }
+        LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
+                .eq(query.getStatus() != null, SysUser::getStatus, query.getStatus())
+                .like(query.getUserName() != null && !query.getUserName().trim().isEmpty(), SysUser::getUsername, query.getUserName())
+                .like(query.getNickName() != null && !query.getNickName().trim().isEmpty(), SysUser::getNickname, query.getNickName())
+                .like(query.getPhone() != null && !query.getPhone().trim().isEmpty(), SysUser::getPhone, query.getPhone())
+                .like(query.getEmail() != null && !query.getEmail().trim().isEmpty(), SysUser::getEmail, query.getEmail());
 
         this.page(page, queryWrapper);
 
         // 使用PageDTO.of方法，传入转换函数
-        return PageDTO.of(page, this::convertToVO);
+        return PageDTO.of(page, this::convertToSysUserVO);
     }
 
     @Override
     public List<SysUserVO> getAllSysUsers() {
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL); // 只查询未删除的用户
-        List<SysUser> list = this.list(queryWrapper);
+        List<SysUser> list = list(queryWrapper);
         // 转换为VO对象
-        return list.stream().map(this::convertToVO).collect(java.util.stream.Collectors.toList());
+        return list.stream().map(this::convertToSysUserVO).collect(java.util.stream.Collectors.toList());
     }
 
     @Override
@@ -240,17 +228,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = new SysUser();
         sysUser.setUserId(id);
         sysUser.setStatus(status);
-        return this.updateById(sysUser);
+        return updateById(sysUser);
     }
 
     @Override
     public boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
         String userId = passwordUpdateDTO.getId();
-        SysUser sysUser = this.getById(userId);
-        if (sysUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
-            throw new BusinessException("用户不存在");
-        }
+        SysUser sysUser = getById(userId);
+        validateUserExists(sysUser);
 
         // 验证原密码
         if (!PasswordUtil.verify(passwordUpdateDTO.getOldPassword(), sysUser.getPassword())) {
@@ -268,9 +254,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public SysUserVO getSysUserVOById(String id) {
-        SysUser sysUser = this.getById(id);
-        if (sysUser != null && !SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
-            return convertToVO(sysUser);
+        SysUser sysUser = getById(id);
+        if (sysUser != null && !SysUserDelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
+            return convertToSysUserVO(sysUser);
         }
         return null;
     }
@@ -289,34 +275,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public UserInfoVO getCurrentUserInfo(String userId) {
+    public SysUserVO getCurrentUserInfo(String userId) {
         // 获取用户基本信息
-        SysUser sysUser = this.getById(userId);
-        if (sysUser == null || SysUserDelFlagEnum.DELETED.getValue().equals(sysUser.getDelFlag())) {
-            return null;
-        }
+        SysUser sysUser = getById(userId);
+        validateUserExists(sysUser);
 
         // 转换为UserInfoVO
-        UserInfoVO userInfoVO = new UserInfoVO();
-        userInfoVO.setId(sysUser.getUserId());
-        userInfoVO.setUsername(sysUser.getUsername());
-        userInfoVO.setNickname(sysUser.getNickname());
-        userInfoVO.setPhone(sysUser.getPhone());
-        userInfoVO.setEmail(sysUser.getEmail());
-        userInfoVO.setAvatar(sysUser.getAvatar());
-        userInfoVO.setGender(sysUser.getGender());
-        userInfoVO.setStatus(sysUser.getStatus());
-        userInfoVO.setCreateTime(sysUser.getCreateTime());
-        userInfoVO.setUpdateTime(sysUser.getUpdateTime());
+        SysUserVO sysUserVO = convertToSysUserVO(sysUser);
 
         // 从Redis中获取用户角色列表
         List<String> roles = SecurityUtil.getRoles();
-        userInfoVO.setRoles(roles);
+        sysUserVO.setRoles(roles);
 
         // 从Redis中获取用户权限列表
         List<String> permissions = SecurityUtil.getPermissions();
-        userInfoVO.setPermissions(permissions);
+        sysUserVO.setPermissions(permissions);
 
-        return userInfoVO;
+        return sysUserVO;
     }
 }

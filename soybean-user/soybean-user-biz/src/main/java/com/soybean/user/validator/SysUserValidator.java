@@ -12,31 +12,37 @@ import org.springframework.validation.Validator;
  * @author soybean
  */
 @Component
-public class SysUserValidator extends BaseUserValidator implements Validator {
+public class SysUserValidator extends BaseUserValidator {
 
-    @Override
-    public boolean supports(Class<?> clazz) {
-        return SysUserDTO.class.isAssignableFrom(clazz);
-    }
-
-    @Override
-    public void validate(Object target, Errors errors) {
+    public void addValidate(Object target, Errors errors) {
         SysUserDTO adminUser = (SysUserDTO) target;
 
         // 验证用户名
-        validateUsername(adminUser.getUsername(), errors);
+        extracted(errors, adminUser);
+    }
 
-        // 验证密码
-//        validatePassword(adminUser.getPassword(), errors);
+    public void updateValidate(Object target, Errors errors) {
+        SysUserDTO adminUser = (SysUserDTO) target;
+
+        // 验证ID
+        validateId(adminUser.getId(), "id", true, errors);
+
+        extracted(errors, adminUser);
+    }
+
+
+    private void extracted(Errors errors, SysUserDTO adminUser) {
+        // 验证用户名
+        validateUsername(adminUser.getUserName(), "userName", true, errors);
 
         // 验证昵称
-        validateNickname(adminUser.getNickname(), errors);
+        validateNickname(adminUser.getNickName(), "nickName", true, errors);
 
         // 验证手机号
-        validateRequiredPhone(adminUser.getPhone(), errors);
+        validatePhone(adminUser.getPhone(), "phone", true, errors);
 
         // 验证邮箱
-        validateEmail(adminUser.getEmail(), errors);
+        validateEmail(adminUser.getEmail(), "email", false, errors);
 
         // 验证状态
         validateStatus(adminUser.getStatus(), errors);

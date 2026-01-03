@@ -29,12 +29,12 @@ public class UserInfoVO {
      * 用户名
      */
     @Desensitization(NameDesensitization.class)
-    private String username;
+    private String userName;
 
     /**
      * 昵称
      */
-    private String nickname;
+    private String nickName;
 
     /**
      * 手机号

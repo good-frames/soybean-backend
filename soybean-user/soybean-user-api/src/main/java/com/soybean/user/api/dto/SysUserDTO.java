@@ -22,17 +22,13 @@ public class SysUserDTO implements Serializable {
     /**
      * 用户名
      */
-    private String username;
+    private String userName;
 
-    /**
-     * 密码（新增时需要）
-     */
-    private String password;
 
     /**
      * 昵称
      */
-    private String nickname;
+    private String nickName;
 
     /**
      * 手机号

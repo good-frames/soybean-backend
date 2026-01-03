@@ -78,8 +78,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             menuList = list(wrapper);
         }
 
-        log.info("lla:{}", menuList);
-
         return BeanUtil.copyToList(menuList, SysMenuVO.class);
     }
 

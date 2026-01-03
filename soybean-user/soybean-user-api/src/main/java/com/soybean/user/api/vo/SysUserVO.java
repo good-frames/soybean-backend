@@ -10,6 +10,7 @@ import com.soybean.user.api.enums.SysUserGenderEnum;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -87,4 +88,14 @@ public class SysUserVO {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime loginDate;
+
+    /**
+     * 角色列表
+     */
+    private List<String> roles;
+
+    /**
+     * 权限列表
+     */
+    private List<String> permissions;
 }

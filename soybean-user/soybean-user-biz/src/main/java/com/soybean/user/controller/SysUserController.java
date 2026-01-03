@@ -6,7 +6,6 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.soybean.common.core.utils.Result;
 import com.soybean.common.mybatis.dto.PageDTO;
-import com.soybean.common.security.annotation.RequireLogin;
 import com.soybean.common.security.annotation.RequirePermission;
 import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.user.api.clients.SysUserClient;
@@ -17,7 +16,6 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
-import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
 import lombok.Data;
@@ -49,7 +47,7 @@ public class SysUserController implements SysUserClient {
      */
     @PostMapping
     @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<SysUserCreateResultVO> add(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
+    public Result<SysUserCreateResultVO> add(@ValidatedBy(value = "sysUserValidator", method = "addValidate") @RequestBody SysUserDTO sysUserDTO) {
 
         try {
             SysUserCreateResultVO result = sysUserService.addSysUser(sysUserDTO);
@@ -66,11 +64,10 @@ public class SysUserController implements SysUserClient {
     /**
      * 删除系统用户
      */
-    @DeleteMapping("/{ids}")
+    @DeleteMapping
     @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<Void> delete(@PathVariable String ids) {
+    public Result<Void> delete(@RequestBody List<String> idList) {
         try {
-            List<String> idList = Arrays.asList(ids.split(","));
             
             // 检查是否包含admin账号(ID为1)，不允许删除admin账号
             if (idList.contains("1")) {
@@ -92,12 +89,55 @@ public class SysUserController implements SysUserClient {
      */
     @PutMapping
     @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<Void> update(@ValidatedBy("sysUserValidator") @RequestBody SysUserDTO sysUserDTO) {
+    public Result<Void> update(@ValidatedBy(value = "sysUserValidator", method = "updateValidate") @RequestBody SysUserDTO sysUserDTO) {
         try {
             if (sysUserService.updateSysUser(sysUserDTO)) {
                 return Result.ok();
             } else {
                 return Result.fail("更新失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改状态
+     */
+    @PutMapping("/status/{id}/{status}")
+    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
+        try {
+            // 检查是否为admin账号(ID为1)，不允许修改admin账号状态
+            if ("1".equals(id)) {
+                return Result.fail("不允许修改admin账号状态");
+            }
+
+            if (sysUserService.updateSysUserStatus(id, SysUserStatusEnum.fromValue(status))) {
+                return Result.ok();
+            } else {
+                return Result.fail("状态更新失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改密码
+     */
+    @PutMapping("/password")
+    @SaCheckOr(
+            login = @SaCheckLogin,
+            role = @SaCheckRole("admin"),
+            permission = @SaCheckPermission("manage:user:list")
+    )
+    public Result<Void> updatePassword(@Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+        try {
+            if (sysUserService.updatePassword(passwordUpdateDTO)) {
+                return Result.ok();
+            } else {
+                return Result.fail("密码修改失败");
             }
         } catch (Exception e) {
             return Result.fail(e.getMessage());
@@ -151,49 +191,6 @@ public class SysUserController implements SysUserClient {
     }
 
     /**
-     * 修改状态
-     */
-    @PutMapping("/status/{id}/{status}")
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
-        try {
-            // 检查是否为admin账号(ID为1)，不允许修改admin账号状态
-            if ("1".equals(id)) {
-                return Result.fail("不允许修改admin账号状态");
-            }
-            
-            if (sysUserService.updateSysUserStatus(id, SysUserStatusEnum.fromValue(status))) {
-                return Result.ok();
-            } else {
-                return Result.fail("状态更新失败");
-            }
-        } catch (Exception e) {
-            return Result.fail(e.getMessage());
-        }
-    }
-
-    /**
-     * 修改密码
-     */
-    @PutMapping("/password")
-    @SaCheckOr(
-            login = @SaCheckLogin,
-            role = @SaCheckRole("admin"),
-            permission = @SaCheckPermission("manage:user:list")
-    )
-    public Result<Void> updatePassword(@Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
-        try {
-            if (sysUserService.updatePassword(passwordUpdateDTO)) {
-                return Result.ok();
-            } else {
-                return Result.fail("密码修改失败");
-            }
-        } catch (Exception e) {
-            return Result.fail(e.getMessage());
-        }
-    }
-
-    /**
      * 根据用户名获取用户信息
      */
     @GetMapping("/getByUsername")
@@ -209,12 +206,12 @@ public class SysUserController implements SysUserClient {
      * 获取当前登录用户信息（包括基本信息、角色和权限）
      */
     @GetMapping("/info/current")
-    public Result<UserInfoVO> getCurrentUserInfo() {
+    public Result<SysUserVO> getCurrentUserInfo() {
         try {
             // 获取当前登录用户ID
             String userId = SecurityUtil.getUserId();
             // 获取用户信息（包括角色和权限）
-            UserInfoVO userInfo = sysUserService.getCurrentUserInfo(userId);
+            SysUserVO userInfo = sysUserService.getCurrentUserInfo(userId);
             if (userInfo != null) {
                 return Result.ok(userInfo);
             } else {

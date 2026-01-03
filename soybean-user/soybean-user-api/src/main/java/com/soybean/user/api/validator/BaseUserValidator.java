@@ -1,6 +1,7 @@
 package com.soybean.user.api.validator;
 
 import com.soybean.common.core.enums.BaseEnum;
+import com.soybean.common.core.validator.CommonValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
@@ -11,63 +12,54 @@ import org.springframework.validation.Errors;
  * @author soybean
  */
 @Slf4j
-public class BaseUserValidator {
+public class BaseUserValidator extends CommonValidator {
+
 
     /**
      * 验证用户名
      */
-    protected void validateUsername(String username, Errors errors) {
-        if (StringUtils.isBlank(username)) {
-            errors.rejectValue("username", "username.blank", "用户名不能为空");
-        } else if (username.length() < 3 || username.length() > 20) {
-            errors.rejectValue("username", "username.length", "用户名长度必须在3-20个字符之间");
+    protected void validateUsername(String userName, String fieldName, Boolean required, Errors errors) {
+        // 验证必填项
+        if (required && StringUtils.isBlank(userName)) {
+            errors.rejectValue(fieldName, "userName.blank", "用户名不能为空");
+            return;
+        }
+
+        // 如果用户名不为空，验证格式
+        if (StringUtils.isNotBlank(userName) && (userName.length() < 3 || userName.length() > 20)) {
+            errors.rejectValue(fieldName, "userName.length", "用户名长度必须在3-20个字符之间");
         }
     }
 
     /**
      * 验证密码
      */
-    protected void validatePassword(String password, Errors errors) {
+    protected void validatePassword(String password, String fieldName, Boolean required, Errors errors) {
+        // 验证必填项
+        if (required && StringUtils.isBlank(password)) {
+            errors.rejectValue(fieldName, "password.blank", "密码不能为空");
+            return;
+        }
+
+        // 如果用户名不为空，验证格式
         if (StringUtils.isNotBlank(password) && (password.length() < 6 || password.length() > 20)) {
-            errors.rejectValue("password", "password.length", "密码长度必须在6-20个字符之间");
+            errors.rejectValue(fieldName, "password.length", "密码长度必须在6-20个字符之间");
         }
     }
 
     /**
      * 验证昵称
      */
-    protected void validateNickname(String nickname, Errors errors) {
-        if (StringUtils.isNotBlank(nickname) && nickname.length() > 30) {
-            errors.rejectValue("nickname", "nickname.length", "昵称长度不能超过30个字符");
+    protected void validateNickname(String nickName, String fieldName, Boolean required, Errors errors) {
+        // 验证必填项
+        if (required && StringUtils.isBlank(nickName)) {
+            errors.rejectValue(fieldName, "nickName.blank", "昵称不能为空");
+            return;
         }
-    }
 
-    /**
-     * 验证手机号
-     */
-    protected void validatePhone(String phone, Errors errors) {
-        if (StringUtils.isNotBlank(phone) && !phone.matches("^1[3-9]\\d{9}$")) {
-            errors.rejectValue("phone", "phone.format", "手机号格式不正确");
-        }
-    }
-
-    /**
-     * 验证必填手机号
-     */
-    protected void validateRequiredPhone(String phone, Errors errors) {
-        if (StringUtils.isBlank(phone)) {
-            errors.rejectValue("phone", "phone.blank", "手机号不能为空");
-        } else if (!phone.matches("^1[3-9]\\d{9}$")) {
-            errors.rejectValue("phone", "phone.format", "手机号格式不正确");
-        }
-    }
-
-    /**
-     * 验证邮箱
-     */
-    protected void validateEmail(String email, Errors errors) {
-        if (StringUtils.isNotBlank(email) && !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
-            errors.rejectValue("email", "email.format", "邮箱格式不正确");
+        // 如果用户名不为空，验证格式
+        if (StringUtils.isNotBlank(nickName) && nickName.length() > 30) {
+            errors.rejectValue(fieldName, "nickName.length", "昵称长度不能超过30个字符");
         }
     }
 
@@ -87,7 +79,7 @@ public class BaseUserValidator {
     protected void validateGender(Object gender, Errors errors) {
         // 性别可以为空，如果不为空则必须是BaseEnum的实例
         if (gender != null && !(gender instanceof BaseEnum)) {
-            errors.rejectValue("gender", "gender.type", "性别必须是0(男)、1(女)或2(未知)");
+            errors.rejectValue("gender", "gender.type", "性别必须是1(男)、0(女)或2(未知)");
         }
     }
 
