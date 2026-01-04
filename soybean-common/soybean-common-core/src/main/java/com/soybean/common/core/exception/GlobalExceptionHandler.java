@@ -2,8 +2,12 @@ package com.soybean.common.core.exception;
 
 import com.soybean.common.core.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Objects;
 
 /**
  * 全局异常处理器
@@ -13,13 +17,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * 处理参数验证异常
+     */
+    @ExceptionHandler(BindException.class)
+    public Result<Void> handleBindException(BindException e) {
+        String msg = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
+        log.error("参数验证失败: {}", msg);
+        return Result.paramError(msg);
+    }
 
     /**
      * 处理参数验证异常
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public Result<Void> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error("参数验证失败: {}", e.getMessage());
+        log.error("参数自定义验证失败: {}", e.getMessage());
         return Result.paramError(e.getMessage());
     }
 

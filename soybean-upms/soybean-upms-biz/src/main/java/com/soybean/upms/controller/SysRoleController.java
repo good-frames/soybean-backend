@@ -30,23 +30,6 @@ public class SysRoleController implements SysRoleClient {
     private final ISysRoleService roleService;
 
     /**
-     * 获取所有角色
-     */
-    @GetMapping("/page")
-    public Result<PageDTO<SysRoleVO>> page(SysRoleQuery query) {
-        PageDTO<SysRoleVO> result = roleService.getRolePage(query);
-        return Result.ok(result);
-    }
-
-    /**
-     * 根据角色编号获取详细信息
-     */
-    @GetMapping(value = "/{roleId}")
-    public Result<SysRoleVO> getInfo(@PathVariable Long roleId) {
-        return Result.ok(BeanUtil.copyProperties(roleService.getById(roleId), SysRoleVO.class));
-    }
-
-    /**
      * 新增角色
      */
     @PostMapping
@@ -57,6 +40,18 @@ public class SysRoleController implements SysRoleClient {
             return Result.fail("新增角色'" + roleDTO.getRoleName() + "'失败，角色权限已存在");
         }
         return roleService.insertRole(roleDTO) ? Result.ok() : Result.fail();
+    }
+
+    /**
+     * 删除角色
+     */
+    @DeleteMapping
+    public Result<Void> remove(@RequestBody List<Long> roleIds) {
+        try {
+            return roleService.deleteRoleByIds(roleIds) ? Result.ok() : Result.fail();
+        } catch (RuntimeException e) {
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
@@ -77,7 +72,6 @@ public class SysRoleController implements SysRoleClient {
         }
         return Result.fail("修改角色'" + roleDTO.getRoleName() + "'失败，请联系管理员");
     }
-
     /**
      * 修改保存数据权限
      */
@@ -105,16 +99,25 @@ public class SysRoleController implements SysRoleClient {
     }
 
     /**
-     * 删除角色
+     * 获取所有角色
      */
-    @DeleteMapping("/{roleIds}")
-    public Result<Void> remove(@PathVariable List<Long> roleIds) {
-        try {
-            return roleService.deleteRoleByIds(roleIds) ? Result.ok() : Result.fail();
-        } catch (RuntimeException e) {
-            return Result.fail(e.getMessage());
-        }
+    @GetMapping("/page")
+    public Result<PageDTO<SysRoleVO>> page(SysRoleQuery query) {
+        PageDTO<SysRoleVO> result = roleService.getRolePage(query);
+        return Result.ok(result);
     }
+
+    /**
+     * 根据角色编号获取详细信息
+     */
+    @GetMapping(value = "/{roleId}")
+    public Result<SysRoleVO> getInfo(@PathVariable Long roleId) {
+        return Result.ok(BeanUtil.copyProperties(roleService.getById(roleId), SysRoleVO.class));
+    }
+
+
+
+
 
     /**
      * 获取角色选择框列表
