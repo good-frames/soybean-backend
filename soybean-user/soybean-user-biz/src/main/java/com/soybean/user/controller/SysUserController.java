@@ -18,12 +18,11 @@ import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
+import com.soybean.user.validator.SysUserValidator;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,8 +46,9 @@ public class SysUserController implements SysUserClient {
      */
     @PostMapping
     @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<SysUserCreateResultVO> add(@ValidatedBy(value = "sysUserValidator", method = "addValidate") @RequestBody SysUserDTO sysUserDTO) {
-
+    public Result<SysUserCreateResultVO> add(
+        @ValidatedBy(value = SysUserValidator.class, method = "addValidate") @RequestBody SysUserDTO sysUserDTO
+    ) {
         try {
             SysUserCreateResultVO result = sysUserService.addSysUser(sysUserDTO);
             if (result != null) {
@@ -89,7 +89,9 @@ public class SysUserController implements SysUserClient {
      */
     @PutMapping
     @RequirePermission(value = "manage:user:list", orRole = "admin")
-    public Result<Void> update(@ValidatedBy(value = "sysUserValidator", method = "updateValidate") @RequestBody SysUserDTO sysUserDTO) {
+    public Result<Void> update(
+        @ValidatedBy(value = SysUserValidator.class, method = "updateValidate") @RequestBody SysUserDTO sysUserDTO
+    ) {
         try {
             if (sysUserService.updateSysUser(sysUserDTO)) {
                 return Result.ok();
@@ -132,9 +134,26 @@ public class SysUserController implements SysUserClient {
             role = @SaCheckRole("admin"),
             permission = @SaCheckPermission("manage:user:list")
     )
-    public Result<Void> updatePassword(@Validated @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+    public Result<Void> updatePassword(@ValidatedBy(value = SysUserValidator.class, method = "updatePasswordValidate") @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
         try {
             if (sysUserService.updatePassword(passwordUpdateDTO)) {
+                return Result.ok();
+            } else {
+                return Result.fail("密码修改失败");
+            }
+        } catch (Exception e) {
+            return Result.fail(e.getMessage());
+        }
+    }
+    
+    /**
+     * 管理员修改用户密码
+     */
+    @PutMapping("/password/admin")
+    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
+    public Result<Void> adminUpdatePassword(@ValidatedBy(value = SysUserValidator.class, method = "updatePasswordValidate") @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
+        try {
+            if (sysUserService.adminUpdatePassword(passwordUpdateDTO)) {
                 return Result.ok();
             } else {
                 return Result.fail("密码修改失败");
@@ -148,7 +167,7 @@ public class SysUserController implements SysUserClient {
      * 根据ID查询系统用户
      */
     @GetMapping("/{id}")
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
     public Result<SysUserVO> getById(@PathVariable String id) {
         try {
             SysUserVO sysUserVO = sysUserService.getSysUserVOById(id);
@@ -166,7 +185,7 @@ public class SysUserController implements SysUserClient {
      * 分页查询系统用户列表
      */
     @GetMapping("/page")
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
     public Result<PageDTO<SysUserVO>> page(SysUserQuery query) {
         try {
             PageDTO<SysUserVO> userPage = sysUserService.getSysUserPage(query);
@@ -180,7 +199,7 @@ public class SysUserController implements SysUserClient {
      * 查询所有系统用户
      */
     @GetMapping("/list")
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
     public Result<List<SysUserVO>> list() {
         try {
             List<SysUserVO> list = sysUserService.getAllSysUsers();

@@ -14,7 +14,6 @@ import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserCreateResultVO;
 import com.soybean.user.api.vo.SysUserVO;
-import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.user.mapper.SysUserMapper;
 import com.soybean.user.service.ISysUserService;
 import com.soybean.common.core.exception.BusinessException;
@@ -22,7 +21,6 @@ import com.soybean.common.security.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -203,6 +201,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(query.getStatus() != null, SysUser::getStatus, query.getStatus())
+                .eq(query.getGender() != null, SysUser::getGender, query.getGender())
                 .like(query.getUserName() != null && !query.getUserName().trim().isEmpty(), SysUser::getUsername, query.getUserName())
                 .like(query.getNickName() != null && !query.getNickName().trim().isEmpty(), SysUser::getNickname, query.getNickName())
                 .like(query.getPhone() != null && !query.getPhone().trim().isEmpty(), SysUser::getPhone, query.getPhone())
@@ -241,6 +240,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 验证原密码
         if (!PasswordUtil.verify(passwordUpdateDTO.getOldPassword(), sysUser.getPassword())) {
             throw new BusinessException("原密码错误");
+        }
+
+        // 加密新密码
+        String encryptedPassword = PasswordUtil.encrypt(passwordUpdateDTO.getNewPassword());
+
+        // 更新密码
+        sysUser.setPassword(encryptedPassword);
+
+        return this.updateById(sysUser);
+    }
+    
+    @Override
+    public boolean adminUpdatePassword(PasswordUpdateDTO passwordUpdateDTO) {
+        // 查询用户
+        String userId = passwordUpdateDTO.getId();
+        SysUser sysUser = getById(userId);
+        validateUserExists(sysUser);
+        
+        // 检查是否为admin账号(ID为1)，不允许修改admin账号密码
+        if ("1".equals(userId)) {
+            throw new BusinessException("不允许修改admin账号密码");
         }
 
         // 加密新密码

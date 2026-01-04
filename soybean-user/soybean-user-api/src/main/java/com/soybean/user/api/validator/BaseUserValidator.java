@@ -92,4 +92,15 @@ public class BaseUserValidator extends CommonValidator {
             errors.rejectValue("delFlag", "delFlag.type", "删除标记必须是0(正常)或2(删除)");
         }
     }
+    
+//    /**
+//     * 验证管理员修改密码请求
+//     */
+//    public void validateAdminPasswordUpdate(AdminPasswordUpdateDTO request, Errors errors) {
+//        // 验证用户ID
+//        validateRequiredId(request.getUserId(), "userId", errors);
+//
+//        // 验证新密码
+//        validatePassword(request.getNewPassword(), "newPassword", true, errors);
+//    }
 }

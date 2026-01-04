@@ -27,7 +27,7 @@ public class ValidationAspect {
 
     private final ApplicationContext applicationContext;
 
-    @Around("execution(* com.soybean.*.controller.*.*(..))")
+    @Around("execution(* com.soybean..controller.*.*(..))")
     public Object validate(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Object[] args = joinPoint.getArgs();

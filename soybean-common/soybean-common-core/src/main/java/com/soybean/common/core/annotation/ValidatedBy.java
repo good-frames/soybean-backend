@@ -10,13 +10,13 @@ import java.lang.annotation.Target;
  *
  * @author soybean
  */
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidatedBy {
     /**
      * 验证器的Bean名称
      */
-    String value();
+    Class<?> value();
     
     /**
      * 验证方法名称，默认为"validate"

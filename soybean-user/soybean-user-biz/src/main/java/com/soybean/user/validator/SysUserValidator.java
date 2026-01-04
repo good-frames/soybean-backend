@@ -1,10 +1,10 @@
 package com.soybean.user.validator;
 
+import com.soybean.user.api.dto.PasswordUpdateDTO;
 import com.soybean.user.api.dto.SysUserDTO;
 import com.soybean.user.api.validator.BaseUserValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 /**
  * 管理员用户验证器
@@ -28,6 +28,14 @@ public class SysUserValidator extends BaseUserValidator {
         validateId(adminUser.getId(), "id", true, errors);
 
         extracted(errors, adminUser);
+    }
+
+    public void updatePasswordValidate(Object target, Errors errors) {
+        PasswordUpdateDTO passwordUpdateDTO = (PasswordUpdateDTO) target;
+        // 验证ID
+        validateId(passwordUpdateDTO.getId(), "id", true, errors);
+        // 验证密码
+        validatePassword(passwordUpdateDTO.getNewPassword(), "newPassword", true, errors);
     }
 
 

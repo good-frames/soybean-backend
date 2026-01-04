@@ -8,7 +8,6 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
-import com.soybean.user.api.vo.UserInfoVO;
 
 import java.util.List;
 
@@ -77,6 +76,14 @@ public interface ISysUserService extends IService<SysUser> {
      * @return 是否成功
      */
     boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO);
+    
+    /**
+     * 管理员修改用户密码
+     *
+     * @param passwordUpdateDTO 管理员密码更新信息
+     * @return 是否成功
+     */
+    boolean adminUpdatePassword(PasswordUpdateDTO passwordUpdateDTO);
 
     /**
      * 根据ID查询系统用户VO

@@ -2,6 +2,7 @@ package com.soybean.user.api.query;
 
 import com.soybean.common.mybatis.query.PageQuery;
 import com.soybean.user.api.enums.SysUserStatusEnum;
+import com.soybean.user.api.enums.SysUserGenderEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -40,4 +41,9 @@ public class SysUserQuery extends PageQuery implements Serializable {
      * 状态：0->禁用；1->启用
      */
     private SysUserStatusEnum status;
+    
+    /**
+     * 性别：1->男；0->女；2->未知
+     */
+    private SysUserGenderEnum gender;
 }
