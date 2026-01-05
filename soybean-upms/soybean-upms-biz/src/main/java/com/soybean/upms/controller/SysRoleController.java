@@ -115,40 +115,12 @@ public class SysRoleController implements SysRoleClient {
         return Result.ok(BeanUtil.copyProperties(roleService.getById(roleId), SysRoleVO.class));
     }
 
-
-
-
-
     /**
      * 获取角色选择框列表
      */
     @GetMapping("/getAllRoles")
     public Result<List<SysRoleVO>> allList() {
         return Result.ok(roleService.selectRoleAll());
-    }
-
-    /**
-     * 取消授权用户角色
-     */
-    @PutMapping("/authUser/cancel")
-    public Result<Void> cancelAuthUser(@RequestBody SysRoleDTO roleDTO) {
-        return Result.ok();
-    }
-
-    /**
-     * 批量取消授权用户角色
-     */
-    @PutMapping("/authUser/cancelAll")
-    public Result<Void> cancelAuthUserAll(Long roleId, Long[] userIds) {
-        return Result.ok();
-    }
-
-    /**
-     * 批量选择用户授权
-     */
-    @PutMapping("/authUser/selectAll")
-    public Result<Void> selectAuthUserAll(Long roleId, Long[] userIds) {
-        return Result.ok();
     }
 
     /**

@@ -35,7 +35,7 @@ public class SysMenuDTO implements Serializable {
      */
     @NotBlank(message = "菜单名称不能为空")
     @Size(max = 50, message = "菜单名称长度不能超过50个字符")
-    private String menuName;
+    private String name;
 
     /**
      * 菜单标题
@@ -92,7 +92,7 @@ public class SysMenuDTO implements Serializable {
      * 菜单类型（M目录 C菜单 F按钮）
      */
     @NotNull(message = "菜单类型不能为空")
-    private SysMenuTypeEnum menuType;
+    private SysMenuTypeEnum type;
 
     /**
      * 菜单状态（0隐藏 1显示）
@@ -123,7 +123,7 @@ public class SysMenuDTO implements Serializable {
     private String remark;
 
     /**
-     * 子菜单
+     * 按钮列表
      */
-    private List<SysMenuDTO> children;
+    private List<SysBtnDTO> btnList;
 }

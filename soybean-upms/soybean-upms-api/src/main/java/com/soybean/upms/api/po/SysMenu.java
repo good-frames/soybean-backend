@@ -38,7 +38,7 @@ public class SysMenu implements Serializable {
     /**
      * 菜单名称
      */
-    private String menuName;
+    private String name;
 
     /**
      * 菜单标题
@@ -90,8 +90,8 @@ public class SysMenu implements Serializable {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
-    @TableField("menu_type")
-    private SysMenuTypeEnum menuType;
+    @TableField("type")
+    private SysMenuTypeEnum type;
 
     /**
      * 菜单状态（0隐藏 1显示）

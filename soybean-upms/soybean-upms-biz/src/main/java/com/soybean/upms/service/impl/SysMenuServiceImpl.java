@@ -1,472 +1,371 @@
-
 package com.soybean.upms.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
+
+import java.util.Arrays;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.soybean.common.mybatis.dto.PageDTO;
+import com.soybean.common.security.util.SecurityUtil;
+import com.soybean.upms.api.dto.SysBtnDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
-import com.soybean.upms.api.enums.SysMenuVisibleEnum;
+import com.soybean.upms.api.enums.SysMenuStatusEnum;
+import com.soybean.upms.api.po.SysBtn;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.query.SysMenuTreeQuery;
-import com.soybean.upms.api.vo.SysMenuVO;
-import com.soybean.upms.api.vo.RouteTreeVO;
-import com.soybean.upms.api.vo.MenuMetaVO;
 import com.soybean.upms.api.vo.MenuTreeVO;
+import com.soybean.upms.api.vo.RouteTreeVO;
+import com.soybean.upms.api.vo.SysBtnVO;
+import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.mapper.SysBtnMapper;
 import com.soybean.upms.mapper.SysMenuMapper;
 import com.soybean.upms.mapper.SysRoleMenuMapper;
+import com.soybean.upms.service.ISysBtnService;
 import com.soybean.upms.service.ISysMenuService;
+import com.soybean.upms.service.ISysRoleService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 菜单权限表 服务实现类
+ * 菜单权限Service业务层处理
  *
  * @author soybean
  * @since 2024-07-07
  */
-@Slf4j
-@Service
 @RequiredArgsConstructor
+@Service
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
 
-    private final SysRoleMenuMapper roleMenuMapper;
+    private final ISysRoleService sysRoleService;
+    private final SysRoleMenuMapper sysRoleMenuMapper;
+    private final SysBtnMapper sysBtnMapper;
+    private final ISysBtnService sysBtnService;
 
-    /**
-     * 根据用户查询系统菜单列表
-     *
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
     @Override
-    public List<SysMenuVO> selectMenuList(String userId) {
-        return selectMenuList(new SysMenuQuery(), userId);
-    }
+    public List<SysMenu> getMenusByUserId(String userId) {
+        // 查询用户角色
+        List<Long> roleIds = sysRoleService.getRoleIdsByUserId(userId);
 
-    /**
-     * 根据用户查询系统菜单列表
-     *
-     * @param menuQuery 菜单查询条件
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    @Override
-    public List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, String userId) {
-        List<SysMenu> menuList;
-
-        if (userId != null) {
-            menuList = baseMapper.selectMenuListByUserId(userId);
-        } else {
-            LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
-            if (menuQuery != null) {
-                wrapper.like(menuQuery.getMenuName() != null, SysMenu::getMenuName, menuQuery.getMenuName())
-                        .eq(menuQuery.getStatus() != null, SysMenu::getStatus, menuQuery.getStatus())
-                        .eq(menuQuery.getMenuType() != null, SysMenu::getMenuType, menuQuery.getMenuType());
-            }
-            wrapper.orderByAsc(SysMenu::getParentId)
-                    .orderByAsc(SysMenu::getOrderNum);
-            menuList = list(wrapper);
+        if (CollUtil.isEmpty(roleIds)) {
+            return Collections.emptyList();
         }
 
-        return BeanUtil.copyToList(menuList, SysMenuVO.class);
-    }
+        // 查询角色菜单
+        List<Long> menuIds = sysRoleMenuMapper.selectList(new LambdaQueryWrapper<SysRoleMenu>()
+                .in(SysRoleMenu::getRoleId, roleIds))
+                .stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toList());
 
-    /**
-     * 根据用户ID查询权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    @Override
-    public List<String> selectPermissionsByUserId(String userId) {
-        return baseMapper.selectPermissionsByUserId(userId);
-    }
-
-    /**
-     * 根据角色ID查询菜单树信息
-     *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
-     */
-    @Override
-    public List<Long> selectMenuListByRoleId(Long roleId) {
-        SysMenu menu = new SysMenu();
-        menu.setId(-1L);
-        LambdaQueryWrapper<SysRoleMenu> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysRoleMenu::getRoleId, roleId);
-        List<SysRoleMenu> perms = roleMenuMapper.selectList(wrapper);
-
-        List<Long> menuIds = new ArrayList<>();
-        for (SysRoleMenu perm : perms) {
-            if (perm != null && perm.getMenuId() != null) {
-                menuIds.add(perm.getMenuId());
-            }
-        }
-        return menuIds;
-    }
-
-    /**
-     * 根据角色ID数组查询菜单列表（扁平化）
-     *
-     * @param roleIds 角色ID数组
-     * @return 菜单列表
-     */
-    @Override
-    public List<SysMenuVO> selectMenuFlatListByRoleIds(Long[] roleIds) {
-        if (roleIds == null || roleIds.length == 0) {
-            return CollUtil.newArrayList();
+        if (CollUtil.isEmpty(menuIds)) {
+            return Collections.emptyList();
         }
 
-        // 获取所有角色关联的菜单ID列表（去重）
-        Set<Long> menuIdSet = new HashSet<>();
-        for (Long roleId : roleIds) {
-            List<Long> menuIds = selectMenuListByRoleId(roleId);
-            if (CollUtil.isNotEmpty(menuIds)) {
-                menuIdSet.addAll(menuIds);
-            }
-        }
-
-        if (CollUtil.isEmpty(menuIdSet)) {
-            return CollUtil.newArrayList();
-        }
-
-        // 查询菜单详情
-        List<SysMenu> menuList = listByIds(menuIdSet);
-        if (CollUtil.isEmpty(menuList)) {
-            return CollUtil.newArrayList();
-        }
-
-        // 转换为VO并按排序
-        List<SysMenuVO> menuVOList = BeanUtil.copyToList(menuList, SysMenuVO.class);
-        menuVOList.sort((a, b) -> {
-            // 先按父ID排序
-            int parentCompare = a.getParentId().compareTo(b.getParentId());
-            if (parentCompare != 0) {
-                return parentCompare;
-            }
-            // 再按排序号排序
-            return a.getOrderNum().compareTo(b.getOrderNum());
-        });
-
-        return menuVOList;
-    }
-
-    /**
-     * 构建前端所需要下拉树结构
-     *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
-     */
-    @Override
-    public List<SysMenuVO> buildMenuTree(List<SysMenuVO> menus) {
-        List<SysMenuVO> returnList = new ArrayList<>();
-        List<Long> tempList = menus.stream().map(SysMenuVO::getId).toList();
-
-        for (SysMenuVO menu : menus) {
-            // 如果是顶级节点, 遍历该父节点的所有子节点
-            if (!tempList.contains(menu.getParentId())) {
-                recursionFn(menus, menu);
-                returnList.add(menu);
-            }
-        }
-
-        if (returnList.isEmpty()) {
-            returnList = menus;
-        }
-        return returnList;
-    }
-
-    /**
-     * 构建前端所需要树结构
-     *
-     * @param menus 菜单列表
-     * @return 树结构列表
-     */
-    @Override
-    public List<SysMenuVO> buildMenuTreeSelect(List<SysMenuVO> menus) {
-        List<SysMenuVO> menuTrees = buildMenuTree(menus);
-        return menuTrees;
-    }
-
-    /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    @Override
-    public SysMenuVO selectMenuById(Long menuId) {
-        SysMenu menu = getById(menuId);
-        if (menu == null) {
-            return null;
-        }
-        return BeanUtil.copyProperties(menu, SysMenuVO.class);
-    }
-
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public boolean hasChildByMenuId(Long menuId) {
-        int result = Math.toIntExact(count(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getParentId, menuId)));
-        return result > 0;
-    }
-
-    /**
-     * 查询菜单使用数量
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public boolean checkMenuExistRole(Long menuId) {
-        int result = roleMenuMapper.countMenuByRoleId(menuId);
-        return result > 0;
-    }
-
-    /**
-     * 新增保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public boolean insertMenu(SysMenuDTO menu) {
-        SysMenu info = BeanUtil.copyProperties(menu, SysMenu.class);
-        return save(info);
-    }
-
-    /**
-     * 修改保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public boolean updateMenu(SysMenuDTO menu) {
-        SysMenu info = BeanUtil.copyProperties(menu, SysMenu.class);
-        return updateById(info);
-    }
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public boolean deleteMenuById(Long menuId) {
-        return removeById(menuId);
-    }
-
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public boolean checkMenuNameUnique(SysMenuDTO menu) {
-        Long menuId = menu.getId() == null ? -1L : menu.getId();
-        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysMenu::getMenuName, menu.getMenuName())
-                .eq(SysMenu::getParentId, menu.getParentId());
-        SysMenu info = getOne(wrapper);
-        if (info != null && info.getId().longValue() != menuId.longValue()) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 递归列表
-     */
-    private void recursionFn(List<SysMenuVO> list, SysMenuVO t) {
-        // 得到子节点列表
-        List<SysMenuVO> childList = getChildList(list, t);
-        t.setChildren(childList);
-        for (SysMenuVO tChild : childList) {
-            // 判断是否有子节点
-            if (hasChild(list, tChild)) {
-                recursionFn(list, tChild);
-            }
-        }
-    }
-
-    /**
-     * 得到子节点列表
-     */
-    private List<SysMenuVO> getChildList(List<SysMenuVO> list, SysMenuVO t) {
-        List<SysMenuVO> tlist = new ArrayList<>();
-        for (SysMenuVO n : list) {
-            if (n.getParentId() != null && n.getParentId().equals(t.getId())) {
-                tlist.add(n);
-            }
-        }
-        return tlist;
-    }
-
-    /**
-     * 判断是否有子节点
-     */
-    private boolean hasChild(List<SysMenuVO> list, SysMenuVO t) {
-        return !getChildList(list, t).isEmpty();
+        // 查询菜单信息
+        return list(new LambdaQueryWrapper<SysMenu>()
+                .in(SysMenu::getId, menuIds)
+                .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
+                .orderByAsc(SysMenu::getOrderNum));
     }
 
     @Override
-    public List<RouteTreeVO> buildMenuTreeForRouter(String userId) {
-        // 查询用户菜单列表
-        List<SysMenuVO> menus = selectMenuList(userId);
+    public List<String> getPermissionsByUserId(String userId) {
+        List<SysMenu> menus = getMenusByUserId(userId);
 
-        log.info("menus: {}", menus);
-        
-        // 转换为RouteTreeVO列表
-        List<RouteTreeVO> menuTreeList = new ArrayList<>();
-        for (SysMenuVO menu : menus) {
-            RouteTreeVO menuTree = new RouteTreeVO();
-            menuTree.setId(menu.getId());
-            menuTree.setParentId(menu.getParentId());
-            menuTree.setName(menu.getMenuName());
-            menuTree.setPath(menu.getPath());
-            menuTree.setComponent(menu.getComponent());
-            
-            // 设置元数据
-            MenuMetaVO meta = new MenuMetaVO();
-            meta.setTitle(menu.getTitle() != null ? menu.getTitle() : menu.getMenuName());
-            meta.setI18nKey(menu.getI18nKey() != null ? menu.getI18nKey() : "route." + menu.getMenuName());
-            meta.setIcon(menu.getIcon());
-            meta.setOrder(menu.getOrderNum());
-            menuTree.setMeta(meta);
-            
-            menuTreeList.add(menuTree);
+        // 提取权限标识
+        List<String> permissions = menus.stream()
+                .map(SysMenu::getPerms)
+                .filter(StrUtil::isNotBlank)
+                .collect(Collectors.toList());
+
+        // 查询按钮权限
+        List<Long> menuIds = menus.stream()
+                .map(SysMenu::getId)
+                .toList();
+
+        if (CollUtil.isNotEmpty(menuIds)) {
+            List<SysBtn> btnList = sysBtnMapper.selectList(new LambdaQueryWrapper<SysBtn>()
+                    .in(SysBtn::getMenuId, menuIds));
+
+            List<String> btnPermissions = btnList.stream()
+                    .map(SysBtn::getBtnCode)
+                    .toList();
+
+            permissions.addAll(btnPermissions);
         }
-        
-        // 构建树形结构
-        return buildRouteTree(menuTreeList);
-    }
-    
-    /**
-     * 构建前端路由树
-     */
-    private List<RouteTreeVO> buildRouteTree(List<RouteTreeVO> menus) {
-        List<RouteTreeVO> returnList = new ArrayList<>();
-        List<Long> tempList = new ArrayList<>();
-        
-        // 先找出所有顶级菜单（父ID为0或null）
-        for (RouteTreeVO menu : menus) {
-            if (menu.getParentId() == null || menu.getParentId() == 0) {
-                tempList.add(menu.getId());
-                RouteTreeVO tree = findChildren(menu, menus);
-                returnList.add(tree);
-            }
-        }
-        
-        // 如果没有顶级菜单，则返回所有菜单
-        if (returnList.isEmpty()) {
-            returnList = menus;
-        }
-        return returnList;
-    }
-    
-    /**
-     * 查找子节点
-     */
-    private RouteTreeVO findChildren(RouteTreeVO tree, List<RouteTreeVO> list) {
-        tree.setChildren(new ArrayList<>());
-        List<RouteTreeVO> childList = new ArrayList<>();
-        for (RouteTreeVO menu : list) {
-            if (menu.getParentId() != null && menu.getParentId().equals(tree.getId())) {
-                childList.add(findChildren(menu, list));
-            }
-        }
-        if (!childList.isEmpty()) {
-            tree.setChildren(childList);
-        }
-        return tree;
+
+        return permissions;
     }
 
-    /**
-     * 分页查询菜单树
-     *
-     * @param query 查询条件
-     * @return 分页菜单树
-     */
     @Override
-    public PageDTO<MenuTreeVO> getMenuTreePage(SysMenuTreeQuery query) {
-        // 1. 查询顶级菜单（父ID为0或null）
-        LambdaQueryWrapper<SysMenu> wrapper = Wrappers.<SysMenu>lambdaQuery();
-        wrapper.isNull(SysMenu::getParentId)
-                .or()
-                .eq(SysMenu::getParentId, 0)
-                .like(query.getMenuName() != null, SysMenu::getMenuName, query.getMenuName())
-                .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
-                .eq(query.getMenuType() != null, SysMenu::getMenuType, query.getMenuType())
-                .orderByAsc(SysMenu::getOrderNum);
+    @Transactional(rollbackFor = Exception.class)
+    public boolean saveMenuWithButtons(SysMenuDTO menuDTO) {
+        // 转换DTO为PO
+        SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
+        boolean result = save(menu);
 
-        // 创建分页对象
-        Page<SysMenu> page = query.toMpPage("order_num", true);
-        // 执行分页查询
-        IPage<SysMenu> pageResult = this.page(page, wrapper);
-
-        // 转换为MenuPageVO
-        List<MenuTreeVO> menuTreeVOList = pageResult.getRecords().stream().map(menu -> {
-            MenuTreeVO menuTreeVO = convertToMenuTreeVO(menu);
-
-            // 查询子菜单
-            LambdaQueryWrapper<SysMenu> childWrapper = Wrappers.<SysMenu>lambdaQuery();
-            childWrapper.eq(SysMenu::getParentId, menu.getId())
-                    .orderByAsc(SysMenu::getOrderNum);
-            List<SysMenu> children = this.list(childWrapper);
-            if (CollUtil.isNotEmpty(children)) {
-                List<MenuTreeVO> childMenus = children.stream().map(this::convertToMenuTreeVO).collect(Collectors.toList());
-                menuTreeVO.setChildren(childMenus);
-            }
-            
-            return menuTreeVO;
-        }).collect(Collectors.toList());
-
-        // 3. 构建分页结果
-        PageDTO<MenuTreeVO> result = new PageDTO<>();
-        result.setCurrent(pageResult.getCurrent());
-        result.setSize(pageResult.getSize());
-        result.setTotal(pageResult.getTotal());
-        result.setPages(pageResult.getPages());
-        result.setRecords(menuTreeVOList);
+        // 保存按钮信息
+        if (result && CollUtil.isNotEmpty(menuDTO.getBtnList())) {
+            List<SysBtn> btnList = menuDTO.getBtnList().stream()
+                .map(btnDTO -> {
+                    SysBtn btn = BeanUtil.toBean(btnDTO, SysBtn.class);
+                    btn.setMenuId(menu.getId());
+                    return btn;
+                })
+                .collect(Collectors.toList());
+            sysBtnService.saveBatch(btnList);
+        }
 
         return result;
     }
 
-    private MenuTreeVO convertToMenuTreeVO(SysMenu child) {
-        MenuTreeVO childMenu = new MenuTreeVO();
-        childMenu.setId(child.getId());
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateMenuWithButtons(SysMenuDTO menuDTO) {
+        // 更新菜单信息
+        SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
+        boolean result = updateById(menu);
 
-        childMenu.setParentId(child.getParentId());
-        childMenu.setMenuType(child.getMenuType() != null ? child.getMenuType().getValue() : "");
-        childMenu.setMenuName(child.getTitle());
-        childMenu.setRouteName(child.getMenuName());
-        childMenu.setRoutePath(child.getPath());
-        childMenu.setComponent(child.getComponent());
-        childMenu.setOrder(child.getOrderNum());
-        childMenu.setI18nKey(child.getI18nKey());
-        childMenu.setIcon(child.getIcon());
-        childMenu.setIconType("1");
-        childMenu.setStatus(child.getStatus() != null ? child.getStatus().getValue(): "");
-        childMenu.setHideInMenu(SysMenuVisibleEnum.HIDE.equals(child.getVisible()));
-        childMenu.setCreateBy(child.getCreateBy());
-        childMenu.setUpdateBy(child.getUpdateBy());
-        return childMenu;
+        // 处理按钮信息
+        if (result && CollUtil.isNotEmpty(menuDTO.getBtnList())) {
+            List<SysBtn> updateBtnList = new ArrayList<>();
+            List<SysBtn> insertBtnList = new ArrayList<>();
+
+            for (SysBtnDTO btnDTO : menuDTO.getBtnList()) {
+                SysBtn btn = BeanUtil.toBean(btnDTO, SysBtn.class);
+                btn.setMenuId(menu.getId());
+
+                if (btn.getId() != null) {
+                    updateBtnList.add(btn);
+                } else {
+                    insertBtnList.add(btn);
+                }
+            }
+
+            // 更新已有按钮
+            if (CollUtil.isNotEmpty(updateBtnList)) {
+                sysBtnService.updateBatchById(updateBtnList);
+            }
+
+            // 新增按钮
+            if (CollUtil.isNotEmpty(insertBtnList)) {
+                sysBtnService.saveBatch(insertBtnList);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteMenuWithButtons(List<Long> ids) {
+        // 删除菜单
+        boolean result = removeBatchByIds(ids);
+
+        // 删除关联的按钮
+        if (result) {
+            sysBtnService.remove(new LambdaQueryWrapper<SysBtn>().in(SysBtn::getMenuId, ids));
+
+            // 删除角色菜单关联
+            sysRoleMenuMapper.deleteRoleMenu(ids);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<SysMenuVO> listAllMenus(SysMenuQuery query) {
+        List<SysMenu> menuList = list(new LambdaQueryWrapper<SysMenu>()
+            .like(StrUtil.isNotBlank(query.getName()), SysMenu::getName, query.getName())
+            .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
+            .eq(query.getType() != null, SysMenu::getType, query.getType())
+            .orderByAsc(SysMenu::getOrderNum));
+
+        return menuList.stream()
+            .map(menu -> {
+                return BeanUtil.toBean(menu, SysMenuVO.class);
+            })
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MenuTreeVO> listAllMenusTree() {
+        // 查询所有顶级菜单
+        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<SysMenu>()
+            .eq(SysMenu::getParentId, 0)
+            .orderByAsc(SysMenu::getOrderNum);
+
+        List<SysMenu> topMenus = list(wrapper);
+
+        // 转换为树形结构
+        return topMenus.stream()
+            .map(menu -> {
+                MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+
+                // 查询子菜单
+                List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
+                    .eq(SysMenu::getParentId, menu.getId())
+                    .orderByAsc(SysMenu::getOrderNum));
+
+                if (CollUtil.isNotEmpty(children)) {
+                    List<MenuTreeVO> childVOs = children.stream()
+                        .map(child -> {
+                            MenuTreeVO childVO = BeanUtil.toBean(child, MenuTreeVO.class);
+                            // 查询按钮信息
+                            List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                                .eq(SysBtn::getMenuId, child.getId()));
+                            childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                            return childVO;
+                        })
+                        .collect(Collectors.toList());
+                    vo.setChildren(childVOs);
+                }
+
+                // 查询按钮信息
+                List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                    .eq(SysBtn::getMenuId, menu.getId()));
+                vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+                return vo;
+            })
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public MenuTreeVO getMenuById(Long id) {
+        // 查询菜单
+        SysMenu menu = getById(id);
+        if (menu == null) {
+            return null;
+        }
+
+        // 转换为VO
+        MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+
+        // 查询子菜单
+        List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
+            .eq(SysMenu::getParentId, menu.getId())
+            .orderByAsc(SysMenu::getOrderNum));
+
+        if (CollUtil.isNotEmpty(children)) {
+            List<MenuTreeVO> childVOs = children.stream()
+                .map(child -> {
+                    MenuTreeVO childVO = BeanUtil.toBean(child, MenuTreeVO.class);
+                    // 查询按钮信息
+                    List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                        .eq(SysBtn::getMenuId, child.getId()));
+                    childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                    return childVO;
+                })
+                .collect(Collectors.toList());
+            vo.setChildren(childVOs);
+        }
+
+        // 查询按钮信息
+        List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+            .eq(SysBtn::getMenuId, menu.getId()));
+        vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+
+        return vo;
+    }
+
+    @Override
+    public Page<MenuTreeVO> pageMenuTree(SysMenuTreeQuery query) {
+        // 只查询顶级菜单
+        LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<SysMenu>()
+            .eq(SysMenu::getParentId, 0)
+            .like(StrUtil.isNotBlank(query.getName()), SysMenu::getName, query.getName())
+            .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
+            .eq(query.getType() != null, SysMenu::getType, query.getType())
+            .orderByAsc(SysMenu::getOrderNum);
+
+        Page<SysMenu> page = query.toMpPage("order_num", true);
+        page(page, wrapper);
+
+        // 转换为VO
+        List<MenuTreeVO> voList = page.getRecords().stream()
+            .map(menu -> {
+                MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+
+                // 查询子菜单
+                List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
+                    .eq(SysMenu::getParentId, menu.getId())
+                    .orderByAsc(SysMenu::getOrderNum));
+
+                if (CollUtil.isNotEmpty(children)) {
+                    List<MenuTreeVO> childVOs = children.stream()
+                        .map(child -> {
+                            MenuTreeVO childVO = BeanUtil.toBean(child, MenuTreeVO.class);
+                            // 查询按钮信息
+                            List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                                .eq(SysBtn::getMenuId, child.getId()));
+                            childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                            return childVO;
+                        })
+                        .collect(Collectors.toList());
+                    vo.setChildren(childVOs);
+                }
+                // 查询按钮信息
+                List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                    .eq(SysBtn::getMenuId, menu.getId()));
+                vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+                return vo;
+            })
+            .collect(Collectors.toList());
+
+        Page<MenuTreeVO> result = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+        result.setRecords(voList);
+
+        return result;
+    }
+
+    @Override
+    public List<RouteTreeVO> getCurrentUserRouteTree() {
+        // 获取当前用户ID
+        String userId = SecurityUtil.getUserId();
+
+        // 查询用户菜单
+        List<SysMenu> menuList = getMenusByUserId(userId);
+
+        // 构建路由树
+        return buildRouteTree(menuList, 0L);
+    }
+
+    @Override
+    public List<RouteTreeVO> buildRouteTree(List<SysMenu> menuList, Long parentId) {
+        List<RouteTreeVO> routeList = new ArrayList<>();
+
+        for (SysMenu menu : menuList) {
+            if (menu.getParentId().equals(parentId)) {
+                RouteTreeVO route = BeanUtil.toBean(menu, RouteTreeVO.class);
+
+                // 构建元数据
+                RouteTreeVO.MenuMetaVO meta = new RouteTreeVO.MenuMetaVO();
+                meta.setTitle(menu.getTitle());
+                meta.setIcon(menu.getIcon());
+                meta.setI18nKey(menu.getI18nKey());
+                meta.setOrder(menu.getOrderNum());
+                route.setMeta(meta);
+
+                // 递归构建子路由
+                route.setChildren(buildRouteTree(menuList, menu.getId()));
+
+                // 查询按钮信息
+                List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                    .eq(SysBtn::getMenuId, menu.getId()));
+                route.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+
+                routeList.add(route);
+            }
+        }
+
+        return routeList;
     }
 }

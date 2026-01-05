@@ -1,17 +1,16 @@
-
 package com.soybean.upms.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.soybean.upms.api.po.SysMenu;
+import com.soybean.upms.api.po.SysBtn;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 菜单权限Mapper接口
+ * 按钮权限Mapper接口
  *
  * @author soybean
- * @since 2024-07-07
+ * @since 2026-01-04
  */
 @Mapper
-public interface SysMenuMapper extends BaseMapper<SysMenu> {
+public interface SysBtnMapper extends BaseMapper<SysBtn> {
 
 }

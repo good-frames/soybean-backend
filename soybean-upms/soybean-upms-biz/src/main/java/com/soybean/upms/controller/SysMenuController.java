@@ -1,152 +1,113 @@
 
 package com.soybean.upms.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soybean.common.core.utils.Result;
-import com.soybean.common.security.util.SecurityUtil;
-import com.soybean.common.mybatis.dto.PageDTO;
-import com.soybean.upms.api.clients.SysMenuClient;
-import com.soybean.upms.api.dto.RoleIdsDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
-import com.soybean.upms.api.vo.RouteTreeVO;
-import com.soybean.upms.api.vo.SysMenuVO;
-import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.query.SysMenuTreeQuery;
-import com.soybean.upms.api.vo.UserRouteResultVO;
+import com.soybean.upms.api.vo.MenuTreeVO;
+import com.soybean.upms.api.vo.RouteTreeVO;
+import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.service.ISysMenuService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * 菜单信息控制器
+ * 菜单权限Controller
  *
  * @author soybean
  * @since 2024-07-07
  */
-@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/systemManage/menu")
-@RequiredArgsConstructor
-public class SysMenuController implements SysMenuClient {
+public class SysMenuController {
 
     private final ISysMenuService menuService;
-
-    /**
-     * 获取菜单列表
-     */
-    @GetMapping("/list")
-    public Result<List<SysMenuVO>> list(SysMenuQuery query) {
-        List<SysMenuVO> menus = menuService.selectMenuList(query, null);
-        return Result.ok(menus);
-    }
-
-    /**
-     * 根据菜单编号获取详细信息
-     */
-    @GetMapping(value = "/{menuId}")
-    public Result<SysMenuVO> getInfo(@PathVariable Long menuId) {
-        SysMenuVO menuVO = menuService.selectMenuById(menuId);
-        if (menuVO == null) {
-            return Result.fail("菜单不存在");
-        }
-        return Result.ok(menuVO);
-    }
 
     /**
      * 新增菜单
      */
     @PostMapping
-    public Result<Void> add(@Validated @RequestBody SysMenuDTO menu) {
-        if (!menuService.checkMenuNameUnique(menu)) {
-            return Result.fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        }
-        return menuService.insertMenu(menu) ? Result.ok() : Result.fail();
+    public Result<Void> add(@Valid @RequestBody SysMenuDTO menuDTO) {
+        boolean result = menuService.saveMenuWithButtons(menuDTO);
+        return result ? Result.ok() : Result.fail();
     }
 
     /**
-     * 修改菜单
+     * 编辑菜单
      */
     @PutMapping
-    public Result<Void> edit(@Validated @RequestBody SysMenuDTO menu) {
-        if (!menuService.checkMenuNameUnique(menu)) {
-            return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        } else if (menu.getId().equals(menu.getParentId())) {
-            return Result.fail("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
-        }
-        return menuService.updateMenu(menu) ? Result.ok() : Result.fail();
+    public Result<Void> update(@Valid @RequestBody SysMenuDTO menuDTO) {
+        boolean result = menuService.updateMenuWithButtons(menuDTO);
+        return result ? Result.ok() : Result.fail();
     }
 
     /**
-     * 删除菜单
+     * 批量删除菜单
      */
-    @DeleteMapping("/{menuId}")
-    public Result<Void> remove(@PathVariable Long menuId) {
-        if (menuService.hasChildByMenuId(menuId)) {
-            return Result.fail("存在子菜单,不允许删除");
-        }
-        if (menuService.checkMenuExistRole(menuId)) {
-            return Result.fail("菜单已分配,不允许删除");
-        }
-        return menuService.deleteMenuById(menuId) ? Result.ok() : Result.fail();
+    @DeleteMapping
+    public Result<Void> remove(@RequestBody List<Long> ids) {
+        boolean result = menuService.deleteMenuWithButtons(ids);
+        return result ? Result.ok() : Result.fail();
     }
 
     /**
-     * 获取菜单下拉树列表
+     * 查询所有菜单
+     */
+    @GetMapping("/list")
+    public Result<List<SysMenuVO>> list(SysMenuQuery query) {
+        List<SysMenuVO> voList = menuService.listAllMenus(query);
+        return Result.ok(voList);
+    }
+
+    /**
+     * 查询所有菜单树
      */
     @GetMapping("/tree")
-    public Result<List<SysMenuVO>> treeList(SysMenuQuery query) {
-        List<SysMenuVO> menus = menuService.selectMenuList(query, null);
-        return Result.ok(menuService.buildMenuTreeSelect(menus));
+    public Result<List<MenuTreeVO>> tree() {
+        List<MenuTreeVO> treeList = menuService.listAllMenusTree();
+        return Result.ok(treeList);
     }
 
     /**
-     * 分页获取菜单树
+     * 根据菜单ID查询菜单详情
      */
-    @GetMapping("/tree/page")
-    public Result<PageDTO<MenuTreeVO>> treePage(SysMenuTreeQuery query) {
-        PageDTO<MenuTreeVO> page = menuService.getMenuTreePage(query);
-        return Result.ok(page);
+    @GetMapping("/{id}")
+    public Result<MenuTreeVO> getById(@PathVariable Long id) {
+        MenuTreeVO menu = menuService.getMenuById(id);
+        return Result.ok(menu);
     }
 
-
     /**
-     * 获取多个角色关联的菜单列表（扁平化）
+     * 分页查询菜单树
      */
-    @PostMapping(value = "/roleMenuFlatList")
-    public Result<List<SysMenuVO>> roleMenuFlatList(@Validated @RequestBody RoleIdsDTO roleIdsDTO) {
-        List<Long> roleIds = roleIdsDTO.getRoleIds();
-        Long[] roleIdArray = roleIds.toArray(new Long[0]);
-        List<SysMenuVO> menus = menuService.selectMenuFlatListByRoleIds(roleIdArray);
-        return Result.ok(menus);
+    @GetMapping("/page")
+    public Result<Page<MenuTreeVO>> page(SysMenuTreeQuery query) {
+        Page<MenuTreeVO> result = menuService.pageMenuTree(query);
+        return Result.ok(result);
     }
 
     /**
-     * 获取当前登录用户所拥有的权限集合
+     * 获取当前登录者拥有的路由树
+     */
+    @GetMapping("/route")
+    public Result<List<RouteTreeVO>> route() {
+        List<RouteTreeVO> routeList = menuService.getCurrentUserRouteTree();
+        return Result.ok(routeList);
+    }
+
+    /**
+     * 根据用户ID获取用户的权限
      */
     @GetMapping("/permission/user/{userId}")
     public Result<List<String>> getCurrentUserPermissions(@PathVariable String userId) {
-        return Result.ok(menuService.selectPermissionsByUserId(userId));
+        List<String> permissions = menuService.getPermissionsByUserId(userId);
+        return Result.ok(permissions);
     }
 
-    /**
-     * 获取当前登录用户拥有的菜单列表（包括目录、菜单、按钮）
-     */
-    @GetMapping("/user/current")
-    public Result<UserRouteResultVO> getCurrentUserMenus() {
-        // 获取当前登录用户ID
-        String userId = SecurityUtil.getUserId();
-        // 构建前端路由菜单树
-        List<RouteTreeVO> menuTree = menuService.buildMenuTreeForRouter(userId);
-        
-        // 创建用户菜单VO
-        UserRouteResultVO userMenu = new UserRouteResultVO();
-        userMenu.setRoutes(menuTree);
-        userMenu.setHome("home");
-        
-        return Result.ok(userMenu);
-    }
 }

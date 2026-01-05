@@ -154,4 +154,12 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 权限列表
      */
     Set<String> selectRolePermissionByUserId(String userId);
+
+    /**
+     * 根据用户ID获取角色ID列表
+     *
+     * @param userId 用户ID
+     * @return 角色ID列表
+     */
+    List<Long> getRoleIdsByUserId(String userId);
 }

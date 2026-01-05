@@ -14,6 +14,7 @@ import com.soybean.upms.api.enums.SysDelFlagEnum;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.po.SysRoleMenu;
+import com.soybean.upms.api.po.SysUserRole;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.mapper.SysRoleMapper;
@@ -24,10 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -360,6 +358,28 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             }
         }
         return true;
+    }
+
+    /**
+     * 根据用户ID获取角色ID列表
+     *
+     * @param userId 用户ID
+     * @return 角色ID列表
+     */
+    @Override
+    public List<Long> getRoleIdsByUserId(String userId) {
+        // 查询用户角色关联
+        List<SysUserRole> userRoles = userRoleMapper.selectList(new LambdaQueryWrapper<SysUserRole>()
+                .eq(SysUserRole::getUserId, userId));
+
+        if (CollUtil.isEmpty(userRoles)) {
+            return Collections.emptyList();
+        }
+
+        // 提取角色ID
+        return userRoles.stream()
+                .map(SysUserRole::getRoleId)
+                .collect(Collectors.toList());
     }
 
     /**

@@ -1,20 +1,20 @@
 
 package com.soybean.upms.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.query.SysMenuTreeQuery;
+import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.SysMenuVO;
-import com.soybean.upms.api.vo.MenuTreeVO;
 
 import java.util.List;
 
 /**
- * 菜单权限表 服务类
+ * 菜单权限Service接口
  *
  * @author soybean
  * @since 2024-07-07
@@ -22,125 +22,67 @@ import java.util.List;
 public interface ISysMenuService extends IService<SysMenu> {
 
     /**
-     * 根据用户查询系统菜单列表
+     * 根据用户ID获取菜单列表
      *
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenuVO> selectMenuList(String userId);
+    List<SysMenu> getMenusByUserId(String userId);
 
     /**
-     * 根据用户查询系统菜单列表
-     *
-     * @param menuQuery 菜单查询条件
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    List<SysMenuVO> selectMenuList(SysMenuQuery menuQuery, String userId);
-
-    /**
-     * 根据用户ID获取用户所拥有的权限集合
+     * 根据用户ID获取权限标识
      *
      * @param userId 用户ID
-     * @return 权限集合
+     * @return 权限标识列表
      */
-    List<String> selectPermissionsByUserId(String userId);
+    List<String> getPermissionsByUserId(String userId);
 
     /**
-     * 根据角色ID查询菜单树信息
+     * 新增菜单及按钮
      *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
-     */
-    List<Long> selectMenuListByRoleId(Long roleId);
-
-    /**
-     * 根据角色ID数组查询菜单列表（扁平化）
-     *
-     * @param roleIds 角色ID数组
-     * @return 菜单列表
-     */
-    List<SysMenuVO> selectMenuFlatListByRoleIds(Long[] roleIds);
-
-    /**
-     * 构建前端所需要下拉树结构
-     *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
-     */
-    List<SysMenuVO> buildMenuTree(List<SysMenuVO> menus);
-
-    /**
-     * 构建前端所需要树结构
-     *
-     * @param menus 菜单列表
-     * @return 树结构列表
-     */
-    List<SysMenuVO> buildMenuTreeSelect(List<SysMenuVO> menus);
-
-    /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    SysMenuVO selectMenuById(Long menuId);
-
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
+     * @param menuDTO 菜单DTO
      * @return 结果
      */
-    boolean hasChildByMenuId(Long menuId);
+    boolean saveMenuWithButtons(SysMenuDTO menuDTO);
 
     /**
-     * 查询菜单使用数量
+     * 更新菜单及按钮
      *
-     * @param menuId 菜单ID
+     * @param menuDTO 菜单DTO
      * @return 结果
      */
-    boolean checkMenuExistRole(Long menuId);
+    boolean updateMenuWithButtons(SysMenuDTO menuDTO);
 
     /**
-     * 新增保存菜单信息
+     * 批量删除菜单
      *
-     * @param menu 菜单信息
+     * @param ids 菜单ID数组
      * @return 结果
      */
-    boolean insertMenu(SysMenuDTO menu);
+    boolean deleteMenuWithButtons(List<Long> ids);
 
     /**
-     * 修改保存菜单信息
+     * 查询所有菜单
      *
-     * @param menu 菜单信息
-     * @return 结果
+     * @param query 查询条件
+     * @return 菜单VO列表
      */
-    boolean updateMenu(SysMenuDTO menu);
+    List<SysMenuVO> listAllMenus(SysMenuQuery query);
 
     /**
-     * 删除菜单管理信息
+     * 查询所有菜单树
      *
-     * @param menuId 菜单ID
-     * @return 结果
+     * @return 菜单树列表
      */
-    boolean deleteMenuById(Long menuId);
+    List<MenuTreeVO> listAllMenusTree();
 
     /**
-     * 校验菜单名称是否唯一
+     * 根据菜单ID查询菜单详情
      *
-     * @param menu 菜单信息
-     * @return 结果
+     * @param id 菜单ID
+     * @return 菜单树详情
      */
-    boolean checkMenuNameUnique(SysMenuDTO menu);
-
-    /**
-     * 构建前端路由菜单树
-     *
-     * @param userId 用户ID
-     * @return 前端路由菜单树
-     */
-    List<RouteTreeVO> buildMenuTreeForRouter(String userId);
+    MenuTreeVO getMenuById(Long id);
 
     /**
      * 分页查询菜单树
@@ -148,5 +90,22 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param query 查询条件
      * @return 分页菜单树
      */
-    PageDTO<MenuTreeVO> getMenuTreePage(SysMenuTreeQuery query);
+    Page<MenuTreeVO> pageMenuTree(SysMenuTreeQuery query);
+
+    /**
+     * 获取当前用户的路由树
+     *
+     * @return 路由树列表
+     */
+    List<RouteTreeVO> getCurrentUserRouteTree();
+
+
+    /**
+     * 构建路由树
+     *
+     * @param menuList 菜单列表
+     * @param parentId 父菜单ID
+     * @return 路由树列表
+     */
+    List<RouteTreeVO> buildRouteTree(List<SysMenu> menuList, Long parentId);
 }

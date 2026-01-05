@@ -32,7 +32,7 @@ public class SysMenuVO implements Serializable {
     /**
      * 菜单名称
      */
-    private String menuName;
+    private String name;
 
     /**
      * 菜单标题
@@ -80,9 +80,9 @@ public class SysMenuVO implements Serializable {
     private SysMenuCacheEnum isCache;
 
     /**
-     * 菜单类型（M目录 C菜单 F按钮）
+     * 菜单类型（M目录 C菜单）
      */
-    private SysMenuTypeEnum menuType;
+    private SysMenuTypeEnum type;
 
     /**
      * 菜单状态（0隐藏 1显示）
@@ -120,9 +120,4 @@ public class SysMenuVO implements Serializable {
      * 备注
      */
     private String remark;
-
-    /**
-     * 子菜单
-     */
-    private List<SysMenuVO> children;
 }

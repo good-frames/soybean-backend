@@ -44,8 +44,8 @@ CREATE TABLE `sys_role` (
 -- 菜单权限表
 CREATE TABLE `sys_menu` (
     `menu_id` bigint NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-    `menu_name` varchar(50) NOT NULL COMMENT '菜单名称',
-    `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单名称',
+    `name` varchar(50) NOT NULL COMMENT '菜单（路由）名称',
+    `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单标题',
     `i18n_key` varchar(100) DEFAULT '' COMMENT '国际化键',
     `path` varchar(200) DEFAULT '' COMMENT '路由地址',
     `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
@@ -54,7 +54,7 @@ CREATE TABLE `sys_menu` (
     `order_num` int DEFAULT '0' COMMENT '显示顺序',
     `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否为外链（0否 1是）',
     `is_cache` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
-    `menu_type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单 F按钮）',
+    `type` char(1) DEFAULT '' COMMENT '菜单类型（M目录 C菜单）',
     `visible` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
     `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
     `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
@@ -67,6 +67,19 @@ CREATE TABLE `sys_menu` (
     PRIMARY KEY (`menu_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
 
+CREATE TABLE sys_btn (
+   btn_id bigint NOT NULL AUTO_INCREMENT COMMENT '按钮ID',
+   menu_id bigint NOT NULL COMMENT '菜单ID',
+   btn_code varchar(100) NOT NULL COMMENT '按钮标识',
+   create_by varchar(64) DEFAULT '' COMMENT '创建者',
+   create_time datetime DEFAULT NULL COMMENT '创建时间',
+   update_by varchar(64) DEFAULT '' COMMENT '更新者',
+   update_time datetime DEFAULT NULL COMMENT '更新时间',
+   remark varchar(500) DEFAULT NULL COMMENT '备注',
+   PRIMARY KEY (btn_id),
+   KEY idx_menu_id (menu_id),
+   KEY idx_btn_code (btn_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_zh_0900_as_cs COMMENT='按钮权限表';
 
 
 -- 用户和角色关联表

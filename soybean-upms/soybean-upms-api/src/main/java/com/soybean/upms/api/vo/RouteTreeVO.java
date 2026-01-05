@@ -1,6 +1,7 @@
 package com.soybean.upms.api.vo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -9,33 +10,9 @@ import java.util.List;
  *
  * @author soybean
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class RouteTreeVO {
-
-    /**
-     * 菜单ID
-     */
-    private Long id;
-
-    /**
-     * 父菜单ID
-     */
-    private Long parentId;
-
-    /**
-     * 菜单名称
-     */
-    private String name;
-
-    /**
-     * 路由地址
-     */
-    private String path;
-
-    /**
-     * 组件路径
-     */
-    private String component;
+public class RouteTreeVO extends SysMenuVO {
 
     /**
      * 子菜单
@@ -43,7 +20,41 @@ public class RouteTreeVO {
     private List<RouteTreeVO> children;
 
     /**
+     * 按钮列表
+     */
+    private List<SysBtnVO> btnList;
+
+    /**
      * 元数据
      */
     private MenuMetaVO meta;
+    
+    /**
+     * 菜单元数据VO
+     *
+     * @author soybean
+     */
+    @Data
+    public static class MenuMetaVO {
+
+        /**
+         * 标题
+         */
+        private String title;
+
+        /**
+         * 国际化键
+         */
+        private String i18nKey;
+
+        /**
+         * 图标
+         */
+        private String icon;
+
+        /**
+         * 排序
+         */
+        private Integer order;
+    }
 }

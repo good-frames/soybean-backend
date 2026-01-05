@@ -22,12 +22,7 @@ public enum SysMenuTypeEnum implements BaseEnum<String> {
     /**
      * 菜单
      */
-    MENU("C", "菜单"),
-
-    /**
-     * 按钮
-     */
-    BUTTON("F", "按钮");
+    MENU("C", "菜单");
 
     @EnumValue
     @JsonValue
