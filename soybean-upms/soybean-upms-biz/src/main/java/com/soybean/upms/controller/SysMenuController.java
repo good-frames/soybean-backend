@@ -9,6 +9,7 @@ import com.soybean.upms.api.query.SysMenuTreeQuery;
 import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.SysMenuVO;
+import com.soybean.upms.api.vo.UserRouteResultVO;
 import com.soybean.upms.service.ISysMenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -96,9 +97,11 @@ public class SysMenuController {
      * 获取当前登录者拥有的路由树
      */
     @GetMapping("/route")
-    public Result<List<RouteTreeVO>> route() {
+    public Result<UserRouteResultVO> route() {
         List<RouteTreeVO> routeList = menuService.getCurrentUserRouteTree();
-        return Result.ok(routeList);
+        UserRouteResultVO resultVO = new UserRouteResultVO();
+        resultVO.setRoutes(routeList);
+        return Result.ok(resultVO);
     }
 
     /**

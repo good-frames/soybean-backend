@@ -2,6 +2,7 @@ package com.soybean.upms.api.clients;
 
 import com.soybean.common.core.utils.Result;
 import com.soybean.upms.api.vo.RouteTreeVO;
+import com.soybean.upms.api.vo.UserRouteResultVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +23,8 @@ public interface SysMenuClient {
     /**
      * 获取当前登录者拥有的路由树
      *
-     * @return 路由树列表
+     * @return 用户路由结果
      */
     @GetMapping("/route")
-    Result<List<RouteTreeVO>> getRouteTree();
+    Result<UserRouteResultVO> getRouteTree();
 }
