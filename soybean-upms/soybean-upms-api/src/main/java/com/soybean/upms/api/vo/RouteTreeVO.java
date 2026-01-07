@@ -56,5 +56,10 @@ public class RouteTreeVO extends SysMenuVO {
          * 排序
          */
         private Integer order;
+
+        /**
+         * 外链地址
+         */
+        private String href;
     }
 }

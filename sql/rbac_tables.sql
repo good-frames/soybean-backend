@@ -59,6 +59,7 @@ CREATE TABLE `sys_menu` (
     `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
     `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
     `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
+    `href` varchar(255) DEFAULT NULL COMMENT '外链地址',
     `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
     `update_by` varchar(64) DEFAULT '' COMMENT '更新者',

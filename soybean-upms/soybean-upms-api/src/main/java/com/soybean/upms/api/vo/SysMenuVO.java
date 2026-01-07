@@ -75,6 +75,11 @@ public class SysMenuVO implements Serializable {
     private SysMenuFrameEnum isFrame;
 
     /**
+     * 外链地址
+     */
+    private String href;
+
+    /**
      * 是否缓存（0不缓存 1缓存）
      */
     private SysMenuCacheEnum isCache;
