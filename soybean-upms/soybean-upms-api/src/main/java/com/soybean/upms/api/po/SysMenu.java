@@ -3,10 +3,10 @@ package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysMenuVisibleEnum;
+import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
 import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.enums.SysMenuFrameEnum;
-import com.soybean.upms.api.enums.SysMenuCacheEnum;
+import com.soybean.upms.api.enums.SysKeepAliveEnum;
 import com.soybean.upms.api.enums.SysIconTypeEnum;
 import com.soybean.upms.api.enums.SysMenuConstantEnum;
 import lombok.Data;
@@ -91,8 +91,8 @@ public class SysMenu implements Serializable {
     /**
      * 是否缓存（0不缓存 1缓存）
      */
-    @TableField("is_cache")
-    private SysMenuCacheEnum isCache;
+    @TableField("keep_alive")
+    private SysKeepAliveEnum keepAlive;
 
     /**
      * 菜单类型（M目录 C菜单 F按钮）
@@ -101,10 +101,10 @@ public class SysMenu implements Serializable {
     private SysMenuTypeEnum type;
 
     /**
-     * 菜单状态（0隐藏 1显示）
+     * 菜单是否在菜单中隐藏（0不隐藏 1隐藏）
      */
-    @TableField("visible")
-    private SysMenuVisibleEnum visible;
+    @TableField("hide_in_menu")
+    private SysMenuHideInMenuEnum hideInMenu;
 
     /**
      * 菜单状态（0停用 1正常）

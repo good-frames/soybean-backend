@@ -61,7 +61,7 @@ CREATE TABLE `sys_menu` (
     `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
     `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否为外链（0否 1是）',
     `href` varchar(255) DEFAULT NULL COMMENT '外链地址',
-    `constant` char(1) DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
+    `is_constant` char(1) DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
     `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
     `update_by` varchar(64) DEFAULT '' COMMENT '更新者',

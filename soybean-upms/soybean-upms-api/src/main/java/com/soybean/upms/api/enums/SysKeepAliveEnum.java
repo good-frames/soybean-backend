@@ -1,4 +1,3 @@
-
 package com.soybean.upms.api.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
@@ -7,22 +6,22 @@ import com.soybean.common.core.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 菜单显示/隐藏枚举
+ * 菜单是否缓存枚举（0：不缓存；1：缓存）
  *
  * @author soybean
  * @since 2024-07-07
  */
 @Getter
-public enum SysMenuVisibleEnum implements BaseEnum<String> {
+public enum SysKeepAliveEnum implements BaseEnum<String> {
     /**
-     * 隐藏
+     * 不缓存
      */
-    HIDE("0", "隐藏"),
+    NO_CACHE("0", "不缓存"),
 
     /**
-     * 显示
+     * 缓存
      */
-    SHOW("1", "显示");
+    CACHE("1", "缓存");
 
     @EnumValue
     @JsonValue
@@ -30,7 +29,7 @@ public enum SysMenuVisibleEnum implements BaseEnum<String> {
 
     private final String desc;
 
-    SysMenuVisibleEnum(String value, String desc) {
+    SysKeepAliveEnum(String value, String desc) {
         this.value = value;
         this.desc = desc;
     }
@@ -41,15 +40,15 @@ public enum SysMenuVisibleEnum implements BaseEnum<String> {
      * @param value 值
      * @return 枚举
      */
-    public static SysMenuVisibleEnum fromValue(String value) {
+    public static SysKeepAliveEnum fromValue(String value) {
         if (value == null) {
             return null;
         }
-        for (SysMenuVisibleEnum visibleEnum : values()) {
-            if (visibleEnum.getValue().equals(value)) {
-                return visibleEnum;
+        for (SysKeepAliveEnum keepAliveEnum : values()) {
+            if (keepAliveEnum.getValue().equals(value)) {
+                return keepAliveEnum;
             }
         }
-        throw new IllegalArgumentException("Unknown menu visible value: " + value);
+        throw new IllegalArgumentException("Unknown menu keep alive value: " + value);
     }
 }

@@ -394,6 +394,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 meta.setI18nKey(menu.getI18nKey());
                 meta.setOrder(menu.getOrderNum());
                 meta.setHref(menu.getHref());
+                meta.setHideInMenu(menu.getHideInMenu() != null && menu.getHideInMenu().getValue().equals("1"));
+                meta.setKeepAlive(menu.getKeepAlive() != null && menu.getKeepAlive().getValue().equals("1"));
+                meta.setConstant(menu.getIsConstant() != null && menu.getIsConstant().getValue().equals("1"));
                 route.setMeta(meta);
 
                 // 递归构建子路由

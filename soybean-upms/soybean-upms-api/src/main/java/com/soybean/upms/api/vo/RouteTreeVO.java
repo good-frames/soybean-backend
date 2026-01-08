@@ -68,5 +68,15 @@ public class RouteTreeVO extends SysMenuVO {
          * 是否为静态菜单（0否 1是）
          */
         private Boolean constant;
+
+        /**
+         * 是否在菜单中隐藏
+         */
+        private Boolean hideInMenu;
+
+        /**
+         * 是否缓存
+         */
+        private Boolean keepAlive;
     }
 }
