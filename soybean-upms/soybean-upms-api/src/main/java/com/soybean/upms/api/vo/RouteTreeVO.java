@@ -19,10 +19,12 @@ public class RouteTreeVO extends SysMenuVO {
      */
     private List<RouteTreeVO> children;
 
+
+
     /**
      * 按钮列表
      */
-    private List<SysBtnVO> btnList;
+    private List<SysBtnVO> buttons;
 
     /**
      * 元数据

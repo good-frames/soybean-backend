@@ -8,6 +8,7 @@ import java.util.Arrays;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.dto.SysBtnDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
@@ -108,13 +109,20 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveMenuWithButtons(SysMenuDTO menuDTO) {
+        // 检查菜单名称是否已存在
+        long count = count(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getName, menuDTO.getName()));
+        if (count > 0) {
+            throw new BusinessException("菜单名称已存在，请使用其他名称");
+        }
+        
         // 转换DTO为PO
         SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
         boolean result = save(menu);
 
         // 保存按钮信息
-        if (result && CollUtil.isNotEmpty(menuDTO.getBtnList())) {
-            List<SysBtn> btnList = menuDTO.getBtnList().stream()
+        if (result && CollUtil.isNotEmpty(menuDTO.getButtons())) {
+            List<SysBtn> btnList = menuDTO.getButtons().stream()
+                .filter(btnDTO -> StrUtil.isNotBlank(btnDTO.getBtnCode())) // 过滤掉btnCode为空的按钮
                 .map(btnDTO -> {
                     SysBtn btn = BeanUtil.toBean(btnDTO, SysBtn.class);
                     btn.setMenuId(menu.getId());
@@ -130,24 +138,57 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateMenuWithButtons(SysMenuDTO menuDTO) {
+        // 检查菜单名称是否已存在（排除自身）
+        long count = count(new LambdaQueryWrapper<SysMenu>()
+            .eq(SysMenu::getName, menuDTO.getName())
+            .ne(SysMenu::getId, menuDTO.getId()));
+        if (count > 0) {
+            throw new BusinessException("菜单名称已存在，请使用其他名称");
+        }
+        
         // 更新菜单信息
         SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
         boolean result = updateById(menu);
 
-        // 处理按钮信息
-        if (result && CollUtil.isNotEmpty(menuDTO.getBtnList())) {
+        if (result) {
+            // 获取当前菜单的所有按钮
+            List<SysBtn> currentBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
+                .eq(SysBtn::getMenuId, menu.getId()));
+            Map<Long, SysBtn> currentBtnMap = currentBtnList.stream()
+                .collect(Collectors.toMap(SysBtn::getId, btn -> btn));
+            
+            // 处理传入的按钮信息
             List<SysBtn> updateBtnList = new ArrayList<>();
             List<SysBtn> insertBtnList = new ArrayList<>();
+            Set<Long> updateBtnIds = new HashSet<>();
+            
+            if (CollUtil.isNotEmpty(menuDTO.getButtons())) {
+                for (SysBtnDTO btnDTO : menuDTO.getButtons()) {
+                    // 检查按钮编码是否为空
+                    if (StrUtil.isBlank(btnDTO.getBtnCode())) {
+                        continue; // 跳过btnCode为空的按钮
+                    }
+                    
+                    SysBtn btn = BeanUtil.toBean(btnDTO, SysBtn.class);
+                    btn.setMenuId(menu.getId());
 
-            for (SysBtnDTO btnDTO : menuDTO.getBtnList()) {
-                SysBtn btn = BeanUtil.toBean(btnDTO, SysBtn.class);
-                btn.setMenuId(menu.getId());
-
-                if (btn.getId() != null) {
-                    updateBtnList.add(btn);
-                } else {
-                    insertBtnList.add(btn);
+                    if (btn.getId() != null) {
+                        updateBtnList.add(btn);
+                        updateBtnIds.add(btn.getId());
+                    } else {
+                        insertBtnList.add(btn);
+                    }
                 }
+            }
+
+            // 找出需要删除的按钮（当前菜单有但传入列表中没有的）
+            List<Long> deleteBtnIds = currentBtnMap.keySet().stream()
+                .filter(id -> !updateBtnIds.contains(id))
+                .collect(Collectors.toList());
+                
+            // 删除按钮
+            if (CollUtil.isNotEmpty(deleteBtnIds)) {
+                sysBtnService.removeByIds(deleteBtnIds);
             }
 
             // 更新已有按钮
@@ -222,7 +263,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                             // 查询按钮信息
                             List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                                 .eq(SysBtn::getMenuId, child.getId()));
-                            childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                            childVO.setButtons(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
                             return childVO;
                         })
                         .collect(Collectors.toList());
@@ -232,7 +273,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询按钮信息
                 List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                     .eq(SysBtn::getMenuId, menu.getId()));
-                vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+                vo.setButtons(BeanUtil.copyToList(btnList, SysBtnVO.class));
                 return vo;
             })
             .collect(Collectors.toList());
@@ -261,7 +302,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                     // 查询按钮信息
                     List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                         .eq(SysBtn::getMenuId, child.getId()));
-                    childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                    childVO.setButtons(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
                     return childVO;
                 })
                 .collect(Collectors.toList());
@@ -271,7 +312,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 查询按钮信息
         List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
             .eq(SysBtn::getMenuId, menu.getId()));
-        vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+        vo.setButtons(BeanUtil.copyToList(btnList, SysBtnVO.class));
 
         return vo;
     }
@@ -306,7 +347,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                             // 查询按钮信息
                             List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                                 .eq(SysBtn::getMenuId, child.getId()));
-                            childVO.setBtnList(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
+                            childVO.setButtons(BeanUtil.copyToList(childBtnList, SysBtnVO.class));
                             return childVO;
                         })
                         .collect(Collectors.toList());
@@ -315,7 +356,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询按钮信息
                 List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                     .eq(SysBtn::getMenuId, menu.getId()));
-                vo.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+                vo.setButtons(BeanUtil.copyToList(btnList, SysBtnVO.class));
                 return vo;
             })
             .collect(Collectors.toList());
@@ -352,6 +393,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 meta.setIcon(menu.getIcon());
                 meta.setI18nKey(menu.getI18nKey());
                 meta.setOrder(menu.getOrderNum());
+                meta.setHref(menu.getHref());
                 route.setMeta(meta);
 
                 // 递归构建子路由
@@ -360,7 +402,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询按钮信息
                 List<SysBtn> btnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                     .eq(SysBtn::getMenuId, menu.getId()));
-                route.setBtnList(BeanUtil.copyToList(btnList, SysBtnVO.class));
+                route.setButtons(BeanUtil.copyToList(btnList, SysBtnVO.class));
 
                 routeList.add(route);
             }

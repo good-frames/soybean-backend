@@ -21,8 +21,10 @@ public class MenuTreeVO extends SysMenuVO implements Serializable {
      */
     private List<MenuTreeVO> children;
 
+
+
     /**
      * 按钮列表
      */
-    private List<SysBtnVO> btnList;
+    private List<SysBtnVO> buttons;
 }

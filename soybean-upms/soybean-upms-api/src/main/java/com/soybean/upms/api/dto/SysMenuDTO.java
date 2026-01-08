@@ -6,6 +6,7 @@ import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.enums.SysMenuVisibleEnum;
 import com.soybean.upms.api.enums.SysMenuFrameEnum;
 import com.soybean.upms.api.enums.SysMenuCacheEnum;
+import com.soybean.upms.api.enums.SysIconTypeEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -84,6 +85,12 @@ public class SysMenuDTO implements Serializable {
     private SysMenuFrameEnum isFrame;
 
     /**
+     * 外链地址
+     */
+    @Size(max = 255, message = "外链地址长度不能超过255个字符")
+    private String href;
+
+    /**
      * 是否缓存（0不缓存 1缓存）
      */
     private SysMenuCacheEnum isCache;
@@ -117,6 +124,11 @@ public class SysMenuDTO implements Serializable {
     private String icon;
 
     /**
+     * 图标类型
+     */
+    private SysIconTypeEnum iconType;
+
+    /**
      * 备注
      */
     @Size(max = 500, message = "备注长度不能超过500个字符")
@@ -125,5 +137,5 @@ public class SysMenuDTO implements Serializable {
     /**
      * 按钮列表
      */
-    private List<SysBtnDTO> btnList;
+    private List<SysBtnDTO> buttons;
 }

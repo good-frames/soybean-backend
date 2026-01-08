@@ -58,6 +58,7 @@ CREATE TABLE `sys_menu` (
     `visible` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
     `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
     `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
+    `icon_type` char(1) DEFAULT NULL COMMENT 'icon图标类型 1：远程图标；2：本地图标',
     `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
     `href` varchar(255) DEFAULT NULL COMMENT '外链地址',
     `create_by` varchar(64) DEFAULT '' COMMENT '创建者',

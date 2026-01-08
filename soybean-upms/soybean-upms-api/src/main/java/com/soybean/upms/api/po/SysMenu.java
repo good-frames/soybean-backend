@@ -7,6 +7,7 @@ import com.soybean.upms.api.enums.SysMenuVisibleEnum;
 import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.enums.SysMenuFrameEnum;
 import com.soybean.upms.api.enums.SysMenuCacheEnum;
+import com.soybean.upms.api.enums.SysIconTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -119,6 +120,12 @@ public class SysMenu implements Serializable {
      * 菜单图标
      */
     private String icon;
+
+    /**
+     * 图标类型
+     */
+    @TableField("icon_type")
+    private SysIconTypeEnum iconType;
 
     /**
      * 创建者
