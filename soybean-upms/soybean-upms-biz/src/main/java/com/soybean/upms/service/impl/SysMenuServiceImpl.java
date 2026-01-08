@@ -410,4 +410,20 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         return routeList;
     }
+
+    @Override
+    public List<RouteTreeVO> getStaticMenuRouteTree() {
+        // 查询所有静态菜单
+        List<SysMenu> staticMenus = list(new LambdaQueryWrapper<SysMenu>()
+                .eq(SysMenu::getIsConstant, com.soybean.upms.api.enums.SysMenuConstantEnum.YES)
+                .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
+                .orderByAsc(SysMenu::getOrderNum));
+
+        if (CollUtil.isEmpty(staticMenus)) {
+            return Collections.emptyList();
+        }
+
+        // 构建路由树
+        return buildRouteTree(staticMenus, 0L);
+    }
 }

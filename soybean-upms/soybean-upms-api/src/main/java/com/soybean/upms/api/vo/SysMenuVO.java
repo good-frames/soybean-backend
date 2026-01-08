@@ -8,6 +8,7 @@ import com.soybean.upms.api.enums.SysMenuVisibleEnum;
 import com.soybean.upms.api.enums.SysMenuFrameEnum;
 import com.soybean.upms.api.enums.SysMenuCacheEnum;
 import com.soybean.upms.api.enums.SysIconTypeEnum;
+import com.soybean.upms.api.enums.SysMenuConstantEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -114,6 +115,11 @@ public class SysMenuVO implements Serializable {
      * 图标类型
      */
     private SysIconTypeEnum iconType;
+
+    /**
+     * 是否为静态菜单（0否 1是）
+     */
+    private SysMenuConstantEnum isConstant;
 
     /**
      * 创建时间

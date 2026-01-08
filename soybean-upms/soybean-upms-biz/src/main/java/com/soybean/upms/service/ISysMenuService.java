@@ -108,4 +108,11 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @return 路由树列表
      */
     List<RouteTreeVO> buildRouteTree(List<SysMenu> menuList, Long parentId);
+
+    /**
+     * 获取所有静态菜单路由树
+     *
+     * @return 静态菜单路由树列表
+     */
+    List<RouteTreeVO> getStaticMenuRouteTree();
 }

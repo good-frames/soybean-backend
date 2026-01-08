@@ -113,4 +113,13 @@ public class SysMenuController {
         return Result.ok(permissions);
     }
 
+    /**
+     * 获取所有静态菜单路由树
+     */
+    @GetMapping("/static")
+    public Result<List<RouteTreeVO>> getStaticMenuRouteTree() {
+        List<RouteTreeVO> routeList = menuService.getStaticMenuRouteTree();
+        return Result.ok(routeList);
+    }
+
 }

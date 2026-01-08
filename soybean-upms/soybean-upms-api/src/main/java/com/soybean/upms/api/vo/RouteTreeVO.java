@@ -63,5 +63,10 @@ public class RouteTreeVO extends SysMenuVO {
          * 外链地址
          */
         private String href;
+
+        /**
+         * 是否为静态菜单（0否 1是）
+         */
+        private Boolean constant;
     }
 }
