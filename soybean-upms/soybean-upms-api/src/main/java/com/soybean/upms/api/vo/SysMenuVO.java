@@ -34,12 +34,12 @@ public class SysMenuVO implements Serializable {
     /**
      * 菜单名称
      */
-    private String name;
+    private String routeName;
 
     /**
      * 菜单标题
      */
-    private String title;
+    private String menuName;
 
     /**
      * 国际化键
@@ -54,12 +54,12 @@ public class SysMenuVO implements Serializable {
     /**
      * 显示顺序
      */
-    private Integer orderNum;
+    private Integer order;
 
     /**
      * 路由地址
      */
-    private String path;
+    private String routePath;
 
     /**
      * 组件路径
@@ -72,9 +72,9 @@ public class SysMenuVO implements Serializable {
     private String query;
 
     /**
-     * 是否为外链（0不是外链 1是外链）
+     * 是否为外链（false不是外链 true是外链）
      */
-    private SysMenuFrameEnum isFrame;
+    private boolean isFrame;
 
     /**
      * 外链地址
@@ -82,19 +82,19 @@ public class SysMenuVO implements Serializable {
     private String href;
 
     /**
-     * 是否缓存（0不缓存 1缓存）
+     * 是否缓存（false不缓存 true缓存）
      */
-    private SysKeepAliveEnum keepAlive;
+    private boolean keepAlive;
 
     /**
      * 菜单类型（M目录 C菜单）
      */
-    private SysMenuTypeEnum type;
+    private SysMenuTypeEnum menuType;
 
     /**
-     * 菜单是否在菜单中隐藏（0不隐藏 1隐藏）
+     * 菜单是否在菜单中隐藏（false不隐藏 true隐藏）
      */
-    private SysMenuHideInMenuEnum hideInMenu;
+    private boolean hideInMenu;
 
     /**
      * 菜单状态（0停用 1正常）
@@ -117,9 +117,9 @@ public class SysMenuVO implements Serializable {
     private SysIconTypeEnum iconType;
 
     /**
-     * 是否为静态菜单（0否 1是）
+     * 是否为静态菜单（false否 true是）
      */
-    private SysMenuConstantEnum isConstant;
+    private Boolean constant;
 
     /**
      * 创建时间

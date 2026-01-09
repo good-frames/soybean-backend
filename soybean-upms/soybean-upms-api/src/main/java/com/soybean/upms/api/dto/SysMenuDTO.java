@@ -37,13 +37,13 @@ public class SysMenuDTO implements Serializable {
      */
     @NotBlank(message = "菜单名称不能为空")
     @Size(max = 50, message = "菜单名称长度不能超过50个字符")
-    private String name;
+    private String routeName;
 
     /**
      * 菜单标题
      */
     @Size(max = 50, message = "菜单标题长度不能超过50个字符")
-    private String title;
+    private String menuName;
 
     /**
      * 国际化键
@@ -60,13 +60,13 @@ public class SysMenuDTO implements Serializable {
      * 显示顺序
      */
     @NotNull(message = "显示顺序不能为空")
-    private Integer orderNum;
+    private Integer order;
 
     /**
      * 路由地址
      */
     @Size(max = 200, message = "路由地址长度不能超过200个字符")
-    private String path;
+    private String routePath;
 
     /**
      * 组件路径
@@ -81,9 +81,9 @@ public class SysMenuDTO implements Serializable {
     private String query;
 
     /**
-     * 是否为外链（0不是外链 1是外链）
+     * 是否为外链（false不是外链 true是外链）
      */
-    private SysMenuFrameEnum isFrame;
+    private Boolean isFrame;
 
     /**
      * 外链地址
@@ -92,20 +92,20 @@ public class SysMenuDTO implements Serializable {
     private String href;
 
     /**
-     * 是否缓存（0不缓存 1缓存）
+     * 是否缓存（false不缓存 true缓存）
      */
-    private SysKeepAliveEnum keepAlive;
+    private Boolean keepAlive;
 
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
     @NotNull(message = "菜单类型不能为空")
-    private SysMenuTypeEnum type;
+    private SysMenuTypeEnum menuType;
 
     /**
-     * 菜单是否在菜单中隐藏（0不隐藏 1隐藏）
+     * 菜单是否在菜单中隐藏（false不隐藏 true隐藏）
      */
-    private SysMenuHideInMenuEnum hideInMenu;
+    private Boolean hideInMenu;
 
     /**
      * 菜单状态（0停用 1正常）
@@ -130,9 +130,20 @@ public class SysMenuDTO implements Serializable {
     private SysIconTypeEnum iconType;
 
     /**
-     * 是否为静态菜单（0否 1是）
+     * 是否为静态菜单（false否 true是）
      */
-    private SysMenuConstantEnum isConstant;
+    private Boolean constant;
+
+    /**
+     * 是否多页签（false否 true是）
+     */
+    private Boolean multiTab;
+
+    /**
+     * 高亮路由名称
+     */
+    @Size(max = 50, message = "高亮路由名称长度不能超过50个字符")
+    private String activeMenu;
 
     /**
      * 备注

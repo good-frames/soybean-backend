@@ -1,8 +1,14 @@
 package com.soybean.upms.api.vo;
 
+import com.soybean.upms.api.enums.SysMenuStatusEnum;
+import com.soybean.upms.api.enums.SysMenuTypeEnum;
+import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
+import com.soybean.upms.api.enums.SysMenuFrameEnum;
+import com.soybean.upms.api.enums.SysKeepAliveEnum;
+import com.soybean.upms.api.enums.SysIconTypeEnum;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,16 +16,40 @@ import java.util.List;
  *
  * @author soybean
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class RouteTreeVO extends SysMenuVO {
+public class RouteTreeVO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 菜单ID
+     */
+    private Long id;
+
+    /**
+     * 菜单名称
+     */
+    private String name;
+
+    /**
+     * 父菜单ID
+     */
+    private Long parentId;
+
+    /**
+     * 路由地址
+     */
+    private String path;
+
+    /**
+     * 组件路径
+     */
+    private String component;
 
     /**
      * 子菜单
      */
     private List<RouteTreeVO> children;
-
-
 
     /**
      * 按钮列表
@@ -38,11 +68,6 @@ public class RouteTreeVO extends SysMenuVO {
      */
     @Data
     public static class MenuMetaVO {
-
-        /**
-         * 标题
-         */
-        private String title;
 
         /**
          * 国际化键
@@ -78,5 +103,15 @@ public class RouteTreeVO extends SysMenuVO {
          * 是否缓存
          */
         private Boolean keepAlive;
+
+        /**
+         * 是否多页签
+         */
+        private Boolean multiTab;
+
+        /**
+         * 高亮路由名称
+         */
+        private String activeMenu;
     }
 }

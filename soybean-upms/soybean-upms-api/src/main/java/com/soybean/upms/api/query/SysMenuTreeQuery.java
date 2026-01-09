@@ -20,9 +20,9 @@ import java.io.Serializable;
 public class SysMenuTreeQuery extends PageQuery implements Serializable {
 
     /**
-     * 菜单名称
+     * 路由名称
      */
-    private String name;
+    private String routeName;
 
     /**
      * 菜单状态（0正常 1停用）
@@ -32,5 +32,5 @@ public class SysMenuTreeQuery extends PageQuery implements Serializable {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
-    private SysMenuTypeEnum type;
+    private SysMenuTypeEnum menuType;
 }

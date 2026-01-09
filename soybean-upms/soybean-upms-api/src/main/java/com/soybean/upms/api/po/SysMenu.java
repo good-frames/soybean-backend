@@ -40,12 +40,14 @@ public class SysMenu implements Serializable {
     /**
      * 菜单名称
      */
-    private String name;
+    @TableField("route_name")
+    private String routeName;
 
     /**
      * 菜单标题
      */
-    private String title;
+    @TableField("menu_name")
+    private String menuName;
 
     /**
      * 国际化键
@@ -60,12 +62,14 @@ public class SysMenu implements Serializable {
     /**
      * 显示顺序
      */
-    private Integer orderNum;
+    @TableField("`order`")
+    private Integer order;
 
     /**
      * 路由地址
      */
-    private String path;
+    @TableField("route_path")
+    private String routePath;
 
     /**
      * 组件路径
@@ -78,10 +82,10 @@ public class SysMenu implements Serializable {
     private String query;
 
     /**
-     * 是否为外链（0不是外链 1是外链）
+     * 是否为外链（false不是外链 true是外链）
      */
     @TableField("is_frame")
-    private SysMenuFrameEnum isFrame;
+    private Boolean isFrame;
 
     /**
      * 外链地址
@@ -89,22 +93,22 @@ public class SysMenu implements Serializable {
     private String href;
 
     /**
-     * 是否缓存（0不缓存 1缓存）
+     * 是否缓存（false不缓存 true缓存）
      */
     @TableField("keep_alive")
-    private SysKeepAliveEnum keepAlive;
+    private Boolean keepAlive;
 
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
-    @TableField("type")
-    private SysMenuTypeEnum type;
+    @TableField("menu_type")
+    private SysMenuTypeEnum menuType;
 
     /**
-     * 菜单是否在菜单中隐藏（0不隐藏 1隐藏）
+     * 菜单是否在菜单中隐藏（false不隐藏 true隐藏）
      */
     @TableField("hide_in_menu")
-    private SysMenuHideInMenuEnum hideInMenu;
+    private Boolean hideInMenu;
 
     /**
      * 菜单状态（0停用 1正常）
@@ -131,8 +135,20 @@ public class SysMenu implements Serializable {
     /**
      * 是否为静态菜单（0否 1是）
      */
-    @TableField("is_constant")
-    private SysMenuConstantEnum isConstant;
+    @TableField("constant")
+    private SysMenuConstantEnum constant;
+
+    /**
+     * 是否多页签（0否 1是）
+     */
+    @TableField("multi_tab")
+    private Boolean multiTab;
+
+    /**
+     * 高亮路由名称
+     */
+    @TableField("active_menu")
+    private String activeMenu;
 
     /**
      * 创建者

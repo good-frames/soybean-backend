@@ -12,6 +12,7 @@ import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.dto.SysBtnDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
+import com.soybean.upms.api.enums.SysMenuConstantEnum;
 import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.po.SysBtn;
 import com.soybean.upms.api.po.SysMenu;
@@ -74,7 +75,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return list(new LambdaQueryWrapper<SysMenu>()
                 .in(SysMenu::getId, menuIds)
                 .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
-                .orderByAsc(SysMenu::getOrderNum));
+                .orderByAsc(SysMenu::getOrder));
     }
 
     @Override
@@ -110,7 +111,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Transactional(rollbackFor = Exception.class)
     public boolean saveMenuWithButtons(SysMenuDTO menuDTO) {
         // 检查菜单名称是否已存在
-        long count = count(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getName, menuDTO.getName()));
+        long count = count(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getRouteName, menuDTO.getRouteName()));
         if (count > 0) {
             throw new BusinessException("菜单名称已存在，请使用其他名称");
         }
@@ -140,7 +141,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public boolean updateMenuWithButtons(SysMenuDTO menuDTO) {
         // 检查菜单名称是否已存在（排除自身）
         long count = count(new LambdaQueryWrapper<SysMenu>()
-            .eq(SysMenu::getName, menuDTO.getName())
+            .eq(SysMenu::getRouteName, menuDTO.getRouteName())
             .ne(SysMenu::getId, menuDTO.getId()));
         if (count > 0) {
             throw new BusinessException("菜单名称已存在，请使用其他名称");
@@ -225,10 +226,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<SysMenuVO> listAllMenus(SysMenuQuery query) {
         List<SysMenu> menuList = list(new LambdaQueryWrapper<SysMenu>()
-            .like(StrUtil.isNotBlank(query.getName()), SysMenu::getName, query.getName())
+            .like(StrUtil.isNotBlank(query.getRouteName()), SysMenu::getRouteName, query.getRouteName())
             .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
-            .eq(query.getType() != null, SysMenu::getType, query.getType())
-            .orderByAsc(SysMenu::getOrderNum));
+            .eq(query.getMenuType() != null, SysMenu::getMenuType, query.getMenuType())
+            .orderByAsc(SysMenu::getOrder));
 
         return menuList.stream()
             .map(menu -> {
@@ -242,7 +243,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 查询所有顶级菜单
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<SysMenu>()
             .eq(SysMenu::getParentId, 0)
-            .orderByAsc(SysMenu::getOrderNum);
+            .orderByAsc(SysMenu::getOrder);
 
         List<SysMenu> topMenus = list(wrapper);
 
@@ -254,7 +255,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询子菜单
                 List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
                     .eq(SysMenu::getParentId, menu.getId())
-                    .orderByAsc(SysMenu::getOrderNum));
+                    .orderByAsc(SysMenu::getOrder));
 
                 if (CollUtil.isNotEmpty(children)) {
                     List<MenuTreeVO> childVOs = children.stream()
@@ -293,7 +294,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 查询子菜单
         List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
             .eq(SysMenu::getParentId, menu.getId())
-            .orderByAsc(SysMenu::getOrderNum));
+            .orderByAsc(SysMenu::getOrder));
 
         if (CollUtil.isNotEmpty(children)) {
             List<MenuTreeVO> childVOs = children.stream()
@@ -322,12 +323,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 只查询顶级菜单
         LambdaQueryWrapper<SysMenu> wrapper = new LambdaQueryWrapper<SysMenu>()
             .eq(SysMenu::getParentId, 0)
-            .like(StrUtil.isNotBlank(query.getName()), SysMenu::getName, query.getName())
+            .like(StrUtil.isNotBlank(query.getRouteName()), SysMenu::getRouteName, query.getRouteName())
             .eq(query.getStatus() != null, SysMenu::getStatus, query.getStatus())
-            .eq(query.getType() != null, SysMenu::getType, query.getType())
-            .orderByAsc(SysMenu::getOrderNum);
+            .eq(query.getMenuType() != null, SysMenu::getMenuType, query.getMenuType())
+            .orderByAsc(SysMenu::getOrder);
 
-        Page<SysMenu> page = query.toMpPage("order_num", true);
+        Page<SysMenu> page = query.toMpPage("`order`", true);
         page(page, wrapper);
 
         // 转换为VO
@@ -338,7 +339,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询子菜单
                 List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
                     .eq(SysMenu::getParentId, menu.getId())
-                    .orderByAsc(SysMenu::getOrderNum));
+                    .orderByAsc(SysMenu::getOrder));
 
                 if (CollUtil.isNotEmpty(children)) {
                     List<MenuTreeVO> childVOs = children.stream()
@@ -385,18 +386,25 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         for (SysMenu menu : menuList) {
             if (menu.getParentId().equals(parentId)) {
-                RouteTreeVO route = BeanUtil.toBean(menu, RouteTreeVO.class);
+                // 只复制基本字段到RouteTreeVO
+                RouteTreeVO route = new RouteTreeVO();
+                route.setId(menu.getId());
+                route.setName(menu.getRouteName());
+                route.setParentId(menu.getParentId());
+                route.setPath(menu.getRoutePath());
+                route.setComponent(menu.getComponent());
 
-                // 构建元数据
+                // 构建元数据，将所有其他字段移到MenuMetaVO中
                 RouteTreeVO.MenuMetaVO meta = new RouteTreeVO.MenuMetaVO();
-                meta.setTitle(menu.getTitle());
                 meta.setIcon(menu.getIcon());
                 meta.setI18nKey(menu.getI18nKey());
-                meta.setOrder(menu.getOrderNum());
+                meta.setOrder(menu.getOrder());
                 meta.setHref(menu.getHref());
-                meta.setHideInMenu(menu.getHideInMenu() != null && menu.getHideInMenu().getValue().equals("1"));
-                meta.setKeepAlive(menu.getKeepAlive() != null && menu.getKeepAlive().getValue().equals("1"));
-                meta.setConstant(menu.getIsConstant() != null && menu.getIsConstant().getValue().equals("1"));
+                meta.setHideInMenu(menu.getHideInMenu() != null && menu.getHideInMenu());
+                meta.setKeepAlive(menu.getKeepAlive() != null && menu.getKeepAlive());
+                meta.setConstant(SysMenuConstantEnum.YES.equals(menu.getConstant()));
+                meta.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab());
+                meta.setActiveMenu(menu.getActiveMenu());
                 route.setMeta(meta);
 
                 // 递归构建子路由
@@ -418,9 +426,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<RouteTreeVO> getStaticMenuRouteTree() {
         // 查询所有静态菜单
         List<SysMenu> staticMenus = list(new LambdaQueryWrapper<SysMenu>()
-                .eq(SysMenu::getIsConstant, com.soybean.upms.api.enums.SysMenuConstantEnum.YES)
+                .eq(SysMenu::getConstant, true)
                 .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
-                .orderByAsc(SysMenu::getOrderNum));
+                .orderByAsc(SysMenu::getOrder));
 
         if (CollUtil.isEmpty(staticMenus)) {
             return Collections.emptyList();

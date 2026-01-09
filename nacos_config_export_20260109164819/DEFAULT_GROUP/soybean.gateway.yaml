@@ -18,5 +18,5 @@ spring:
 security:
   permit-all:
     urls:
-      - /user/admin
+      - /systemManage/menu/static
       - /auth/**

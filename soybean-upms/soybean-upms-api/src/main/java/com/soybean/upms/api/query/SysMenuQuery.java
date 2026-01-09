@@ -21,7 +21,7 @@ public class SysMenuQuery implements Serializable {
     /**
      * 菜单名称
      */
-    private String name;
+    private String routeName;
 
     /**
      * 菜单状态（0正常 1停用）
@@ -31,5 +31,5 @@ public class SysMenuQuery implements Serializable {
     /**
      * 菜单类型（M目录 C菜单）
      */
-    private SysMenuTypeEnum type;
+    private SysMenuTypeEnum menuType;
 }
