@@ -3,6 +3,7 @@ package com.soybean.upms.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.soybean.common.core.utils.Result;
+import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.query.SysMenuQuery;
 import com.soybean.upms.api.query.SysMenuTreeQuery;
@@ -10,7 +11,11 @@ import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.vo.RouteTreeVO;
 import com.soybean.upms.api.vo.SysMenuVO;
 import com.soybean.upms.api.vo.UserRouteResultVO;
+import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.service.ISysMenuService;
+import com.soybean.upms.service.ISysRoleService;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +35,7 @@ import java.util.List;
 public class SysMenuController {
 
     private final ISysMenuService menuService;
+    private final ISysRoleService roleService;
 
     /**
      * 新增菜单
@@ -102,6 +108,26 @@ public class SysMenuController {
         List<RouteTreeVO> routeList = menuService.getCurrentUserRouteTree();
         UserRouteResultVO resultVO = new UserRouteResultVO();
         resultVO.setRoutes(routeList);
+        
+        // 获取当前用户的角色ID
+        String userId = SecurityUtil.getUserId();
+        List<Long> roleIds = roleService.getRoleIdsByUserId(userId);
+        
+        // 获取角色的home字段，如果有多个角色，取第一个角色的home
+        if (CollUtil.isNotEmpty(roleIds)) {
+            Long roleId = roleIds.get(0);
+            SysRole role = roleService.getById(roleId);
+            if (role != null && StrUtil.isNotBlank(role.getHome())) {
+                resultVO.setHome(role.getHome());
+            } else {
+                // 如果没有设置home，使用默认值
+                resultVO.setHome("home");
+            }
+        } else {
+            // 如果没有角色，使用默认值
+            resultVO.setHome("home");
+        }
+        
         return Result.ok(resultVO);
     }
 

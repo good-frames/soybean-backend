@@ -6,6 +6,7 @@ import com.soybean.common.core.utils.Result;
 import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.clients.SysRoleClient;
+import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
@@ -149,5 +150,14 @@ public class SysRoleController implements SysRoleClient {
     public Result<RoleMenuBtnVO> getRoleMenuBtn(@PathVariable Long roleId) {
         RoleMenuBtnVO roleMenuBtn = roleService.getRoleMenuBtn(roleId);
         return Result.ok(roleMenuBtn);
+    }
+
+    /**
+     * 绑定角色和菜单、按钮
+     */
+    @PostMapping("/{roleId}/bindMenuBtn")
+    public Result<Boolean> bindRoleMenuBtn(@PathVariable Long roleId, @RequestBody @Validated RoleMenuBtnBindDTO bindDTO) {
+        boolean result = roleService.bindRoleMenuBtn(roleId, bindDTO);
+        return Result.ok(result);
     }
 }

@@ -20,5 +20,5 @@ public class UserRouteResultVO {
     /**
      * 首页路径
      */
-    private String home = "home";
+    private String home;
 }

@@ -71,4 +71,9 @@ public class SysRoleVO implements Serializable {
      * 是否为超级管理员
      */
     private Boolean admin;
+
+    /**
+     * 角色的默认首页路由名称
+     */
+    private String home;
 }

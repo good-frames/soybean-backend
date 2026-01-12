@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.soybean.common.mybatis.dto.PageDTO;
+import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.enums.SysDelFlagEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
@@ -29,6 +30,8 @@ import com.soybean.upms.mapper.SysRoleBtnMapper;
 import com.soybean.upms.mapper.SysUserRoleMapper;
 import com.soybean.upms.mapper.SysMenuMapper;
 import com.soybean.upms.service.ISysRoleService;
+
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -422,11 +425,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                 .map(SysRoleMenu::getMenuId)
                 .collect(Collectors.toList());
                 
-            // 查询菜单信息，只获取类型为菜单(C)的
+            // 查询菜单信息，获取所有类型的菜单（包括目录和菜单）
             List<SysMenu> menus = menuMapper.selectList(
                 new LambdaQueryWrapper<SysMenu>()
                     .in(SysMenu::getId, allMenuIds)
-                    .eq(SysMenu::getMenuType, SysMenuTypeEnum.MENU)
+                    .in(SysMenu::getMenuType, SysMenuTypeEnum.DIRECTORY, SysMenuTypeEnum.MENU)
             );
             
             // 获取菜单ID列表
@@ -452,5 +455,53 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
         
         return result;
+    }
+
+    @Override
+    public boolean bindRoleMenuBtn(Long roleId, RoleMenuBtnBindDTO bindDTO) {
+        // 校验角色是否存在
+        checkRoleExists(roleId);
+        
+        // 删除原有的角色菜单关联
+        roleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>()
+            .eq(SysRoleMenu::getRoleId, roleId));
+        
+        // 删除原有的角色按钮关联
+        roleBtnMapper.delete(new LambdaQueryWrapper<SysRoleBtn>()
+            .eq(SysRoleBtn::getRoleId, roleId));
+        
+        // 保存新的角色菜单关联
+        if (CollUtil.isNotEmpty(bindDTO.getMenuIds())) {
+            List<SysRoleMenu> roleMenus = bindDTO.getMenuIds().stream()
+                .map(menuId -> {
+                    SysRoleMenu roleMenu = new SysRoleMenu();
+                    roleMenu.setRoleId(roleId);
+                    roleMenu.setMenuId(menuId);
+                    return roleMenu;
+                })
+                .collect(Collectors.toList());
+            
+            for (SysRoleMenu roleMenu : roleMenus) {
+                roleMenuMapper.insert(roleMenu);
+            }
+        }
+        
+        // 保存新的角色按钮关联
+        if (CollUtil.isNotEmpty(bindDTO.getBtnIds())) {
+            List<SysRoleBtn> roleBtns = bindDTO.getBtnIds().stream()
+                .map(btnId -> {
+                    SysRoleBtn roleBtn = new SysRoleBtn();
+                    roleBtn.setRoleId(roleId);
+                    roleBtn.setBtnId(btnId);
+                    return roleBtn;
+                })
+                .collect(Collectors.toList());
+            
+            for (SysRoleBtn roleBtn : roleBtns) {
+                roleBtnMapper.insert(roleBtn);
+            }
+        }
+        
+        return true;
     }
 }

@@ -85,4 +85,9 @@ public class SysRole implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 角色的默认首页路由名称
+     */
+    private String home;
 }

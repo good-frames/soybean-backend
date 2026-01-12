@@ -50,6 +50,7 @@ CREATE TABLE `sys_role` (
     `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
     `role_sort` int NOT NULL DEFAULT '0' COMMENT '显示顺序',
     `status` char(1) NOT NULL COMMENT '角色状态（0停用 1正常）',
+    `home` varchar(255) DEFAULT NULL COMMENT '角色首页路由名称',
     `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
     `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
     `create_time` datetime DEFAULT NULL COMMENT '创建时间',
@@ -159,7 +160,7 @@ INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'admin@soybean.c
 -- ----------------------------
 -- 默认角色
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '0', '0', 'admin', sysdate(), 'admin', sysdate(), '超级管理员');
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '0', 'home', '0', 'admin', sysdate(), 'admin', sysdate(), '超级管理员');
 
 -- ----------------------------
 -- 用户角色关联
