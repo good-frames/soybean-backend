@@ -4,7 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -73,10 +74,62 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
 
         // 查询菜单信息
-        return list(new LambdaQueryWrapper<SysMenu>()
+        List<SysMenu> menus = list(new LambdaQueryWrapper<SysMenu>()
                 .in(SysMenu::getId, menuIds)
                 .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
                 .orderByAsc(SysMenu::getOrder));
+        
+        // 如果子节点有权限但父节点没有，需要添加父节点
+        if (CollUtil.isNotEmpty(menus)) {
+            // 获取所有菜单ID
+            Set<Long> menuIdSet = menus.stream().map(SysMenu::getId).collect(Collectors.toSet());
+            
+            // 查找所有需要添加的父节点ID
+            Set<Long> parentIdsToAdd = new HashSet<>();
+            for (SysMenu menu : menus) {
+                Long parentId = menu.getParentId();
+                // 如果父节点存在且不在当前菜单列表中，且父节点ID不为0（根节点）
+                if (parentId != null && parentId != 0L && !menuIdSet.contains(parentId)) {
+                    parentIdsToAdd.add(parentId);
+                }
+            }
+            
+            // 递归查找所有父节点
+            while (!parentIdsToAdd.isEmpty()) {
+                // 查询当前批次的父节点
+                List<SysMenu> parentMenus = list(new LambdaQueryWrapper<SysMenu>()
+                        .in(SysMenu::getId, parentIdsToAdd)
+                        .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL));
+                
+                if (CollUtil.isEmpty(parentMenus)) {
+                    break;
+                }
+                
+                // 添加到结果中
+                menus.addAll(parentMenus);
+                
+                // 更新菜单ID集合
+                Set<Long> newMenuIds = parentMenus.stream().map(SysMenu::getId).collect(Collectors.toSet());
+                menuIdSet.addAll(newMenuIds);
+                
+                // 查找下一批需要添加的父节点
+                Set<Long> nextParentIdsToAdd = new HashSet<>();
+                for (SysMenu parentMenu : parentMenus) {
+                    Long parentId = parentMenu.getParentId();
+                    // 如果父节点存在且不在当前菜单列表中，且父节点ID不为0（根节点）
+                    if (parentId != null && parentId != 0L && !menuIdSet.contains(parentId)) {
+                        nextParentIdsToAdd.add(parentId);
+                    }
+                }
+                
+                parentIdsToAdd = nextParentIdsToAdd;
+            }
+            
+            // 重新排序
+            menus.sort(Comparator.comparing(SysMenu::getOrder));
+        }
+        
+        return menus;
     }
 
     @Override

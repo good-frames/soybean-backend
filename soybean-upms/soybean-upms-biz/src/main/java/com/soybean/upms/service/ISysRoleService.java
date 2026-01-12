@@ -7,6 +7,7 @@ import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.query.SysRoleQuery;
+import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 
 import java.util.List;
@@ -162,4 +163,12 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 角色ID列表
      */
     List<Long> getRoleIdsByUserId(String userId);
+
+    /**
+     * 获取角色绑定的菜单及按钮
+     *
+     * @param roleId 角色ID
+     * @return 角色菜单按钮信息
+     */
+    RoleMenuBtnVO getRoleMenuBtn(Long roleId);
 }

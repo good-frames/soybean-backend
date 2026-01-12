@@ -7,6 +7,7 @@ import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.clients.SysRoleClient;
 import com.soybean.upms.api.dto.SysRoleDTO;
+import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.service.ISysRoleService;
@@ -139,5 +140,14 @@ public class SysRoleController implements SysRoleClient {
     public Result<List<String>> getRoleKeysByUserId(@PathVariable String userId) {
         List<String> roleKeys = roleService.selectRoleKeysByUserId(userId);
         return Result.ok(roleKeys);
+    }
+
+    /**
+     * 获取角色绑定的菜单及按钮
+     */
+    @GetMapping("/{roleId}/menuBtn")
+    public Result<RoleMenuBtnVO> getRoleMenuBtn(@PathVariable Long roleId) {
+        RoleMenuBtnVO roleMenuBtn = roleService.getRoleMenuBtn(roleId);
+        return Result.ok(roleMenuBtn);
     }
 }

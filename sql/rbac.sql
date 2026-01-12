@@ -128,7 +128,14 @@ CREATE TABLE `sys_role_menu` (
     PRIMARY KEY (`role_id`,`menu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色和菜单关联表';
 
-
+-- ----------------------------
+-- 创建角色-按钮关联表
+-- ----------------------------
+CREATE TABLE `sys_role_btn` (
+    `role_id` bigint NOT NULL COMMENT '角色ID',
+    `btn_id` bigint NOT NULL COMMENT '按钮ID',
+    PRIMARY KEY (`role_id`, `btn_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='角色按钮关联表';
 
 -- ----------------------------
 -- 创建默认菜单数据

@@ -11,15 +11,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.enums.SysDelFlagEnum;
+import com.soybean.upms.api.enums.SysMenuTypeEnum;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.po.SysRole;
+import com.soybean.upms.api.po.SysRoleBtn;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.po.SysUserRole;
+import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
+import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.query.SysRoleQuery;
+import com.soybean.upms.api.vo.MenuTreeVO;
+import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.mapper.SysRoleMapper;
 import com.soybean.upms.mapper.SysRoleMenuMapper;
+import com.soybean.upms.mapper.SysRoleBtnMapper;
 import com.soybean.upms.mapper.SysUserRoleMapper;
+import com.soybean.upms.mapper.SysMenuMapper;
 import com.soybean.upms.service.ISysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +47,9 @@ import java.util.stream.Collectors;
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
 
     private final SysRoleMenuMapper roleMenuMapper;
+    private final SysRoleBtnMapper roleBtnMapper;
     private final SysUserRoleMapper userRoleMapper;
+    private final SysMenuMapper menuMapper;
 
     /**
      * 根据条件分页查询角色数据
@@ -390,5 +400,57 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     private static boolean isAdmin(SysRole role) {
         return (role != null && role.getId() != null && role.getId().longValue() == 1L);
+    }
+
+    @Override
+    public RoleMenuBtnVO getRoleMenuBtn(Long roleId) {
+        // 创建返回对象
+        RoleMenuBtnVO result = new RoleMenuBtnVO();
+        // 初始化空列表，确保返回不为null
+        result.setMenuIds(new ArrayList<>());
+        result.setBtnIds(new ArrayList<>());
+        
+        // 获取角色绑定的菜单
+        List<SysRoleMenu> roleMenus = roleMenuMapper.selectList(
+            new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, roleId)
+        );
+        
+        if (CollUtil.isNotEmpty(roleMenus)) {
+            // 获取菜单ID列表
+            // 获取所有菜单ID
+            List<Long> allMenuIds = roleMenus.stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toList());
+                
+            // 查询菜单信息，只获取类型为菜单(C)的
+            List<SysMenu> menus = menuMapper.selectList(
+                new LambdaQueryWrapper<SysMenu>()
+                    .in(SysMenu::getId, allMenuIds)
+                    .eq(SysMenu::getMenuType, SysMenuTypeEnum.MENU)
+            );
+            
+            // 获取菜单ID列表
+            List<Long> menuIds = menus.stream()
+                .map(SysMenu::getId)
+                .collect(Collectors.toList());
+            
+            result.setMenuIds(menuIds);
+        }
+        
+        // 获取角色绑定的按钮
+        List<SysRoleBtn> roleBtns = roleBtnMapper.selectList(
+            new LambdaQueryWrapper<SysRoleBtn>().eq(SysRoleBtn::getRoleId, roleId)
+        );
+        
+        if (CollUtil.isNotEmpty(roleBtns)) {
+            // 获取按钮ID列表
+            List<Long> btnIds = roleBtns.stream()
+                .map(SysRoleBtn::getBtnId)
+                .collect(Collectors.toList());
+            
+            result.setBtnIds(btnIds);
+        }
+        
+        return result;
     }
 }
