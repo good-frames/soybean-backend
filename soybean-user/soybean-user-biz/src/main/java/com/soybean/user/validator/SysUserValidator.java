@@ -25,7 +25,7 @@ public class SysUserValidator extends BaseUserValidator {
         SysUserDTO adminUser = (SysUserDTO) target;
 
         // 验证ID
-        validateId(adminUser.getId(), "id", true, errors);
+        validateId(adminUser.getUserId(), "userId", true, errors);
 
         extracted(errors, adminUser);
     }
@@ -33,7 +33,7 @@ public class SysUserValidator extends BaseUserValidator {
     public void updatePasswordValidate(Object target, Errors errors) {
         PasswordUpdateDTO passwordUpdateDTO = (PasswordUpdateDTO) target;
         // 验证ID
-        validateId(passwordUpdateDTO.getId(), "id", true, errors);
+        validateId(passwordUpdateDTO.getUserId(), "userId", true, errors);
         // 验证密码
         validatePassword(passwordUpdateDTO.getNewPassword(), "newPassword", true, errors);
     }

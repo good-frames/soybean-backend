@@ -13,6 +13,7 @@ import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.dto.SysBtnDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.enums.SysMenuConstantEnum;
+import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
 import com.soybean.upms.api.enums.SysMenuStatusEnum;
 import com.soybean.upms.api.po.SysBtn;
 import com.soybean.upms.api.po.SysMenu;
@@ -116,8 +117,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new BusinessException("菜单名称已存在，请使用其他名称");
         }
         
-        // 转换DTO为PO
-        SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
+        // 转换DTO为PO，但排除constant和multiTab字段
+        SysMenu menu = new SysMenu();
+        BeanUtil.copyProperties(menuDTO, menu, "constant", "multiTab");
+        // 手动处理Boolean到枚举的转换
+        if (menuDTO.getConstant() != null) {
+            menu.setConstant(menuDTO.getConstant() ? SysMenuConstantEnum.YES : SysMenuConstantEnum.NO);
+        }
+        if (menuDTO.getMultiTab() != null) {
+            menu.setMultiTab(menuDTO.getMultiTab() ? SysMenuMultiTabEnum.YES : SysMenuMultiTabEnum.NO);
+        }
         boolean result = save(menu);
 
         // 保存按钮信息
@@ -147,8 +156,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new BusinessException("菜单名称已存在，请使用其他名称");
         }
         
-        // 更新菜单信息
-        SysMenu menu = BeanUtil.toBean(menuDTO, SysMenu.class);
+        // 更新菜单信息，但排除constant和multiTab字段
+        SysMenu menu = new SysMenu();
+        BeanUtil.copyProperties(menuDTO, menu, "constant", "multiTab");
+        // 手动处理Boolean到枚举的转换
+        if (menuDTO.getConstant() != null) {
+            menu.setConstant(menuDTO.getConstant() ? SysMenuConstantEnum.YES : SysMenuConstantEnum.NO);
+        }
+        if (menuDTO.getMultiTab() != null) {
+            menu.setMultiTab(menuDTO.getMultiTab() ? SysMenuMultiTabEnum.YES : SysMenuMultiTabEnum.NO);
+        }
         boolean result = updateById(menu);
 
         if (result) {
@@ -233,7 +250,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         return menuList.stream()
             .map(menu -> {
-                return BeanUtil.toBean(menu, SysMenuVO.class);
+                SysMenuVO vo = BeanUtil.toBean(menu, SysMenuVO.class);
+                // 手动处理枚举到Boolean的转换
+                vo.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab() == SysMenuMultiTabEnum.YES);
+                vo.setActiveMenu(menu.getActiveMenu());
+                return vo;
             })
             .collect(Collectors.toList());
     }
@@ -251,6 +272,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return topMenus.stream()
             .map(menu -> {
                 MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+                // 手动处理枚举到Boolean的转换
+                vo.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab() == SysMenuMultiTabEnum.YES);
+                vo.setActiveMenu(menu.getActiveMenu());
 
                 // 查询子菜单
                 List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
@@ -290,6 +314,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
         // 转换为VO
         MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+        // 手动处理枚举到Boolean的转换
+        vo.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab() == SysMenuMultiTabEnum.YES);
+        vo.setActiveMenu(menu.getActiveMenu());
 
         // 查询子菜单
         List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
@@ -300,6 +327,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             List<MenuTreeVO> childVOs = children.stream()
                 .map(child -> {
                     MenuTreeVO childVO = BeanUtil.toBean(child, MenuTreeVO.class);
+                    // 手动处理枚举到Boolean的转换
+                    childVO.setMultiTab(child.getMultiTab() != null && child.getMultiTab() == SysMenuMultiTabEnum.YES);
+                    childVO.setActiveMenu(child.getActiveMenu());
                     // 查询按钮信息
                     List<SysBtn> childBtnList = sysBtnService.list(new LambdaQueryWrapper<SysBtn>()
                         .eq(SysBtn::getMenuId, child.getId()));
@@ -335,6 +365,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<MenuTreeVO> voList = page.getRecords().stream()
             .map(menu -> {
                 MenuTreeVO vo = BeanUtil.toBean(menu, MenuTreeVO.class);
+                // 手动处理枚举到Boolean的转换
+                vo.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab() == SysMenuMultiTabEnum.YES);
+                vo.setActiveMenu(menu.getActiveMenu());
 
                 // 查询子菜单
                 List<SysMenu> children = list(new LambdaQueryWrapper<SysMenu>()
@@ -402,9 +435,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 meta.setHref(menu.getHref());
                 meta.setHideInMenu(menu.getHideInMenu() != null && menu.getHideInMenu());
                 meta.setKeepAlive(menu.getKeepAlive() != null && menu.getKeepAlive());
-                meta.setConstant(SysMenuConstantEnum.YES.equals(menu.getConstant()));
-                meta.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab());
+                meta.setConstant(menu.getConstant() != null && menu.getConstant() == SysMenuConstantEnum.YES);
+                meta.setMultiTab(menu.getMultiTab() != null && menu.getMultiTab() == SysMenuMultiTabEnum.YES);
                 meta.setActiveMenu(menu.getActiveMenu());
+                meta.setFixedIndexInTab(menu.getFixedIndexInTab());
                 route.setMeta(meta);
 
                 // 递归构建子路由

@@ -122,6 +122,21 @@ public class SysMenuVO implements Serializable {
     private Boolean constant;
 
     /**
+     * 是否多页签（false否 true是）
+     */
+    private Boolean multiTab;
+
+    /**
+     * 高亮路由名称
+     */
+    private String activeMenu;
+
+    /**
+     * 菜单在标签页中的顺序
+     */
+    private Integer fixedIndexInTab;
+
+    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

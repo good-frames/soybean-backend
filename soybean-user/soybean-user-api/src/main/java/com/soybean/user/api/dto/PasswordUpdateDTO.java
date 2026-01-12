@@ -15,7 +15,7 @@ public class PasswordUpdateDTO implements Serializable {
     /**
      * 用户ID
      */
-    private String id;
+    private String userId;
 
     /**
      * 原密码

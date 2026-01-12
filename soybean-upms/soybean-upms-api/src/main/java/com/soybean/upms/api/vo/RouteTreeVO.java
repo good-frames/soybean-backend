@@ -6,6 +6,7 @@ import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
 import com.soybean.upms.api.enums.SysMenuFrameEnum;
 import com.soybean.upms.api.enums.SysKeepAliveEnum;
 import com.soybean.upms.api.enums.SysIconTypeEnum;
+import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -105,7 +106,7 @@ public class RouteTreeVO implements Serializable {
         private Boolean keepAlive;
 
         /**
-         * 是否多页签
+         * 是否多页签（false否 true是）
          */
         private Boolean multiTab;
 
@@ -113,5 +114,10 @@ public class RouteTreeVO implements Serializable {
          * 高亮路由名称
          */
         private String activeMenu;
+
+        /**
+         * 菜单在标签页中的顺序
+         */
+        private Integer fixedIndexInTab;
     }
 }

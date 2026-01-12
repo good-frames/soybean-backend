@@ -13,6 +13,7 @@ import com.soybean.upms.api.vo.UserRouteResultVO;
 import com.soybean.upms.service.ISysMenuService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class SysMenuController {
      * 新增菜单
      */
     @PostMapping
-    public Result<Void> add(@Valid @RequestBody SysMenuDTO menuDTO) {
+    public Result<Void> add(@Validated @RequestBody SysMenuDTO menuDTO) {
         boolean result = menuService.saveMenuWithButtons(menuDTO);
         return result ? Result.ok() : Result.fail();
     }
@@ -43,7 +44,7 @@ public class SysMenuController {
      * 编辑菜单
      */
     @PutMapping
-    public Result<Void> update(@Valid @RequestBody SysMenuDTO menuDTO) {
+    public Result<Void> update(@Validated @RequestBody SysMenuDTO menuDTO) {
         boolean result = menuService.updateMenuWithButtons(menuDTO);
         return result ? Result.ok() : Result.fail();
     }

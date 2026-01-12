@@ -17,7 +17,7 @@ public class SysUserDTO implements Serializable {
     /**
      * 用户ID
      */
-    private String id;
+    private String userId;
 
     /**
      * 用户名

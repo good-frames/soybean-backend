@@ -2,13 +2,7 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
-import com.soybean.upms.api.enums.SysMenuFrameEnum;
-import com.soybean.upms.api.enums.SysKeepAliveEnum;
-import com.soybean.upms.api.enums.SysIconTypeEnum;
-import com.soybean.upms.api.enums.SysMenuConstantEnum;
+import com.soybean.upms.api.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -142,13 +136,19 @@ public class SysMenu implements Serializable {
      * 是否多页签（0否 1是）
      */
     @TableField("multi_tab")
-    private Boolean multiTab;
+    private SysMenuMultiTabEnum multiTab;
 
     /**
      * 高亮路由名称
      */
     @TableField("active_menu")
     private String activeMenu;
+
+    /**
+     * 菜单在标签页中的顺序
+     */
+    @TableField("fixed_index_in_tab")
+    private Integer fixedIndexInTab;
 
     /**
      * 创建者

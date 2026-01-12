@@ -47,7 +47,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         SysUserVO sysUserVO = new SysUserVO();
-        sysUserVO.setId(sysUser.getUserId());
+        sysUserVO.setUserId(sysUser.getUserId());
         sysUserVO.setUserName(sysUser.getUsername());
         sysUserVO.setNickName(sysUser.getNickname());
         sysUserVO.setPhone(sysUser.getPhone());
@@ -170,17 +170,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updateSysUser(SysUserDTO sysUserDTO) {
         // 检查用户是否存在
-        SysUser existUser = getById(sysUserDTO.getId());
+        SysUser existUser = getById(sysUserDTO.getUserId());
         validateUserExists(existUser);
 
         // 如果修改了用户名，验证新用户名唯一性
         if (!existUser.getUsername().equals(sysUserDTO.getUserName())) {
-            validateUsernameUnique(sysUserDTO.getUserName(), sysUserDTO.getId());
+            validateUsernameUnique(sysUserDTO.getUserName(), sysUserDTO.getUserId());
         }
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
-        sysUser.setUserId(sysUserDTO.getId());
+        sysUser.setUserId(sysUserDTO.getUserId());
         sysUser.setUsername(sysUserDTO.getUserName());
 
         sysUser.setNickname(sysUserDTO.getNickName());
@@ -233,7 +233,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
-        String userId = passwordUpdateDTO.getId();
+        String userId = passwordUpdateDTO.getUserId();
         SysUser sysUser = getById(userId);
         validateUserExists(sysUser);
 
@@ -254,7 +254,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean adminUpdatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
-        String userId = passwordUpdateDTO.getId();
+        String userId = passwordUpdateDTO.getUserId();
         SysUser sysUser = getById(userId);
         validateUserExists(sysUser);
         

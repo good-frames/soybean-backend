@@ -1,13 +1,7 @@
 
 package com.soybean.upms.api.dto;
 
-import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
-import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
-import com.soybean.upms.api.enums.SysMenuFrameEnum;
-import com.soybean.upms.api.enums.SysKeepAliveEnum;
-import com.soybean.upms.api.enums.SysIconTypeEnum;
-import com.soybean.upms.api.enums.SysMenuConstantEnum;
+import com.soybean.upms.api.enums.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -144,6 +138,11 @@ public class SysMenuDTO implements Serializable {
      */
     @Size(max = 50, message = "高亮路由名称长度不能超过50个字符")
     private String activeMenu;
+
+    /**
+     * 菜单在标签页中的顺序
+     */
+    private Integer fixedIndexInTab;
 
     /**
      * 备注
