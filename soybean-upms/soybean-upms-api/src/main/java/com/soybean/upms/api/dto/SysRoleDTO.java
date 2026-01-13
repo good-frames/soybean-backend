@@ -57,11 +57,6 @@ public class SysRoleDTO implements Serializable {
     private String remark;
 
     /**
-     * 菜单ID列表（用于分配权限）
-     */
-    private List<Long> menuIds;
-
-    /**
      * 角色的默认首页路由名称
      */
     @Size(max = 100, message = "首页路由名称长度不能超过100个字符")

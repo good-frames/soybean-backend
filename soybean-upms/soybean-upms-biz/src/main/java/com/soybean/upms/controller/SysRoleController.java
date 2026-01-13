@@ -8,6 +8,7 @@ import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.clients.SysRoleClient;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
+import com.soybean.upms.api.dto.UserRoleBindDTO;
 import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.api.query.SysRoleQuery;
@@ -57,7 +58,7 @@ public class SysRoleController implements SysRoleClient {
     }
 
     /**
-     * 修改保存角色
+     * 修改保存角色（不修改菜单关联）
      */
     @PutMapping
     public Result<Void> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
@@ -74,18 +75,6 @@ public class SysRoleController implements SysRoleClient {
         }
         return Result.fail("修改角色'" + roleDTO.getRoleName() + "'失败，请联系管理员");
     }
-    /**
-     * 修改保存数据权限
-     */
-    @PutMapping("/dataScope")
-    public Result<Void> dataScope(@RequestBody SysRoleDTO roleDTO) {
-        // 检查角色是否存在
-        if (!roleService.checkRoleExists(roleDTO.getId())) {
-            throw new BusinessException("角色不存在");
-        }
-        return roleService.authDataScope(roleDTO) ? Result.ok() : Result.fail();
-    }
-
     /**
      * 状态修改
      */
@@ -158,6 +147,15 @@ public class SysRoleController implements SysRoleClient {
     @PostMapping("/{roleId}/bindMenuBtn")
     public Result<Boolean> bindRoleMenuBtn(@PathVariable Long roleId, @RequestBody @Validated RoleMenuBtnBindDTO bindDTO) {
         boolean result = roleService.bindRoleMenuBtn(roleId, bindDTO);
+        return Result.ok(result);
+    }
+
+    /**
+     * 为用户绑定角色
+     */
+    @PostMapping("/bindUserRole")
+    public Result<Boolean> bindUserRole(@RequestBody @Validated UserRoleBindDTO bindDTO) {
+        boolean result = roleService.bindUserRole(bindDTO);
         return Result.ok(result);
     }
 }

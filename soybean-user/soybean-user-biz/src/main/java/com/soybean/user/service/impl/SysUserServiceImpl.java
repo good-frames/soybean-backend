@@ -14,6 +14,7 @@ import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserCreateResultVO;
 import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.user.mapper.SysUserMapper;
 import com.soybean.user.service.ISysUserService;
 import com.soybean.common.core.exception.BusinessException;
@@ -47,7 +48,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         SysUserVO sysUserVO = new SysUserVO();
-        sysUserVO.setUserId(sysUser.getUserId());
+        sysUserVO.setId(sysUser.getUserId());
         sysUserVO.setUserName(sysUser.getUsername());
         sysUserVO.setNickName(sysUser.getNickname());
         sysUserVO.setPhone(sysUser.getPhone());
@@ -66,6 +67,38 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUserVO.setUpdateTime(sysUser.getUpdateTime());
 
         return sysUserVO;
+    }
+
+    /**
+     * 将SysUser转换为UserInfoVO
+     *
+     * @param sysUser 系统用户实体
+     * @return 用户信息VO
+     */
+    private UserInfoVO convertToUserInfoVO(SysUser sysUser) {
+        if (sysUser == null) {
+            return null;
+        }
+
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setUserId(sysUser.getUserId());
+        userInfoVO.setUserName(sysUser.getUsername());
+        userInfoVO.setNickName(sysUser.getNickname());
+        userInfoVO.setPhone(sysUser.getPhone());
+        userInfoVO.setEmail(sysUser.getEmail());
+        userInfoVO.setAvatar(sysUser.getAvatar());
+        userInfoVO.setGender(sysUser.getGender());
+
+        // 设置状态枚举
+        userInfoVO.setStatus(sysUser.getStatus());
+
+        // 设置创建时间和更新时间
+        userInfoVO.setCreateTime(sysUser.getCreateTime());
+        userInfoVO.setUpdateTime(sysUser.getUpdateTime());
+        userInfoVO.setLoginIp(sysUser.getLoginIp());
+        userInfoVO.setLoginDate(sysUser.getLoginDate());
+
+        return userInfoVO;
     }
 
     @Override
@@ -170,17 +203,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updateSysUser(SysUserDTO sysUserDTO) {
         // 检查用户是否存在
-        SysUser existUser = getById(sysUserDTO.getUserId());
+        SysUser existUser = getById(sysUserDTO.getId());
         validateUserExists(existUser);
 
         // 如果修改了用户名，验证新用户名唯一性
         if (!existUser.getUsername().equals(sysUserDTO.getUserName())) {
-            validateUsernameUnique(sysUserDTO.getUserName(), sysUserDTO.getUserId());
+            validateUsernameUnique(sysUserDTO.getUserName(), sysUserDTO.getId());
         }
 
         // 转换DTO为实体
         SysUser sysUser = new SysUser();
-        sysUser.setUserId(sysUserDTO.getUserId());
+        sysUser.setUserId(sysUserDTO.getId());
         sysUser.setUsername(sysUserDTO.getUserName());
 
         sysUser.setNickname(sysUserDTO.getNickName());
@@ -233,7 +266,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
-        String userId = passwordUpdateDTO.getUserId();
+        String userId = passwordUpdateDTO.getId();
         SysUser sysUser = getById(userId);
         validateUserExists(sysUser);
 
@@ -254,7 +287,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean adminUpdatePassword(PasswordUpdateDTO passwordUpdateDTO) {
         // 查询用户
-        String userId = passwordUpdateDTO.getUserId();
+        String userId = passwordUpdateDTO.getId();
         SysUser sysUser = getById(userId);
         validateUserExists(sysUser);
         
@@ -295,22 +328,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUserVO getCurrentUserInfo(String userId) {
+    public UserInfoVO getCurrentUserInfo(String userId) {
         // 获取用户基本信息
         SysUser sysUser = getById(userId);
         validateUserExists(sysUser);
 
         // 转换为UserInfoVO
-        SysUserVO sysUserVO = convertToSysUserVO(sysUser);
+        UserInfoVO userInfoVO = convertToUserInfoVO(sysUser);
 
         // 从Redis中获取用户角色列表
         List<String> roles = SecurityUtil.getRoles();
-        sysUserVO.setRoles(roles);
+        userInfoVO.setRoles(roles);
 
         // 从Redis中获取用户权限列表
         List<String> permissions = SecurityUtil.getPermissions();
-        sysUserVO.setPermissions(permissions);
+        userInfoVO.setPermissions(permissions);
 
-        return sysUserVO;
+        return userInfoVO;
     }
 }

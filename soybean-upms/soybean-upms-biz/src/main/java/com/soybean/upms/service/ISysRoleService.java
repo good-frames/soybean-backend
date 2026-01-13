@@ -8,6 +8,7 @@ import com.soybean.upms.api.enums.SysRoleStatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
+import com.soybean.upms.api.dto.UserRoleBindDTO;
 import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 
@@ -85,14 +86,6 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 结果
      */
     boolean updateRoleStatus(Long roleId, SysRoleStatusEnum status);
-
-    /**
-     * 修改数据权限信息
-     *
-     * @param roleDTO 角色信息
-     * @return 结果
-     */
-    boolean authDataScope(SysRoleDTO roleDTO);
 
     /**
      * 批量删除角色信息
@@ -181,4 +174,12 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 结果
      */
     boolean bindRoleMenuBtn(Long roleId, RoleMenuBtnBindDTO bindDTO);
+
+    /**
+     * 为用户绑定角色
+     *
+     * @param bindDTO 绑定信息
+     * @return 结果
+     */
+    boolean bindUserRole(UserRoleBindDTO bindDTO);
 }

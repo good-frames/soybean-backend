@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
+import com.soybean.upms.api.dto.UserRoleBindDTO;
 import com.soybean.upms.api.enums.SysDelFlagEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
 import com.soybean.upms.api.enums.SysRoleStatusEnum;
@@ -143,11 +144,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             role.setStatus(SysRoleStatusEnum.NORMAL);
         }
         int result = baseMapper.insert(role);
-
-        // 新增角色菜单关联
-        if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
-        }
+        
         return result > 0;
     }
 
@@ -163,16 +160,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         // 修改角色信息
         SysRole role = BeanUtil.copyProperties(roleDTO, SysRole.class);
         int result = baseMapper.updateById(role);
-
-        // 删除角色与菜单关联
-        if (result > 0) {
-            roleMenuMapper.deleteRoleMenuByRoleId(role.getId());
-        }
-
-        // 新增角色菜单关联
-        if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
-        }
+        
         return result > 0;
     }
 
@@ -193,30 +181,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         LambdaUpdateWrapper<SysRole> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(SysRole::getId, roleId).set(SysRole::getStatus, status.getValue());
         return update(wrapper);
-    }
-
-    /**
-     * 修改数据权限信息
-     *
-     * @param roleDTO 角色信息
-     * @return 结果
-     */
-    @Override
-    public boolean authDataScope(SysRoleDTO roleDTO) {
-        // 修改角色信息
-        SysRole role = BeanUtil.copyProperties(roleDTO, SysRole.class);
-        int result = baseMapper.updateById(role);
-
-        // 删除角色与菜单关联
-        if (result > 0) {
-            roleMenuMapper.deleteRoleMenuByRoleId(role.getId());
-        }
-
-        // 新增角色菜单关联
-        if (result > 0 && CollUtil.isNotEmpty(roleDTO.getMenuIds())) {
-            insertRoleMenu(role.getId(), roleDTO.getMenuIds());
-        }
-        return result > 0;
     }
 
     /**
@@ -502,6 +466,28 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             }
         }
         
+        return true;
+    }
+
+    @Override
+    public boolean bindUserRole(UserRoleBindDTO bindDTO) {
+        // 删除用户原有的角色关联
+        userRoleMapper.deleteUserRoleByUserId(bindDTO.getUserId());
+
+        // 添加新的角色关联
+        if (CollUtil.isNotEmpty(bindDTO.getRoleIds())) {
+            List<SysUserRole> userRoles = bindDTO.getRoleIds().stream()
+                .map(roleId -> {
+                    SysUserRole userRole = new SysUserRole();
+                    userRole.setUserId(bindDTO.getUserId());
+                    userRole.setRoleId(roleId);
+                    return userRole;
+                })
+                .collect(Collectors.toList());
+
+            return userRoleMapper.batchUserRole(userRoles) > 0;
+        }
+
         return true;
     }
 }

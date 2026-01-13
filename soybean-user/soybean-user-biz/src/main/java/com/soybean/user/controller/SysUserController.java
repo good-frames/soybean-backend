@@ -16,6 +16,7 @@ import com.soybean.user.api.enums.SysUserStatusEnum;
 import com.soybean.user.api.po.SysUser;
 import com.soybean.user.api.query.SysUserQuery;
 import com.soybean.user.api.vo.SysUserVO;
+import com.soybean.user.api.vo.UserInfoVO;
 import com.soybean.common.core.annotation.ValidatedBy;
 import com.soybean.user.service.ISysUserService;
 import com.soybean.user.validator.SysUserValidator;
@@ -225,12 +226,12 @@ public class SysUserController implements SysUserClient {
      * 获取当前登录用户信息（包括基本信息、角色和权限）
      */
     @GetMapping("/info/current")
-    public Result<SysUserVO> getCurrentUserInfo() {
+    public Result<UserInfoVO> getCurrentUserInfo() {
         try {
             // 获取当前登录用户ID
             String userId = SecurityUtil.getUserId();
             // 获取用户信息（包括角色和权限）
-            SysUserVO userInfo = sysUserService.getCurrentUserInfo(userId);
+            UserInfoVO userInfo = sysUserService.getCurrentUserInfo(userId);
             if (userInfo != null) {
                 return Result.ok(userInfo);
             } else {
