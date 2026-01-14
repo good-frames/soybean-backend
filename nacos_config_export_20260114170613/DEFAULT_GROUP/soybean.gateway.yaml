@@ -6,14 +6,16 @@ spring:
                   uri: lb://soybean-auth
                   predicates: # 断言
                     - Path=/auth/**
-                - id: soybean-user
-                  uri: lb://soybean-user
-                  predicates: # 断言
-                    - Path=/systemManage/user/**
                 - id: soybean-upms
                   uri: lb://soybean-upms
                   predicates: # 断言
-                    - Path=/systemManage/menu/**,/systemManage/role/**
+                    - name: Path
+                      args:
+                        patterns:
+                          - /systemManage/menu/**
+                          - /systemManage/role/**
+                          - /systemManage/user/**
+                          - /systemManage/storageConfig/**
 # 放行URL配置
 security:
   permit-all:
