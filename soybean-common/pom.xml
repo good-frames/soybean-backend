@@ -18,7 +18,7 @@
         <module>soybean-common-mybatis</module>
         <module>soybean-common-redis</module>
         <module>soybean-common-security</module>
-
+        <module>soybean-common-storage</module>
     </modules>
 
 </project>

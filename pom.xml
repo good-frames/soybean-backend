@@ -18,7 +18,6 @@
     <modules>
         <module>soybean-common</module>
         <module>soybean-gateway</module>
-        <module>soybean-user</module>
         <module>soybean-upms</module>
         <module>soybean-auth</module>
     </modules>
@@ -178,12 +177,6 @@
             <dependency>
                 <groupId>com.soybean</groupId>
                 <artifactId>soybean-common-security</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.soybean</groupId>
-                <artifactId>soybean-user-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

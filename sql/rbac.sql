@@ -64,35 +64,36 @@ CREATE TABLE `sys_role` (
 -- 菜单表
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
-CREATE TABLE `sys_menu`  (
-    `menu_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-    `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单）',
-    `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单标题',
+CREATE TABLE `sys_menu` (
+    `menu_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+    `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单）',
+    `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单标题',
     `route_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单（route）名称',
-    `route_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '路由地址',
-    `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
-    `constant` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
-    `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件路径',
-    `parent_id` bigint NULL DEFAULT 0 COMMENT '父菜单ID',
+    `route_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '路由地址',
+    `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
+    `constant` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
+    `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
+    `parent_id` bigint DEFAULT '0' COMMENT '父菜单ID',
     `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
-    `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
-    `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '#' COMMENT '菜单图标',
-    `icon_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'icon图标类型 1：远程图标；2：本地图标',
-    `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '是否为外链（0否 1是）',
-    `i18n_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '国际化键',
-    `href` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '外链地址',
-    `hide_in_menu` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
-    `active_menu` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '高亮路由名称',
-    `multi_tab` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否多页签',
-    `order` int(10) UNSIGNED ZEROFILL NULL DEFAULT 0000000000 COMMENT '显示顺序',
-    `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由参数',
-    `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
-    `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-    `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
-    `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
-    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
-    PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+    `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
+    `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
+    `icon_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'icon图标类型 1：远程图标；2：本地图标',
+    `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否为外链（0否 1是）',
+    `i18n_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '国际化键',
+    `href` varchar(255) DEFAULT NULL COMMENT '外链地址',
+    `hide_in_menu` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
+    `active_menu` varchar(50) DEFAULT NULL COMMENT '高亮路由名称',
+    `multi_tab` char(1) DEFAULT NULL COMMENT '是否多页签',
+    `order` int(10) unsigned zerofill DEFAULT '0000000000' COMMENT '显示顺序',
+    `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '路由参数',
+    `fixed_index_in_tab` int DEFAULT NULL COMMENT '标签页顺序',
+    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '备注',
+    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`menu_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
 
 -- ----------------------------
 -- 按钮（按钮级别权限）表

@@ -19,12 +19,6 @@
             <artifactId>soybean-upms-api</artifactId>
         </dependency>
 
-        <!--soybean-user-api-->
-        <dependency>
-            <groupId>com.soybean</groupId>
-            <artifactId>soybean-user-api</artifactId>
-        </dependency>
-
         <!-- soybean-common-mybatis -->
         <dependency>
             <groupId>com.soybean</groupId>

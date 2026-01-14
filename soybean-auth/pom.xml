@@ -13,13 +13,8 @@
     <description>认证授权模块</description>
 
     <dependencies>
-        <!--用户API模块-->
-        <dependency>
-            <groupId>com.soybean</groupId>
-            <artifactId>soybean-user-api</artifactId>
-        </dependency>
 
-        <!--rbac-->
+        <!--upms-->
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-upms-api</artifactId>
