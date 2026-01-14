@@ -62,6 +62,7 @@ public class SysRole implements Serializable {
     /**
      * 创建者
      */
+    @TableField("create_by")
     private String createBy;
 
     /**
@@ -73,6 +74,7 @@ public class SysRole implements Serializable {
     /**
      * 更新者
      */
+    @TableField("update_by")
     private String updateBy;
 
     /**

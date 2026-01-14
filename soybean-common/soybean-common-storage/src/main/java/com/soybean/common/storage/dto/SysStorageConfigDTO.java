@@ -1,0 +1,40 @@
+package com.soybean.common.storage.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+/**
+ * 系统文件存储配置
+ *
+ * @author lijx
+ * @date 2022/9/20
+ */
+@Data
+@Schema(description = "系统文件存储配置")
+public class SysStorageConfigDTO implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	@Schema(description = "存储类型; Aliyun: 阿里OSS; Qiniu: 七牛云； QQ、腾讯云")
+	private String type;
+
+	@Schema(description = "access_key")
+	private String accessKey;
+
+	@Schema(description = "access_secret")
+	private String accessSecret;
+
+	@Schema(description = "地域节点")
+	private String endpoint;
+
+	@Schema(description = "域名")
+	private String bucket;
+
+	@Schema(description = "指定文件夹")
+	private String dir;
+
+}

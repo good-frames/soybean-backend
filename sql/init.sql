@@ -39,7 +39,7 @@ CREATE TABLE `sys_user` (
     `remark` varchar(500) DEFAULT NULL COMMENT '备注',
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `idx_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';
+) ENGINE=InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';
 
 -- ----------------------------
 -- 角色表
@@ -58,7 +58,7 @@ CREATE TABLE `sys_role` (
     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
     `remark` varchar(500) DEFAULT NULL COMMENT '备注',
     PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
+) ENGINE=InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
 
 -- ----------------------------
 -- 菜单表
@@ -93,7 +93,7 @@ CREATE TABLE `sys_menu` (
     `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
     `update_time` datetime DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
 
 -- ----------------------------
 -- 按钮（按钮级别权限）表
@@ -110,7 +110,7 @@ CREATE TABLE sys_btn (
     PRIMARY KEY (btn_id),
     KEY idx_menu_id (menu_id),
     KEY idx_btn_code (btn_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_zh_0900_as_cs COMMENT='按钮权限表';
+) ENGINE=InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_zh_0900_as_cs COMMENT='按钮权限表';
 
 -- ----------------------------
 -- 用户和角色关联表
@@ -176,5 +176,26 @@ INSERT INTO `sys_role_menu` VALUES (1, 2);
 INSERT INTO `sys_role_menu` VALUES (1, 3);
 INSERT INTO `sys_role_menu` VALUES (1, 4);
 INSERT INTO `sys_role_menu` VALUES (1, 5);
+
+
+-- ----------------------------
+-- 创建系统文件存储配置表
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_storage_config`;
+CREATE TABLE `sys_storage_config` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `type` varchar(10) DEFAULT NULL COMMENT '存储类型；Aliyun: 阿里OSS；Qiniu:七牛云；QQ: 腾讯云',
+    `access_key` varchar(255) DEFAULT NULL COMMENT 'access_key',
+    `access_secret` varchar(255) DEFAULT NULL COMMENT 'access_secret',
+    `endpoint` varchar(255) DEFAULT NULL COMMENT '地域节点',
+    `bucket` varchar(255) DEFAULT NULL COMMENT '域名',
+    `dir` varchar(255) DEFAULT NULL COMMENT '指定文件夹',
+    `status` varchar(1) DEFAULT '1' COMMENT '状态：0.禁用；1.正常',
+    `create_by` varchar(64) DEFAULT NULL COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) DEFAULT NULL COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) AUTO_INCREMENT = 1 ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统文件存储配置';
 
 SET FOREIGN_KEY_CHECKS = 1;

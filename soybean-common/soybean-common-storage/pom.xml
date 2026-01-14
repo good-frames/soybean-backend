@@ -13,6 +13,12 @@
     <description>文件存储服务</description>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.soybean</groupId>
             <artifactId>soybean-common-core</artifactId>
