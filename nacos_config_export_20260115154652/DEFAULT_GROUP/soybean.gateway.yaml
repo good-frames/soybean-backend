@@ -16,6 +16,7 @@ spring:
                           - /systemManage/role/**
                           - /systemManage/user/**
                           - /systemManage/storageConfig/**
+                          - /systemManage/file/**
 # 放行URL配置
 security:
   permit-all:
