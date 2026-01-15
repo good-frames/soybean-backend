@@ -3,7 +3,6 @@ package com.soybean.upms.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.soybean.common.core.utils.Result;
-import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.clients.SysRoleClient;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
@@ -37,9 +36,9 @@ public class SysRoleController implements SysRoleClient {
      */
     @PostMapping
     public Result<Void> add(@Validated @RequestBody SysRoleDTO roleDTO) {
-        if (!roleService.checkRoleNameUnique(roleDTO)) {
+        if (roleService.checkRoleNameUnique(roleDTO)) {
             return Result.fail("新增角色'" + roleDTO.getRoleName() + "'失败，角色名称已存在");
-        } else if (!roleService.checkRoleKeyUnique(roleDTO)) {
+        } else if (roleService.checkRoleKeyUnique(roleDTO)) {
             return Result.fail("新增角色'" + roleDTO.getRoleName() + "'失败，角色权限已存在");
         }
         return roleService.insertRole(roleDTO) ? Result.ok() : Result.fail();
@@ -64,9 +63,9 @@ public class SysRoleController implements SysRoleClient {
     public Result<Void> edit(@Validated @RequestBody SysRoleDTO roleDTO) {
         roleService.checkRoleAllowed(roleDTO);
 
-        if (!roleService.checkRoleNameUnique(roleDTO)) {
+        if (roleService.checkRoleNameUnique(roleDTO)) {
             return Result.fail("修改角色'" + roleDTO.getRoleName() + "'失败，角色名称已存在");
-        } else if (!roleService.checkRoleKeyUnique(roleDTO)) {
+        } else if (roleService.checkRoleKeyUnique(roleDTO)) {
             return Result.fail("修改角色'" + roleDTO.getRoleName() + "'失败，角色权限已存在");
         }
 

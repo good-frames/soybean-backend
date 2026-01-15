@@ -2,6 +2,7 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -108,7 +109,7 @@ public class SysMenu implements Serializable {
      * 菜单状态（0停用 1正常）
      */
     @TableField("status")
-    private SysMenuStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 权限标识

@@ -2,18 +2,13 @@
 package com.soybean.upms.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
-import com.soybean.upms.api.enums.SysMenuFrameEnum;
-import com.soybean.upms.api.enums.SysKeepAliveEnum;
 import com.soybean.upms.api.enums.SysIconTypeEnum;
-import com.soybean.upms.api.enums.SysMenuConstantEnum;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 菜单视图对象
@@ -99,7 +94,7 @@ public class SysMenuVO implements Serializable {
     /**
      * 菜单状态（0停用 1正常）
      */
-    private SysMenuStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 权限标识

@@ -1,4 +1,4 @@
-package com.soybean.common.storage.handler;
+package com.soybean.common.storage.handler.impl;
 
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSS;
@@ -7,6 +7,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.soybean.common.core.exception.BusinessException;
 import com.soybean.common.storage.entity.StorageConfig;
+import com.soybean.common.storage.handler.AbstractUploadFileHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -36,8 +37,8 @@ public class AliOssUploadFileHandler extends AbstractUploadFileHandler {
 		// 填写Object完整路径，例如exampledir/exampleobject.txt。Object完整路径中不能包含Bucket名称。
 		String dir = storageConfig.getDir();
 		String uuidFileName = UUID.randomUUID() + "." + suffix;
-		String objectName = (StringUtils.hasText(dir) ? ("/" + dir) : "") + "/"
-				+ uuidFileName;
+		// 构建对象名称，确保不以/开头
+		String objectName = (StringUtils.hasText(dir) ? (dir + "/") : "") + uuidFileName;
 
 		// 创建OSSClient实例。
 		OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);

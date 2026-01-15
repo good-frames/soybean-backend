@@ -1,11 +1,12 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.soybean.upms.api.enums.SysDelFlagEnum;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @TableName("sys_btn")
 public class SysBtn implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

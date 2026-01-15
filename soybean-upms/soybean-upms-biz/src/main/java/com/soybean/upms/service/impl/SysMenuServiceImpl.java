@@ -15,7 +15,7 @@ import com.soybean.upms.api.dto.SysBtnDTO;
 import com.soybean.upms.api.dto.SysMenuDTO;
 import com.soybean.upms.api.enums.SysMenuConstantEnum;
 import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysBtn;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.po.SysRoleMenu;
@@ -36,7 +36,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 菜单权限Service业务层处理
@@ -76,7 +75,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 查询菜单信息
         List<SysMenu> menus = list(new LambdaQueryWrapper<SysMenu>()
                 .in(SysMenu::getId, menuIds)
-                .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
+                .eq(SysMenu::getStatus, StatusEnum.NORMAL)
                 .orderByAsc(SysMenu::getOrder));
         
         // 如果子节点有权限但父节点没有，需要添加父节点
@@ -99,7 +98,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 // 查询当前批次的父节点
                 List<SysMenu> parentMenus = list(new LambdaQueryWrapper<SysMenu>()
                         .in(SysMenu::getId, parentIdsToAdd)
-                        .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL));
+                        .eq(SysMenu::getStatus, StatusEnum.NORMAL));
                 
                 if (CollUtil.isEmpty(parentMenus)) {
                     break;
@@ -514,7 +513,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 查询所有静态菜单
         List<SysMenu> staticMenus = list(new LambdaQueryWrapper<SysMenu>()
                 .eq(SysMenu::getConstant, true)
-                .eq(SysMenu::getStatus, SysMenuStatusEnum.NORMAL)
+                .eq(SysMenu::getStatus, StatusEnum.NORMAL)
                 .orderByAsc(SysMenu::getOrder));
 
         if (CollUtil.isEmpty(staticMenus)) {

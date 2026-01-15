@@ -37,6 +37,12 @@
             <artifactId>soybean-common-core</artifactId>
         </dependency>
 
+        <!--soybean-common-storage-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-storage</artifactId>
+        </dependency>
+
         <!-- 数据校验 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,12 +1,5 @@
 package com.soybean.upms.api.vo;
 
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
-import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysMenuHideInMenuEnum;
-import com.soybean.upms.api.enums.SysMenuFrameEnum;
-import com.soybean.upms.api.enums.SysKeepAliveEnum;
-import com.soybean.upms.api.enums.SysIconTypeEnum;
-import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
 import lombok.Data;
 
 import java.io.Serializable;

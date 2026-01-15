@@ -1,7 +1,6 @@
 package com.soybean.common.core.config;
 
 import com.soybean.common.core.aspect.ValidationAspect;
-import com.soybean.common.core.enums.BaseEnumConverterFactory;
 import com.soybean.common.core.exception.GlobalExceptionHandler;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.ApplicationContext;

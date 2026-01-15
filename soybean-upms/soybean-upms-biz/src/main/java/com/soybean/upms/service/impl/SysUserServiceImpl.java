@@ -10,8 +10,8 @@ import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.dto.PasswordUpdateDTO;
 import com.soybean.upms.api.dto.SysUserDTO;
-import com.soybean.upms.api.enums.SysUserDelFlagEnum;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.DelFlagEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysUser;
 import com.soybean.upms.api.query.SysUserQuery;
 import com.soybean.upms.api.vo.SysUserCreateResultVO;
@@ -111,7 +111,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setUsername(sysUserDTO.getUserName());
 
         // 生成随机密码（如果未提供）
-        String originalPassword = generateRandomPassword(8);
+        String originalPassword = generateRandomPassword();
         
         // 加密密码
         String encryptedPassword = PasswordUtil.encrypt(originalPassword);
@@ -124,10 +124,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUser.setGender(sysUserDTO.getGender());
 
         // 设置默认状态为启用
-        sysUser.setStatus(sysUserDTO.getStatus() != null ? sysUserDTO.getStatus() : SysUserStatusEnum.NORMAL);
+        sysUser.setStatus(sysUserDTO.getStatus() != null ? sysUserDTO.getStatus() : StatusEnum.NORMAL);
 
         // 设置删除标志为未删除
-        sysUser.setDelFlag(SysUserDelFlagEnum.NORMAL);
+        sysUser.setDelFlag(DelFlagEnum.EXIST);
 
         // 保存用户
         boolean success = this.save(sysUser);
@@ -165,23 +165,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     private void validateUserExists(SysUser sysUser) {
-        if (sysUser == null || SysUserDelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
+        if (sysUser == null || DelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
             throw new BusinessException("用户不存在");
         }
     }
 
     /**
      * 生成随机密码
-     * @param length 密码长度
+     *
      * @return 随机密码
      */
-    private String generateRandomPassword(int length) {
+    private String generateRandomPassword() {
         // 定义字符集
         String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();
         
         // 生成随机密码
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < 8; i++) {
             int index = (int) (Math.random() * charSet.length());
             password.append(charSet.charAt(index));
         }
@@ -249,14 +249,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public List<SysUserVO> getAllSysUsers() {
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
-                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL); // 只查询未删除的用户
+                .eq(SysUser::getDelFlag, DelFlagEnum.EXIST); // 只查询未删除的用户
         List<SysUser> list = list(queryWrapper);
         // 转换为VO对象
         return list.stream().map(this::convertToSysUserVO).collect(java.util.stream.Collectors.toList());
     }
 
     @Override
-    public boolean updateSysUserStatus(String id, SysUserStatusEnum status) {
+    public boolean updateSysUserStatus(String id, StatusEnum status) {
         SysUser sysUser = new SysUser();
         sysUser.setUserId(id);
         sysUser.setStatus(status);
@@ -308,7 +308,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public SysUserVO getSysUserVOById(String id) {
         SysUser sysUser = getById(id);
-        if (sysUser != null && !SysUserDelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
+        if (sysUser != null && !DelFlagEnum.DELETED.equals(sysUser.getDelFlag())) {
             return convertToSysUserVO(sysUser);
         }
         return null;
@@ -322,7 +322,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         
         LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.<SysUser>lambdaQuery()
                 .eq(SysUser::getUsername, username)
-                .eq(SysUser::getDelFlag, SysUserDelFlagEnum.NORMAL);
+                .eq(SysUser::getDelFlag, DelFlagEnum.EXIST);
         
         return this.getOne(queryWrapper);
     }

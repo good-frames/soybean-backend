@@ -1,7 +1,7 @@
 package com.soybean.upms.api.dto;
 
 import com.soybean.upms.api.enums.SysUserGenderEnum;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -43,7 +43,7 @@ public class SysUserDTO implements Serializable {
     /**
      * 状态：0->禁用；1->启用
      */
-    private SysUserStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 性别

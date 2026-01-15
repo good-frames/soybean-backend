@@ -2,9 +2,10 @@
 package com.soybean.upms.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @Data
 public class SysRoleVO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -43,7 +45,7 @@ public class SysRoleVO implements Serializable {
     /**
      * 角色状态（0停用 1正常）
      */
-    private SysRoleStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 备注

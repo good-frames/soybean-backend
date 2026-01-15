@@ -14,11 +14,10 @@ import com.soybean.common.security.enums.UserTypeEnum;
 import com.soybean.upms.api.clients.SysMenuClient;
 import com.soybean.upms.api.clients.SysRoleClient;
 import com.soybean.upms.api.clients.SysUserClient;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -37,7 +36,6 @@ public class AuthServiceImpl implements AuthService {
     private final SysUserClient sysUserClient;
     private final SysMenuClient sysMenuClient;
     private final SysRoleClient sysRoleClient;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public LoginVO login(LoginDTO loginDTO) {
@@ -48,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 验证用户状态
-        if (SysUserStatusEnum.DISABLE.equals(userResult.getData().getStatus())) {
+        if (StatusEnum.DISABLE.equals(userResult.getData().getStatus())) {
             throw new BusinessException("账户已被禁用");
         }
         // 验证密码

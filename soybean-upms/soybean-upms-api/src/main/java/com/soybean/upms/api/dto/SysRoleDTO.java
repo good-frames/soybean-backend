@@ -1,14 +1,13 @@
 
 package com.soybean.upms.api.dto;
 
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 角色数据传输对象
@@ -19,6 +18,7 @@ import java.util.List;
 @Data
 public class SysRoleDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -48,7 +48,7 @@ public class SysRoleDTO implements Serializable {
     /**
      * 角色状态（0停用 1正常）
      */
-    private SysRoleStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 备注

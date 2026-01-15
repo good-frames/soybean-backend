@@ -2,8 +2,8 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
-import com.soybean.upms.api.enums.SysDelFlagEnum;
+import com.soybean.common.core.enums.StatusEnum;
+import com.soybean.common.core.enums.DelFlagEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -51,13 +51,13 @@ public class SysRole implements Serializable {
      * 角色状态（0停用 1正常）
      */
     @TableField("status")
-    private SysRoleStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 删除标志（0代表存在 1代表删除）
      */
     @TableField("del_flag")
-    private SysDelFlagEnum delFlag;
+    private DelFlagEnum delFlag;
 
     /**
      * 创建者

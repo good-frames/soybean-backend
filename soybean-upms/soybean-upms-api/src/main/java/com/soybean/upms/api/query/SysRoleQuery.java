@@ -2,7 +2,7 @@
 package com.soybean.upms.api.query;
 
 import com.soybean.common.mybatis.query.PageQuery;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +29,7 @@ public class SysRoleQuery extends PageQuery {
     /**
      * 角色状态（0停用 1正常）
      */
-    private SysRoleStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 时间范围-开始时间

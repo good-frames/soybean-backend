@@ -1,12 +1,14 @@
 
 package com.soybean.upms.api.dto;
 
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.enums.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @Data
 public class SysMenuDTO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -104,7 +107,7 @@ public class SysMenuDTO implements Serializable {
     /**
      * 菜单状态（0停用 1正常）
      */
-    private SysMenuStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 权限标识

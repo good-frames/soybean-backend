@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.PasswordUpdateDTO;
 import com.soybean.upms.api.dto.SysUserDTO;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysUser;
 import com.soybean.upms.api.query.SysUserQuery;
 import com.soybean.upms.api.vo.SysUserCreateResultVO;
@@ -69,7 +69,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param status 状态
      * @return 是否成功
      */
-    boolean updateSysUserStatus(String id, SysUserStatusEnum status);
+    boolean updateSysUserStatus(String id, StatusEnum status);
 
     /**
      * 修改密码

@@ -4,7 +4,7 @@ package com.soybean.upms.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.query.SysRoleQuery;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
@@ -55,14 +55,6 @@ public interface ISysRoleService extends IService<SysRole> {
     List<SysRoleVO> selectRoleAll();
 
     /**
-     * 根据用户ID获取角色选择框列表
-     *
-     * @param userId 用户ID
-     * @return 选中角色ID列表
-     */
-    List<Long> selectRoleListByUserId(String userId);
-
-    /**
      * 新增保存角色信息
      *
      * @param roleDTO 角色信息
@@ -85,7 +77,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param status 角色状态
      * @return 结果
      */
-    boolean updateRoleStatus(Long roleId, SysRoleStatusEnum status);
+    boolean updateRoleStatus(Long roleId, StatusEnum status);
 
     /**
      * 批量删除角色信息
@@ -118,12 +110,6 @@ public interface ISysRoleService extends IService<SysRole> {
      */
     void checkRoleAllowed(SysRoleDTO role);
 
-    /**
-     * 校验角色是否有数据权限
-     *
-     * @param roleId 角色id
-     */
-    void checkRoleDataScope(Long roleId);
 
     /**
      * 校验角色是否存在
@@ -140,15 +126,6 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 是否全部存在
      */
     boolean checkRolesExists(List<Long> roleIds);
-
-
-    /**
-     * 根据用户ID获取角色权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    Set<String> selectRolePermissionByUserId(String userId);
 
     /**
      * 根据用户ID获取角色ID列表

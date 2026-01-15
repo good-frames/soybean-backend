@@ -1,22 +1,22 @@
-package com.soybean.upms.api.enums;
+
+package com.soybean.common.core.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.soybean.common.core.enums.BaseEnum;
 import lombok.Getter;
 
 /**
- * 用户删除标记枚举
+ * 删除标志枚举（0：存在；1：删除）
  *
  * @author soybean
+ * @since 2024-07-07
  */
 @Getter
-public enum SysUserDelFlagEnum implements BaseEnum<String> {
-
+public enum DelFlagEnum implements BaseEnum<String> {
     /**
-     * 正常
+     * 存在
      */
-    NORMAL("0", "正常"),
+    EXIST("0", "存在"),
 
     /**
      * 删除
@@ -29,7 +29,7 @@ public enum SysUserDelFlagEnum implements BaseEnum<String> {
 
     private final String desc;
 
-    SysUserDelFlagEnum(String value, String desc) {
+    DelFlagEnum(String value, String desc) {
         this.value = value;
         this.desc = desc;
     }
@@ -40,15 +40,15 @@ public enum SysUserDelFlagEnum implements BaseEnum<String> {
      * @param value 值
      * @return 枚举
      */
-    public static SysUserDelFlagEnum fromValue(String value) {
+    public static DelFlagEnum fromValue(String value) {
         if (value == null) {
             return null;
         }
-        for (SysUserDelFlagEnum delFlagEnum : values()) {
-            if (delFlagEnum.getValue().equals(value)) {
-                return delFlagEnum;
+        for (DelFlagEnum flagEnum : values()) {
+            if (flagEnum.getValue().equals(value)) {
+                return flagEnum;
             }
         }
-        throw new IllegalArgumentException("Unknown del_flag value: " + value);
+        throw new IllegalArgumentException("Unknown del flag value: " + value);
     }
 }

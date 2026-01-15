@@ -12,17 +12,15 @@ import com.soybean.common.mybatis.dto.PageDTO;
 import com.soybean.upms.api.dto.RoleMenuBtnBindDTO;
 import com.soybean.upms.api.dto.SysRoleDTO;
 import com.soybean.upms.api.dto.UserRoleBindDTO;
-import com.soybean.upms.api.enums.SysDelFlagEnum;
+import com.soybean.common.core.enums.DelFlagEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
-import com.soybean.upms.api.enums.SysRoleStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysRole;
 import com.soybean.upms.api.po.SysRoleBtn;
 import com.soybean.upms.api.po.SysRoleMenu;
 import com.soybean.upms.api.po.SysUserRole;
-import com.soybean.upms.api.enums.SysMenuMultiTabEnum;
 import com.soybean.upms.api.po.SysMenu;
 import com.soybean.upms.api.query.SysRoleQuery;
-import com.soybean.upms.api.vo.MenuTreeVO;
 import com.soybean.upms.api.vo.RoleMenuBtnVO;
 import com.soybean.upms.api.vo.SysRoleVO;
 import com.soybean.upms.mapper.SysRoleMapper;
@@ -38,7 +36,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 角色表 服务实现类
@@ -114,21 +111,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     /**
-     * 根据用户ID获取角色选择框列表
-     *
-     * @param userId 用户ID
-     * @return 选中角色ID列表
-     */
-    @Override
-    public List<Long> selectRoleListByUserId(String userId) {
-        List<SysRole> roleList = baseMapper.selectRoleListByUserId(userId);
-        if (CollUtil.isEmpty(roleList)) {
-            return CollUtil.newArrayList();
-        }
-        return roleList.stream().map(SysRole::getId).collect(Collectors.toList());
-    }
-
-    /**
      * 新增保存角色信息
      *
      * @param roleDTO 角色信息
@@ -141,7 +123,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         SysRole role = BeanUtil.copyProperties(roleDTO, SysRole.class);
         // 如果状态为空，设置默认值
         if (role.getStatus() == null) {
-            role.setStatus(SysRoleStatusEnum.NORMAL);
+            role.setStatus(StatusEnum.NORMAL);
         }
         int result = baseMapper.insert(role);
         
@@ -172,7 +154,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    public boolean updateRoleStatus(Long roleId, SysRoleStatusEnum status) {
+    public boolean updateRoleStatus(Long roleId, StatusEnum status) {
         // 检查角色是否存在
         if (!checkRoleExists(roleId)) {
             throw new RuntimeException("角色不存在");
@@ -218,12 +200,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Long roleId = role.getId() == null ? -1L : role.getId();
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRole::getRoleName, role.getRoleName())
-                .eq(SysRole::getDelFlag, SysDelFlagEnum.EXIST);
+                .eq(SysRole::getDelFlag, DelFlagEnum.EXIST);
         SysRole info = getOne(wrapper);
         if (info != null && info.getId().longValue() != roleId.longValue()) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -237,12 +219,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Long roleId = role.getId() == null ? -1L : role.getId();
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysRole::getRoleKey, role.getRoleKey())
-                .eq(SysRole::getDelFlag, SysDelFlagEnum.EXIST);
+                .eq(SysRole::getDelFlag, DelFlagEnum.EXIST);
         SysRole info = getOne(wrapper);
-        if (info != null && info.getId().longValue() != roleId.longValue()) {
-            return false;
-        }
-        return true;
+        return info != null && info.getId().longValue() != roleId.longValue();
     }
 
     /**
@@ -255,36 +234,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (role.getId() != null && role.getId().longValue() == 1L) {
             throw new RuntimeException("不允许操作超级管理员角色");
         }
-    }
-
-    /**
-     * 校验角色是否有数据权限
-     *
-     * @param roleId 角色id
-     */
-    @Override
-    public void checkRoleDataScope(Long roleId) {
-        if (!SysRoleServiceImpl.isAdmin(getById(roleId))) {
-            // TODO: 实现数据权限校验
-        }
-    }
-
-    /**
-     * 根据用户ID获取角色权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
-    @Override
-    public Set<String> selectRolePermissionByUserId(String userId) {
-        List<SysRole> perms = baseMapper.selectRoleListByUserId(userId);
-        Set<String> permsSet = new HashSet<>();
-        for (SysRole perm : perms) {
-            if (perm != null) {
-                permsSet.addAll(Arrays.asList(perm.getRoleKey().trim().split(",")));
-            }
-        }
-        return permsSet;
     }
 
     /**
@@ -443,7 +392,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                     roleMenu.setMenuId(menuId);
                     return roleMenu;
                 })
-                .collect(Collectors.toList());
+                .toList();
             
             for (SysRoleMenu roleMenu : roleMenus) {
                 roleMenuMapper.insert(roleMenu);
@@ -459,7 +408,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
                     roleBtn.setBtnId(btnId);
                     return roleBtn;
                 })
-                .collect(Collectors.toList());
+                .toList();
             
             for (SysRoleBtn roleBtn : roleBtns) {
                 roleBtnMapper.insert(roleBtn);

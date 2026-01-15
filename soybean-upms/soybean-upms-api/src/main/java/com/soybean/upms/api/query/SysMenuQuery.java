@@ -1,10 +1,11 @@
 
 package com.soybean.upms.api.query;
 
-import com.soybean.upms.api.enums.SysMenuStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.enums.SysMenuTypeEnum;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Data
 public class SysMenuQuery implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
@@ -26,7 +28,7 @@ public class SysMenuQuery implements Serializable {
     /**
      * 菜单状态（0正常 1停用）
      */
-    private SysMenuStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 菜单类型（M目录 C菜单）

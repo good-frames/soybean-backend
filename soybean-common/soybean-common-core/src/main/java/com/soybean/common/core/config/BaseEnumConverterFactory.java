@@ -1,5 +1,6 @@
-package com.soybean.common.core.enums;
+package com.soybean.common.core.config;
 
+import com.soybean.common.core.enums.BaseEnum;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.lang.NonNull;

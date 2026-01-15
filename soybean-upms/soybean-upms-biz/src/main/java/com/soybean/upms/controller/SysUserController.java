@@ -12,7 +12,7 @@ import com.soybean.common.security.util.SecurityUtil;
 import com.soybean.upms.api.clients.SysUserClient;
 import com.soybean.upms.api.dto.PasswordUpdateDTO;
 import com.soybean.upms.api.dto.SysUserDTO;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import com.soybean.upms.api.po.SysUser;
 import com.soybean.upms.api.query.SysUserQuery;
 import com.soybean.upms.api.vo.SysUserCreateResultVO;
@@ -116,7 +116,7 @@ public class SysUserController implements SysUserClient {
                 return Result.fail("不允许修改admin账号状态");
             }
 
-            if (sysUserService.updateSysUserStatus(id, SysUserStatusEnum.fromValue(status))) {
+            if (sysUserService.updateSysUserStatus(id, StatusEnum.fromValue(status))) {
                 return Result.ok();
             } else {
                 return Result.fail("状态更新失败");

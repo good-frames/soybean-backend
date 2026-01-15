@@ -184,7 +184,7 @@ INSERT INTO `sys_role_menu` VALUES (1, 5);
 DROP TABLE IF EXISTS `sys_storage_config`;
 CREATE TABLE `sys_storage_config` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
-    `type` varchar(10) DEFAULT NULL COMMENT '存储类型；Aliyun: 阿里OSS；Qiniu:七牛云；QQ: 腾讯云',
+    `type` varchar(10) DEFAULT NULL COMMENT '存储类型；AliOss: 阿里OSS；Qiniu:七牛云；QQ: 腾讯云',
     `access_key` varchar(255) DEFAULT NULL COMMENT 'access_key',
     `access_secret` varchar(255) DEFAULT NULL COMMENT 'access_secret',
     `endpoint` varchar(255) DEFAULT NULL COMMENT '地域节点',

@@ -1,9 +1,9 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.soybean.upms.api.enums.SysUserDelFlagEnum;
+import com.soybean.common.core.enums.DelFlagEnum;
 import com.soybean.upms.api.enums.SysUserGenderEnum;
-import com.soybean.upms.api.enums.SysUserStatusEnum;
+import com.soybean.common.core.enums.StatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -72,7 +72,7 @@ public class SysUser implements Serializable {
      * 状态
      */
     @TableField("status")
-    private SysUserStatusEnum status;
+    private StatusEnum status;
 
     /**
      * 最后登录IP
@@ -117,6 +117,6 @@ public class SysUser implements Serializable {
      * 删除标志
      */
     @TableField("del_flag")
-    private SysUserDelFlagEnum delFlag;
+    private DelFlagEnum delFlag;
 
 }
