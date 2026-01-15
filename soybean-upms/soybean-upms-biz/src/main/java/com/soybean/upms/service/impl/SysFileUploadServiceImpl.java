@@ -59,7 +59,7 @@ public class SysFileUploadServiceImpl implements ISysFileUploadService {
 
         // 转换为 DTO
         SysStorageConfigDTO configDTO = new SysStorageConfigDTO();
-        configDTO.setType(storageConfig.getType());
+        configDTO.setType(storageConfig.getType().getValue());
         configDTO.setAccessKey(storageConfig.getAccessKey());
         configDTO.setAccessSecret(storageConfig.getAccessSecret());
         configDTO.setEndpoint(storageConfig.getEndpoint());
@@ -67,7 +67,7 @@ public class SysFileUploadServiceImpl implements ISysFileUploadService {
         configDTO.setDir(storageConfig.getDir());
 
         File newFile = FileUtils.multipartFileToFile(multipartFile);
-        String url = uploadFileHandlerMap.get("uploadFile" + storageConfig.getType())
+        String url = uploadFileHandlerMap.get(storageConfig.getType() + "UploadFileHandler")
                 .uploadFile(configDTO, newFile, multipartFile.getContentType());
 
         // 组装返回结果

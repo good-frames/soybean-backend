@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * @author lijx
  */
-@Component("uploadFileAliOss")
+@Component("AliOssUploadFileHandler")
 public class AliOssUploadFileHandler extends AbstractUploadFileHandler {
 
 	@Override

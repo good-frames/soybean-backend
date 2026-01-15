@@ -1,6 +1,7 @@
 package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.soybean.upms.api.enums.SysStorageTypeEnum;
 
 import lombok.Data;
 
@@ -29,11 +30,12 @@ public class SysStorageConfig implements Serializable {
 
 	/**
 	 * 存储类型
-     * Aliyun: 阿里OSS
-     * Qiniu:七牛云
-     * QQ: 腾讯云
+     * AliOss: 阿里云OSS
+     * QiNiuCloud: 七牛云
+     * QCloudCos: 腾讯云COS
+     * Minio: MinIO
 	 */
-	private String type;
+	private SysStorageTypeEnum type;
 
 	/**
 	 * access_key

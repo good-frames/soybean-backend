@@ -1,5 +1,6 @@
 package com.soybean.upms.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,7 +38,7 @@ import java.util.List;
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
 
     /**
-     * 将SysUser转换为AdminUserVO
+     * 将SysUser转换为SysUserVO
      *
      * @param sysUser 系统用户实体
      * @return 用户VO
@@ -48,23 +49,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         SysUserVO sysUserVO = new SysUserVO();
+        BeanUtil.copyProperties(sysUser, sysUserVO);
         sysUserVO.setId(sysUser.getUserId());
-        sysUserVO.setUserName(sysUser.getUsername());
-        sysUserVO.setNickName(sysUser.getNickname());
-        sysUserVO.setPhone(sysUser.getPhone());
-        sysUserVO.setEmail(sysUser.getEmail());
-        sysUserVO.setAvatar(sysUser.getAvatar());
-        sysUserVO.setGender(sysUser.getGender());
-
-        // 设置状态枚举
-        sysUserVO.setStatus(sysUser.getStatus());
-
-        // 设置状态名称
         sysUserVO.setStatusName(sysUser.getStatus() != null ? sysUser.getStatus().getDesc() : "");
-
-        // 设置创建时间和更新时间
-        sysUserVO.setCreateTime(sysUser.getCreateTime());
-        sysUserVO.setUpdateTime(sysUser.getUpdateTime());
 
         return sysUserVO;
     }
@@ -81,22 +68,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
 
         UserInfoVO userInfoVO = new UserInfoVO();
+        BeanUtil.copyProperties(sysUser, userInfoVO);
         userInfoVO.setUserId(sysUser.getUserId());
-        userInfoVO.setUserName(sysUser.getUsername());
-        userInfoVO.setNickName(sysUser.getNickname());
-        userInfoVO.setPhone(sysUser.getPhone());
-        userInfoVO.setEmail(sysUser.getEmail());
-        userInfoVO.setAvatar(sysUser.getAvatar());
-        userInfoVO.setGender(sysUser.getGender());
-
-        // 设置状态枚举
-        userInfoVO.setStatus(sysUser.getStatus());
-
-        // 设置创建时间和更新时间
-        userInfoVO.setCreateTime(sysUser.getCreateTime());
-        userInfoVO.setUpdateTime(sysUser.getUpdateTime());
-        userInfoVO.setLoginIp(sysUser.getLoginIp());
-        userInfoVO.setLoginDate(sysUser.getLoginDate());
 
         return userInfoVO;
     }
