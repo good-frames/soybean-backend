@@ -64,36 +64,37 @@ CREATE TABLE `sys_role` (
 -- 菜单表
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
-CREATE TABLE `sys_menu` (
-    `menu_id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
-    `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '菜单类型（M目录 C菜单）',
-    `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '菜单标题',
+CREATE TABLE `sys_menu`  (
+    `menu_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+    `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '菜单类型（M目录 C菜单）',
+    `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单标题',
     `route_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单（route）名称',
-    `route_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '路由地址',
-    `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
-    `constant` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
-    `component` varchar(255) DEFAULT NULL COMMENT '组件路径',
-    `parent_id` bigint DEFAULT '0' COMMENT '父菜单ID',
+    `route_path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '路由地址',
+    `keep_alive` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '是否缓存（0不缓存 1缓存）',
+    `constant` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否是静态菜单（0：权限菜单，1：静态菜单）',
+    `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组件路径',
+    `parent_id` bigint NULL DEFAULT 0 COMMENT '父菜单ID',
     `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '菜单状态（0停用 1正常）',
-    `perms` varchar(100) DEFAULT NULL COMMENT '权限标识',
-    `icon` varchar(100) DEFAULT '#' COMMENT '菜单图标',
-    `icon_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT 'icon图标类型 1：远程图标；2：本地图标',
-    `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '0' COMMENT '是否为外链（0否 1是）',
-    `i18n_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '国际化键',
-    `href` varchar(255) DEFAULT NULL COMMENT '外链地址',
-    `hide_in_menu` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
-    `active_menu` varchar(50) DEFAULT NULL COMMENT '高亮路由名称',
-    `multi_tab` char(1) DEFAULT NULL COMMENT '是否多页签',
-    `order` int(10) unsigned zerofill DEFAULT '0000000000' COMMENT '显示顺序',
-    `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '路由参数',
-    `fixed_index_in_tab` int DEFAULT NULL COMMENT '标签页顺序',
-    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT '' COMMENT '备注',
-    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
-    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-    PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='菜单权限表';
+    `perms` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识',
+    `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '#' COMMENT '菜单图标',
+    `icon_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'icon图标类型 1：远程图标；2：本地图标',
+    `is_frame` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '是否为外链（0否 1是）',
+    `i18n_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '国际化键',
+    `href` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '外链地址',
+    `hide_in_menu` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '菜单状态（0隐藏 1显示）',
+    `active_menu` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '高亮路由名称',
+    `multi_tab` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '是否多页签',
+    `order` int(10) UNSIGNED ZEROFILL NULL DEFAULT 0000000000 COMMENT '显示顺序',
+    `query` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由参数',
+    `fixed_index_in_tab` int NULL DEFAULT NULL COMMENT '标签页顺序',
+    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
+    `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+    `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+    `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`menu_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- 按钮（按钮级别权限）表
@@ -142,16 +143,17 @@ CREATE TABLE `sys_role_btn` (
 -- ----------------------------
 -- 创建默认菜单数据
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES (1, 'C', '首页', 'home', '/home', '0', '0', 'layout.base$view.home', 0, '1', NULL, 'mdi:monitor-dashboard', '1', '0', 'route.home', NULL, '0', NULL, NULL, 0000000000, NULL, '', NULL, '', '2026-01-09 09:05:38', '');
-INSERT INTO `sys_menu` VALUES (2, 'M', '系统管理', 'manage', '/manage', '0', '0', 'layout.base', 0, '1', 'manage', 'carbon:cloud-service-management', '1', '0', 'route.manage', NULL, '0', NULL, NULL, 0000000001, '', 'admin', '2025-12-22 15:02:37', '', '2026-01-08 11:33:03', '系统管理目录');
-INSERT INTO `sys_menu` VALUES (3, 'C', '菜单管理', 'manage_menu', '/manage/menu', '0', '0', 'view.manage_menu', 2, '1', 'manage:menu:list', 'material-symbols:route', '1', '0', 'route.manage_menu', NULL, '0', NULL, NULL, 0000000001, NULL, '', NULL, '', '2026-01-08 11:56:10', '');
-INSERT INTO `sys_menu` VALUES (4, 'C', '权限管理', 'manage_role', '/manage/role', '0', '0', 'view.manage_role', 2, '1', 'manage:role:list', 'carbon:user-role', '1', '0', 'route.manage_role', NULL, '0', NULL, NULL, 0000000002, NULL, '', NULL, '', '2026-01-08 13:25:24', '');
-INSERT INTO `sys_menu` VALUES (5, 'C', '用户管理', 'manage_user', '/manage/user', '0', '0', 'view.manage_user', 2, '1', 'manage:user:list', 'ic:round-manage-accounts', '1', '0', 'route.manage_user', NULL, '0', NULL, NULL, 0000000003, NULL, '', NULL, '', '2026-01-08 11:56:47', '');
-INSERT INTO `sys_menu` VALUES (6, 'C', '登录', 'login', '/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?', '0', '1', 'layout.blank$view.login', 0, '1', '', 'logo', '2', '0', 'route.login', '', '1', NULL, NULL, 0000000999, NULL, '', '2026-01-09 08:21:25', '', '2026-01-09 09:10:20', '');
-INSERT INTO `sys_menu` VALUES (7, 'C', '内嵌浏览器窗口', 'iframe-page', '/iframe-page/:url', '0', '1', 'layout.base$view.iframe-page', 0, '1', '', 'chrome', '2', '0', 'route.iframe-page', '', '1', NULL, NULL, 0000000999, NULL, '', '2026-01-09 08:22:34', '', '2026-01-09 09:06:18', '');
-INSERT INTO `sys_menu` VALUES (8, 'C', '403', '403', '/403', '0', '1', 'layout.blank$view.403', 0, '1', '', 'no-permission', '2', '0', 'route.403', '', '1', NULL, NULL, 0000009999, NULL, '', '2026-01-09 08:24:24', '', '2026-01-09 09:06:22', '');
-INSERT INTO `sys_menu` VALUES (9, 'C', '404', '404', '/404', '0', '1', 'layout.blank$view.404', 0, '1', '', 'not-found', '2', '0', 'route.404', '', '1', NULL, NULL, 0000009999, NULL, '', '2026-01-09 08:25:15', '', '2026-01-09 09:06:24', '');
-INSERT INTO `sys_menu` VALUES (10, 'C', '500', '500', '/500', '0', '1', 'layout.blank$view.500', 0, '1', '', 'service-error', '2', '0', 'route.500', '', '1', NULL, NULL, 0000009999, NULL, '', '2026-01-09 08:26:09', '', '2026-01-09 09:06:28', '');
+INSERT INTO `sys_menu` VALUES (1, 'C', '首页', 'home', '/home', '0', '0', 'layout.base$view.home', 0, '1', NULL, 'mdi:monitor-dashboard', '1', '0', 'route.home', NULL, '0', NULL, '0', 0000000000, NULL, NULL, '', '', NULL, '', '2026-01-12 14:37:21');
+INSERT INTO `sys_menu` VALUES (2, 'M', '系统管理', 'manage', '/manage', '0', '0', 'layout.base', 0, '1', 'upms', 'carbon:cloud-service-management', '1', '0', 'route.manage', NULL, '0', NULL, NULL, 0000000001, '', NULL, '系统管理目录', 'admin', '2025-12-22 15:02:37', '', '2026-01-08 11:33:03');
+INSERT INTO `sys_menu` VALUES (3, 'C', '菜单管理', 'manage_menu', '/manage/menu', '0', '0', 'view.manage_menu', 2, '1', 'upms:menu:list', 'material-symbols:route', '1', '0', 'route.manage_menu', NULL, '0', NULL, NULL, 0000000001, NULL, 0, '', '', NULL, '', '2026-01-16 11:51:14');
+INSERT INTO `sys_menu` VALUES (4, 'C', '权限管理', 'manage_role', '/manage/role', '0', '0', 'view.manage_role', 2, '1', 'upms:role:list', 'carbon:user-role', '1', '0', 'route.manage_role', NULL, '0', NULL, NULL, 0000000002, NULL, 0, '', '', NULL, '', '2026-01-16 11:51:18');
+INSERT INTO `sys_menu` VALUES (5, 'C', '用户管理', 'manage_user', '/manage/user', '0', '0', 'view.manage_user', 2, '1', 'upms:user:list', 'ic:round-manage-accounts', '1', '0', 'route.manage_user', NULL, '0', NULL, NULL, 0000000003, NULL, 0, '', '', NULL, '', '2026-01-16 11:51:26');
+INSERT INTO `sys_menu` VALUES (6, 'C', '对象存储', 'manage_storage', '/manage/storage', '0', '0', 'view.manage_storage', 2, '1', 'upms:storage:list', 'cil:3d', '1', '0', 'route.manage_storage', '', '0', NULL, '0', 0000000004, NULL, 0, '', '', '2026-01-16 08:26:10', '', '2026-01-16 13:48:58');
+INSERT INTO `sys_menu` VALUES (7, 'C', '登录', 'login', '/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?', '0', '1', 'layout.blank$view.login', 0, '1', '', 'logo', '2', '0', 'route.login', '', '1', NULL, NULL, 0000000999, NULL, NULL, '', '', '2026-01-09 08:21:25', '', '2026-01-09 09:10:20');
+INSERT INTO `sys_menu` VALUES (8, 'C', '内嵌浏览器窗口', 'iframe-page', '/iframe-page/:url', '0', '1', 'layout.base$view.iframe-page', 0, '1', '', 'chrome', '2', '0', 'route.iframe-page', '', '1', NULL, NULL, 0000000999, NULL, NULL, '', '', '2026-01-09 08:22:34', '', '2026-01-09 09:06:18');
+INSERT INTO `sys_menu` VALUES (9, 'C', '403', '403', '/403', '0', '1', 'layout.blank$view.403', 0, '1', '', 'no-permission', '2', '0', 'route.403', '', '1', NULL, NULL, 0000009999, NULL, NULL, '', '', '2026-01-09 08:24:24', '', '2026-01-09 09:06:22');
+INSERT INTO `sys_menu` VALUES (10, 'C', '404', '404', '/404', '0', '1', 'layout.blank$view.404', 0, '1', '', 'not-found', '2', '0', 'route.404', '', '1', NULL, NULL, 0000009999, NULL, NULL, '', '', '2026-01-09 08:25:15', '', '2026-01-09 09:06:24');
+INSERT INTO `sys_menu` VALUES (11, 'C', '500', '500', '/500', '0', '1', 'layout.blank$view.500', 0, '1', '', 'service-error', '2', '0', 'route.500', '', '1', NULL, NULL, 0000009999, NULL, NULL, '', '', '2026-01-09 08:26:09', '', '2026-01-09 09:06:28');
 
 -- ----------------------------
 -- 默认超级管理员用户
