@@ -23,14 +23,4 @@ public class SysStorageConfigQuery extends PageQuery {
      * 状态：0.正常；1.禁用
      */
     private String status;
-
-    /**
-     * 时间范围-开始时间
-     */
-    private String beginTime;
-
-    /**
-     * 时间范围-结束时间
-     */
-    private String endTime;
 }

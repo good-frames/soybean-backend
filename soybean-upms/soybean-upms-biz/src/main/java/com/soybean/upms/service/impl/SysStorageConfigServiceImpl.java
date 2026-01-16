@@ -38,9 +38,7 @@ public class SysStorageConfigServiceImpl extends ServiceImpl<SysStorageConfigMap
 
         LambdaQueryWrapper<SysStorageConfig> wrapper = Wrappers.<SysStorageConfig>lambdaQuery();
         wrapper.eq(query.getType() != null, SysStorageConfig::getType, query.getType())
-                .eq(query.getStatus() != null, SysStorageConfig::getStatus, query.getStatus())
-                .between(query.getBeginTime() != null && query.getEndTime() != null,
-                        SysStorageConfig::getCreateTime, query.getBeginTime(), query.getEndTime());
+                .eq(query.getStatus() != null, SysStorageConfig::getStatus, query.getStatus());
 
         baseMapper.selectPage(page, wrapper);
 
