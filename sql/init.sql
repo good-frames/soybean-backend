@@ -20,45 +20,49 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- 用户表
 -- ----------------------------
-CREATE TABLE `sys_user` (
-    `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-    `username` varchar(30) NOT NULL COMMENT '用户账号',
-    `nickname` varchar(30) NOT NULL COMMENT '用户昵称',
-    `email` varchar(50) DEFAULT '' COMMENT '用户邮箱',
-    `phone` varchar(11) DEFAULT '' COMMENT '手机号码',
-    `gender` char(1) DEFAULT '0' COMMENT '用户性别（0女 1男 2未知）',
-    `avatar` varchar(100) DEFAULT '' COMMENT '头像地址',
-    `password` varchar(100) DEFAULT '' COMMENT '密码',
-    `status` char(1) DEFAULT '0' COMMENT '帐号状态（0停用 1正常）',
-    `login_ip` varchar(128) DEFAULT '' COMMENT '最后登录IP',
-    `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
-    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
-    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-    `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-    PRIMARY KEY (`user_id`),
-    UNIQUE KEY `idx_username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信息表';
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user`  (
+    `user_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户ID',
+    `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户账号',
+    `nickname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户昵称',
+    `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '用户邮箱',
+    `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '手机号码',
+    `gender` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '用户性别（0男 1女 2未知）',
+    `avatar` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '头像地址',
+    `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '密码',
+    `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '帐号状态（0停用 1正常）',
+    `login_ip` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '最后登录IP',
+    `login_date` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
+    `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+    `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+    `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+    `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+    PRIMARY KEY (`user_id`) USING BTREE,
+    UNIQUE INDEX `idx_username`(`username` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- 角色表
 -- ----------------------------
-CREATE TABLE `sys_role` (
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role`  (
     `role_id` bigint NOT NULL AUTO_INCREMENT COMMENT '角色ID',
-    `role_name` varchar(30) NOT NULL COMMENT '角色名称',
-    `role_key` varchar(100) NOT NULL COMMENT '角色权限字符串',
-    `role_sort` int NOT NULL DEFAULT '0' COMMENT '显示顺序',
-    `status` char(1) NOT NULL COMMENT '角色状态（0停用 1正常）',
-    `home` varchar(255) DEFAULT NULL COMMENT '角色首页路由名称',
-    `del_flag` char(1) DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
-    `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
-    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
-    `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
-    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-    `remark` varchar(500) DEFAULT NULL COMMENT '备注',
-    PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='角色信息表';
+    `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名称',
+    `role_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色权限字符串',
+    `role_sort` int NOT NULL DEFAULT 0 COMMENT '显示顺序',
+    `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1' COMMENT '角色状态（0停用 1正常）',
+    `home` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色首页路由名称',
+    `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+    `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '创建者',
+    `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '更新者',
+    `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+    PRIMARY KEY (`role_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色信息表' ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- 菜单表
@@ -99,6 +103,7 @@ CREATE TABLE `sys_menu`  (
 -- ----------------------------
 -- 按钮（按钮级别权限）表
 -- ----------------------------
+DROP TABLE IF EXISTS `sys_btn`;
 CREATE TABLE sys_btn (
     btn_id bigint NOT NULL AUTO_INCREMENT COMMENT '按钮ID',
     menu_id bigint NOT NULL COMMENT '菜单ID',
@@ -116,6 +121,7 @@ CREATE TABLE sys_btn (
 -- ----------------------------
 -- 用户和角色关联表
 -- ----------------------------
+DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role` (
     `user_id` varchar(32) NOT NULL COMMENT '用户ID',
     `role_id` bigint NOT NULL COMMENT '角色ID',
@@ -125,6 +131,7 @@ CREATE TABLE `sys_user_role` (
 -- ----------------------------
 -- 角色和菜单关联表
 -- ----------------------------
+DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu` (
     `role_id` bigint NOT NULL COMMENT '角色ID',
     `menu_id` bigint NOT NULL COMMENT '菜单ID',
@@ -134,6 +141,7 @@ CREATE TABLE `sys_role_menu` (
 -- ----------------------------
 -- 创建角色-按钮关联表
 -- ----------------------------
+DROP TABLE IF EXISTS `sys_role_btn`;
 CREATE TABLE `sys_role_btn` (
     `role_id` bigint NOT NULL COMMENT '角色ID',
     `btn_id` bigint NOT NULL COMMENT '按钮ID',
@@ -163,7 +171,7 @@ INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'admin@soybean.c
 -- ----------------------------
 -- 默认角色
 -- ----------------------------
-INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '0', 'home', '0', 'admin', sysdate(), 'admin', sysdate(), '超级管理员');
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '1', NULL, '0', 'admin', '2025-12-22 15:02:37', 'admin', '2025-12-22 15:02:37', '超级管理员');
 
 -- ----------------------------
 -- 用户角色关联
