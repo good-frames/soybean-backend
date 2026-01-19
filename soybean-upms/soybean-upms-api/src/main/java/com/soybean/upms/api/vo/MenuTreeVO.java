@@ -3,6 +3,7 @@ package com.soybean.upms.api.vo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 public class MenuTreeVO extends SysMenuVO implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
