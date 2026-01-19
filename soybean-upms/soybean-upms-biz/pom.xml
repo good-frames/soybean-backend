@@ -87,4 +87,8 @@
 
     </dependencies>
 
+    <build>
+        <finalName>soybean-upms-${project.version}</finalName>
+    </build>
+
 </project>

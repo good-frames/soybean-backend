@@ -1,6 +1,7 @@
 package com.soybean.upms.api.vo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author soybean
  * @since 2024-07-07
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class MenuTreeVO extends SysMenuVO implements Serializable {
 
