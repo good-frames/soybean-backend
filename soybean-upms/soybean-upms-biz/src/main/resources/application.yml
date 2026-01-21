@@ -19,3 +19,4 @@ spring:
       - optional:nacos:soybean.common.yaml
       - optional:nacos:soybean.jdbc.yaml
       - optional:nacos:soybean.sa-token.yaml
+      # - optional:nacos:soybean.seata.yaml  # 暂时禁用Seata

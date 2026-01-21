@@ -10,7 +10,7 @@
 
     <artifactId>soybean-common-redis</artifactId>
     <name>soybean-common-redis</name>
-    <description>soybean-common-redis</description>
+    <description>redis缓存</description>
 
     <dependencies>
         <!-- Redis客户端 -->

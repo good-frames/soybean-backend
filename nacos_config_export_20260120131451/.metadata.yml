@@ -19,3 +19,13 @@ metadata:
   desc: 网关配置
   group: DEFAULT_GROUP
   type: yaml
+- appName: ''
+  dataId: soybean.seata.yaml
+  desc: 分布式事务配置
+  group: DEFAULT_GROUP
+  type: yaml
+- appName: ''
+  dataId: seataServer.properties
+  desc: seataServer服务配置
+  group: SEATA_GROUP
+  type: properties

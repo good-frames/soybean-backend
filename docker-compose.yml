@@ -1,3 +1,6 @@
+networks:
+  soybean-network:
+    driver: bridge
 services:
   mysql:
     image: mysql:8.0.36
@@ -13,6 +16,8 @@ services:
       - "3306:3306"
     volumes:
       - ./docker/mysql_data:/var/lib/mysql           # 数据持久化
+    networks:
+      - soybean-network
   redis:
     image: redis:7.2-alpine          # 轻量、生产常用
     container_name: soybean-redis
@@ -24,6 +29,8 @@ services:
       - "6379:6379"
     volumes:
       - ./docker/redis_data:/data    # 持久化
+    networks:
+      - soybean-network
   nacos:
     image: nacos/nacos-server:v2.2.3
     container_name: soybean-nacos
@@ -47,3 +54,22 @@ services:
       - "9848:9848"
     depends_on:
       - mysql
+    networks:
+      - soybean-network
+  seata:
+    image: seataio/seata-server:2.0.0
+    container_name: soybean-seata
+    environment:
+      SEATA_MODE: db
+      SEATA_IP: 127.0.0.1
+      SEATA_PORT: 8091
+    ports:
+      - "8091:8091"
+      - "7091:7091"
+    volumes:
+      - ./docker/seata-server/resources/application.yml:/seata-server/resources/application.yml
+    depends_on:
+      - mysql
+      - nacos
+    networks:
+      - soybean-network
