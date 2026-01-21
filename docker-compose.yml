@@ -57,7 +57,7 @@ services:
     networks:
       - soybean-network
   seata:
-    image: seataio/seata-server:2.0.0
+    image: apache/seata-server:2.1.0
     container_name: soybean-seata
     environment:
       SEATA_MODE: db
@@ -66,8 +66,8 @@ services:
     ports:
       - "8091:8091"
       - "7091:7091"
-    volumes:
-      - ./docker/seata-server/resources/application.yml:/seata-server/resources/application.yml
+#    volumes:
+#      - ./docker/seata-resources:/seata-server/resources
     depends_on:
       - mysql
       - nacos
