@@ -4,12 +4,11 @@ seata:
         type: nacos
         nacos: 
             application: seata-server
-            server-addr: nacos_ip:nacos_port
-            group: DEFAULT_GROUP
+            server-addr: 127.0.0.1:8848
+            group: SEATA_GROUP
             namespace: soybean-dev
-            # tc集群名称
-            cluster: default
             username: nacos
             password: nacos
+    tx-service-group: default_tx_group
     server:
         service-port: 8091
