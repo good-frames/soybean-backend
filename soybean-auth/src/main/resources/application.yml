@@ -11,6 +11,9 @@ spring:
       server-addr: @nacos.addr@ # nacos地址
       username: @nacos.username@
       password: @nacos.password@
+      discovery:
+        namespace: @nacos.namespace@
+        group: DEFAULT_GROUP
       config:
         namespace: @nacos.namespace@
         group: DEFAULT_GROUP

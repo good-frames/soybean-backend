@@ -1,6 +1,18 @@
 server:
   port: 8081
 
+seata:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      group: SEATA_GROUP
+      namespace: soybean-dev
+      username: nacos
+      password: nacos
+  tx-service-group: default_tx_group
+
 spring:
   application:
     name: soybean-upms
@@ -11,6 +23,9 @@ spring:
       server-addr: @nacos.addr@ # nacos地址
       username: @nacos.username@
       password: @nacos.password@
+      discovery:
+        namespace: @nacos.namespace@
+        group: DEFAULT_GROUP
       config:
         namespace: @nacos.namespace@
         group: DEFAULT_GROUP
@@ -19,4 +34,18 @@ spring:
       - optional:nacos:soybean.common.yaml
       - optional:nacos:soybean.jdbc.yaml
       - optional:nacos:soybean.sa-token.yaml
-      # - optional:nacos:soybean.seata.yaml  # 暂时禁用Seata
+#      - optional:nacos:soybean.seata.yaml
+#seata:
+#  registry:
+#    # support: nacos, eureka, redis, zk, consul, etcd3, sofa
+#    type: nacos
+#    nacos:
+#      application: seata-server
+#      server-addr: 127.0.0.1:8848
+#      group: SEATA_GROUP
+#      namespace: soybean-dev
+#      username: nacos
+#      password: nacos
+#  tx-service-group: default_tx_group
+#  server:
+#    service-port: 8091

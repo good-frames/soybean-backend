@@ -18,6 +18,12 @@ services:
       - ./docker/mysql_data:/var/lib/mysql           # 数据持久化
     networks:
       - soybean-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot123"]
+      interval: 2s
+      timeout: 3s
+      retries: 2
+      start_period: 60s
   redis:
     image: redis:7.2-alpine          # 轻量、生产常用
     container_name: soybean-redis
@@ -31,6 +37,7 @@ services:
       - ./docker/redis_data:/data    # 持久化
     networks:
       - soybean-network
+
   nacos:
     image: nacos/nacos-server:v2.2.3
     container_name: soybean-nacos
@@ -53,21 +60,29 @@ services:
       - "8848:8848"
       - "9848:9848"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - soybean-network
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/actuator/health"]
+#      interval: 20s
+#      timeout: 3s
+#      retries: 2
+#      start_period: 60s
+
   seata:
-    image: apache/seata-server:2.1.0
+    image: apache/seata-server:2.1.0-slim
     container_name: soybean-seata
+    restart: always
     environment:
-      SEATA_MODE: db
-      SEATA_IP: 127.0.0.1
       SEATA_PORT: 8091
     ports:
       - "8091:8091"
       - "7091:7091"
-#    volumes:
-#      - ./docker/seata-resources:/seata-server/resources
+    volumes:
+      - ./docker/seata-server/libs/mysql-connector-java-8.0.33.jar:/seata-server/libs/mysql-connector-java-8.0.33.jar
+      - ./docker/seata-server/resources/application.yml:/seata-server/resources/application.yml
     depends_on:
       - mysql
       - nacos
