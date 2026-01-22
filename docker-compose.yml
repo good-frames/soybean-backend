@@ -76,6 +76,7 @@ services:
     container_name: soybean-seata
     restart: always
     environment:
+      SEATA_IP: 127.0.0.1
       SEATA_PORT: 8091
     ports:
       - "8091:8091"

@@ -12,6 +12,9 @@ seata:
       username: nacos
       password: nacos
   tx-service-group: default_tx_group
+  service:
+    vgroup-mapping:
+      default_tx_group: default
 
 spring:
   application:
