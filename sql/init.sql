@@ -166,7 +166,7 @@ INSERT INTO `sys_menu` VALUES (11, 'C', '500', '500', '/500', '0', '1', 'layout.
 -- ----------------------------
 -- 默认超级管理员用户
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'admin@soybean.com', '15888888888', '1', '', '$2a$10$7JB720yubVSOfvVWbfXCOOxjTOQcQjmrJF1ZM4nAVccp/.rkMlDWy', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', NULL, '管理员', '0');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '超级管理员', 'admin@soybean.com', '15888888888', '1', '', 'e10adc3949ba59abbe56e057f20f883e', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', NULL, '管理员', '0');
 
 -- ----------------------------
 -- 默认角色

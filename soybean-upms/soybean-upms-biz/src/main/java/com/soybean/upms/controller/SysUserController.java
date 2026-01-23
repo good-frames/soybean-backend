@@ -46,7 +46,7 @@ public class SysUserController implements SysUserClient {
      * 新增系统用户
      */
     @PostMapping
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<SysUserCreateResultVO> add(
         @ValidatedBy(value = SysUserValidator.class, method = "addValidate") @RequestBody SysUserDTO sysUserDTO
     ) {
@@ -66,7 +66,7 @@ public class SysUserController implements SysUserClient {
      * 删除系统用户
      */
     @DeleteMapping
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> delete(@RequestBody List<String> idList) {
         try {
             
@@ -89,7 +89,7 @@ public class SysUserController implements SysUserClient {
      * 修改系统用户
      */
     @PutMapping
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> update(
         @ValidatedBy(value = SysUserValidator.class, method = "updateValidate") @RequestBody SysUserDTO sysUserDTO
     ) {
@@ -108,7 +108,7 @@ public class SysUserController implements SysUserClient {
      * 修改状态
      */
     @PutMapping("/status/{id}/{status}")
-    @RequirePermission(value = "manage:user:list", orRole = "admin")
+    @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
         try {
             // 检查是否为admin账号(ID为1)，不允许修改admin账号状态
@@ -133,7 +133,7 @@ public class SysUserController implements SysUserClient {
     @SaCheckOr(
             login = @SaCheckLogin,
             role = @SaCheckRole("admin"),
-            permission = @SaCheckPermission("manage:user:list")
+            permission = @SaCheckPermission("upms:user:list")
     )
     public Result<Void> updatePassword(@ValidatedBy(value = SysUserValidator.class, method = "updatePasswordValidate") @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
         try {
@@ -151,7 +151,7 @@ public class SysUserController implements SysUserClient {
      * 管理员修改用户密码
      */
     @PutMapping("/password/admin")
-    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> adminUpdatePassword(@ValidatedBy(value = SysUserValidator.class, method = "updatePasswordValidate") @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
         try {
             if (sysUserService.adminUpdatePassword(passwordUpdateDTO)) {
@@ -168,7 +168,7 @@ public class SysUserController implements SysUserClient {
      * 根据ID查询系统用户
      */
     @GetMapping("/{id}")
-    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<SysUserVO> getById(@PathVariable String id) {
         try {
             SysUserVO sysUserVO = sysUserService.getSysUserVOById(id);
@@ -186,7 +186,7 @@ public class SysUserController implements SysUserClient {
      * 分页查询系统用户列表
      */
     @GetMapping("/page")
-    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<PageDTO<SysUserVO>> page(SysUserQuery query) {
         try {
             PageDTO<SysUserVO> userPage = sysUserService.getSysUserPage(query);
@@ -200,7 +200,7 @@ public class SysUserController implements SysUserClient {
      * 查询所有系统用户
      */
     @GetMapping("/list")
-    @SaCheckPermission(value = "manage:user:list", orRole = "admin")
+    @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<List<SysUserVO>> list() {
         try {
             List<SysUserVO> list = sysUserService.getAllSysUsers();

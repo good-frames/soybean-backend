@@ -32,8 +32,8 @@ import com.soybean.upms.service.ISysRoleService;
 
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -117,7 +117,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public boolean insertRole(SysRoleDTO roleDTO) {
         // 新增角色信息
         SysRole role = BeanUtil.copyProperties(roleDTO, SysRole.class);
@@ -137,7 +137,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public boolean updateRole(SysRoleDTO roleDTO) {
         // 修改角色信息
         SysRole role = BeanUtil.copyProperties(roleDTO, SysRole.class);
@@ -172,7 +172,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 结果
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public boolean deleteRoleByIds(List<Long> roleIds) {
         // 检查角色是否全部存在
         if (!checkRolesExists(roleIds)) {
