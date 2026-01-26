@@ -3,6 +3,7 @@ package com.soybean.upms.api.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -20,17 +21,20 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @TableName("sys_user_role")
+@Schema(description = "用户和角色关联表")
 public class SysUserRole implements Serializable {
 
     /**
      * 用户ID
      */
     @TableField("user_id")
+    @Schema(description = "用户ID")
     private String userId;
 
     /**
      * 角色ID
      */
     @TableField("role_id")
+    @Schema(description = "角色ID")
     private Long roleId;
 }

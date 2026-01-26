@@ -16,6 +16,9 @@ import com.soybean.upms.service.ISysMenuService;
 import com.soybean.upms.service.ISysRoleService;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +32,7 @@ import java.util.List;
  * @author soybean
  * @since 2024-07-07
  */
+@Tag(name = "菜单管理", description = "菜单权限的增删改查")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/systemManage/menu")
@@ -40,6 +44,7 @@ public class SysMenuController {
     /**
      * 新增菜单
      */
+    @Operation(summary = "新增菜单", description = "创建新的菜单")
     @PostMapping
     public Result<Void> add(@Validated @RequestBody SysMenuDTO menuDTO) {
         boolean result = menuService.saveMenuWithButtons(menuDTO);
@@ -49,6 +54,7 @@ public class SysMenuController {
     /**
      * 编辑菜单
      */
+    @Operation(summary = "编辑菜单", description = "修改菜单信息")
     @PutMapping
     public Result<Void> update(@Validated @RequestBody SysMenuDTO menuDTO) {
         boolean result = menuService.updateMenuWithButtons(menuDTO);
@@ -58,6 +64,7 @@ public class SysMenuController {
     /**
      * 批量删除菜单
      */
+    @Operation(summary = "删除菜单", description = "批量删除菜单")
     @DeleteMapping
     public Result<Void> remove(@RequestBody List<Long> ids) {
         boolean result = menuService.deleteMenuWithButtons(ids);
@@ -67,6 +74,7 @@ public class SysMenuController {
     /**
      * 查询所有菜单
      */
+    @Operation(summary = "查询菜单列表", description = "查询所有菜单")
     @GetMapping("/list")
     public Result<List<SysMenuVO>> list(SysMenuQuery query) {
         List<SysMenuVO> voList = menuService.listAllMenus(query);
@@ -76,6 +84,7 @@ public class SysMenuController {
     /**
      * 查询所有菜单树
      */
+    @Operation(summary = "查询菜单树", description = "查询所有菜单树结构")
     @GetMapping("/tree")
     public Result<List<MenuTreeVO>> tree() {
         List<MenuTreeVO> treeList = menuService.listAllMenusTree();
@@ -85,8 +94,9 @@ public class SysMenuController {
     /**
      * 根据菜单ID查询菜单详情
      */
+    @Operation(summary = "获取菜单详情", description = "根据菜单ID查询菜单详情")
     @GetMapping("/{id}")
-    public Result<MenuTreeVO> getById(@PathVariable Long id) {
+    public Result<MenuTreeVO> getById(@Parameter(description = "菜单ID") @PathVariable Long id) {
         MenuTreeVO menu = menuService.getMenuById(id);
         return Result.ok(menu);
     }
@@ -94,6 +104,7 @@ public class SysMenuController {
     /**
      * 分页查询菜单树
      */
+    @Operation(summary = "分页查询菜单树", description = "分页查询菜单树结构")
     @GetMapping("/page")
     public Result<Page<MenuTreeVO>> page(SysMenuTreeQuery query) {
         Page<MenuTreeVO> result = menuService.pageMenuTree(query);
@@ -103,6 +114,7 @@ public class SysMenuController {
     /**
      * 获取当前登录者拥有的路由树
      */
+    @Operation(summary = "获取用户路由", description = "获取当前登录用户拥有的路由树")
     @GetMapping("/route")
     public Result<UserRouteResultVO> route() {
         List<RouteTreeVO> routeList = menuService.getCurrentUserRouteTree();
@@ -134,8 +146,9 @@ public class SysMenuController {
     /**
      * 根据用户ID获取用户的权限
      */
+    @Operation(summary = "获取用户权限", description = "根据用户ID获取用户的权限列表")
     @GetMapping("/permission/user/{userId}")
-    public Result<List<String>> getCurrentUserPermissions(@PathVariable String userId) {
+    public Result<List<String>> getCurrentUserPermissions(@Parameter(description = "用户ID") @PathVariable String userId) {
         List<String> permissions = menuService.getPermissionsByUserId(userId);
         return Result.ok(permissions);
     }
@@ -143,6 +156,7 @@ public class SysMenuController {
     /**
      * 获取所有静态菜单路由树
      */
+    @Operation(summary = "获取静态菜单路由", description = "获取所有静态菜单路由树")
     @GetMapping("/static")
     public Result<List<RouteTreeVO>> getStaticMenuRouteTree() {
         List<RouteTreeVO> routeList = menuService.getStaticMenuRouteTree();

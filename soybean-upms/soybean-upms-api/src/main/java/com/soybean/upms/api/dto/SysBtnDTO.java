@@ -1,5 +1,6 @@
 package com.soybean.upms.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,6 +15,7 @@ import java.io.Serializable;
  * @since 2026-01-04
  */
 @Data
+@Schema(description = "按钮数据传输对象")
 public class SysBtnDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,12 +23,14 @@ public class SysBtnDTO implements Serializable {
     /**
      * 按钮ID
      */
+    @Schema(description = "按钮ID")
     private Long id;
 
     /**
      * 菜单ID
      */
     @NotNull(message = "菜单ID不能为空")
+    @Schema(description = "菜单ID", required = true)
     private Long menuId;
 
     /**
@@ -34,11 +38,13 @@ public class SysBtnDTO implements Serializable {
      */
     @NotBlank(message = "按钮标识不能为空")
     @Size(max = 100, message = "按钮标识长度不能超过100个字符")
+    @Schema(description = "按钮标识", required = true)
     private String btnCode;
 
     /**
      * 备注
      */
     @Size(max = 500, message = "备注长度不能超过500个字符")
+    @Schema(description = "备注")
     private String remark;
 }

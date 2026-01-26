@@ -20,6 +20,9 @@ import com.soybean.upms.api.vo.SysUserVO;
 import com.soybean.upms.api.vo.UserInfoVO;
 import com.soybean.upms.service.ISysUserService;
 import com.soybean.upms.validator.SysUserValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +37,7 @@ import java.util.List;
  * @author soybean
  * @since 2024-07-07
  */
+@Tag(name = "用户管理", description = "系统用户的增删改查")
 @Slf4j
 @Data
 @RestController
@@ -45,6 +49,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 新增系统用户
      */
+    @Operation(summary = "新增用户", description = "创建新的系统用户")
     @PostMapping
     @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<SysUserCreateResultVO> add(
@@ -65,6 +70,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 删除系统用户
      */
+    @Operation(summary = "删除用户", description = "批量删除系统用户")
     @DeleteMapping
     @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> delete(@RequestBody List<String> idList) {
@@ -88,6 +94,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 修改系统用户
      */
+    @Operation(summary = "修改用户", description = "修改系统用户信息")
     @PutMapping
     @RequirePermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> update(
@@ -107,9 +114,10 @@ public class SysUserController implements SysUserClient {
     /**
      * 修改状态
      */
+    @Operation(summary = "修改用户状态", description = "启用或停用用户")
     @PutMapping("/status/{id}/{status}")
     @RequirePermission(value = "upms:user:list", orRole = "admin")
-    public Result<Void> updateStatus(@PathVariable String id, @PathVariable String status) {
+    public Result<Void> updateStatus(@Parameter(description = "用户ID") @PathVariable String id, @Parameter(description = "状态") @PathVariable String status) {
         try {
             // 检查是否为admin账号(ID为1)，不允许修改admin账号状态
             if ("1".equals(id)) {
@@ -129,6 +137,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 修改密码
      */
+    @Operation(summary = "修改密码", description = "用户修改自己的密码")
     @PutMapping("/password")
     @SaCheckOr(
             login = @SaCheckLogin,
@@ -150,6 +159,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 管理员修改用户密码
      */
+    @Operation(summary = "管理员修改密码", description = "管理员重置用户密码")
     @PutMapping("/password/admin")
     @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<Void> adminUpdatePassword(@ValidatedBy(value = SysUserValidator.class, method = "updatePasswordValidate") @RequestBody PasswordUpdateDTO passwordUpdateDTO) {
@@ -167,9 +177,10 @@ public class SysUserController implements SysUserClient {
     /**
      * 根据ID查询系统用户
      */
+    @Operation(summary = "获取用户详情", description = "根据用户ID查询用户信息")
     @GetMapping("/{id}")
     @SaCheckPermission(value = "upms:user:list", orRole = "admin")
-    public Result<SysUserVO> getById(@PathVariable String id) {
+    public Result<SysUserVO> getById(@Parameter(description = "用户ID") @PathVariable String id) {
         try {
             SysUserVO sysUserVO = sysUserService.getSysUserVOById(id);
             if (sysUserVO != null) {
@@ -185,6 +196,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 分页查询系统用户列表
      */
+    @Operation(summary = "分页查询用户", description = "分页查询系统用户列表")
     @GetMapping("/page")
     @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<PageDTO<SysUserVO>> page(SysUserQuery query) {
@@ -199,6 +211,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 查询所有系统用户
      */
+    @Operation(summary = "查询用户列表", description = "查询所有系统用户")
     @GetMapping("/list")
     @SaCheckPermission(value = "upms:user:list", orRole = "admin")
     public Result<List<SysUserVO>> list() {
@@ -213,8 +226,9 @@ public class SysUserController implements SysUserClient {
     /**
      * 根据用户名获取用户信息
      */
+    @Operation(summary = "根据用户名查询", description = "根据用户名获取用户信息")
     @GetMapping("/getByUsername")
-    public Result<SysUser> getByUsername(@RequestParam String username) {
+    public Result<SysUser> getByUsername(@Parameter(description = "用户名") @RequestParam String username) {
         try {
             return Result.ok(sysUserService.getUserByUsername(username));
         } catch (Exception e) {
@@ -225,6 +239,7 @@ public class SysUserController implements SysUserClient {
     /**
      * 获取当前登录用户信息（包括基本信息、角色和权限）
      */
+    @Operation(summary = "获取当前用户信息", description = "获取当前登录用户信息（包括基本信息、角色和权限）")
     @GetMapping("/info/current")
     public Result<UserInfoVO> getCurrentUserInfo() {
         try {

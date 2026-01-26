@@ -1,5 +1,6 @@
 package com.soybean.upms.api.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @since 2024-07-07
  */
 @EqualsAndHashCode(callSuper = true)
+@Schema(description = "菜单树视图对象")
 @Data
 public class MenuTreeVO extends SysMenuVO implements Serializable {
 
@@ -23,6 +25,7 @@ public class MenuTreeVO extends SysMenuVO implements Serializable {
     /**
      * 子菜单
      */
+    @Schema(description = "子菜单列表")
     private List<MenuTreeVO> children;
 
 
@@ -30,5 +33,6 @@ public class MenuTreeVO extends SysMenuVO implements Serializable {
     /**
      * 按钮列表
      */
+    @Schema(description = "按钮列表")
     private List<SysBtnVO> buttons;
 }
