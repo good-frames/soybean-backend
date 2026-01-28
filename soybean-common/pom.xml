@@ -19,6 +19,7 @@
         <module>soybean-common-redis</module>
         <module>soybean-common-security</module>
         <module>soybean-common-storage</module>
+        <module>soybean-common-openapi</module>
     </modules>
 
 </project>

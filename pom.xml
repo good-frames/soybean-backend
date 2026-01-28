@@ -233,6 +233,12 @@
 
             <dependency>
                 <groupId>com.soybean</groupId>
+                <artifactId>soybean-common-openapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.soybean</groupId>
                 <artifactId>soybean-upms-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
