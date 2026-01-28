@@ -38,6 +38,12 @@
             <artifactId>soybean-common-core</artifactId>
         </dependency>
 
+        <!--soybean-common-openapi-->
+        <dependency>
+            <groupId>com.soybean</groupId>
+            <artifactId>soybean-common-openapi</artifactId>
+        </dependency>
+
         <!-- ========================= 服务间调用 ============================ -->
         <!--openFeign-->
         <dependency>

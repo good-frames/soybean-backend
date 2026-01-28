@@ -1,6 +1,18 @@
 server:
   port: 8083
 
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
+  openapi:
+    security-header: Authorization
+    service-prefix: /soybean-auth
+    title: auth
+    version: 1.0.0
+
 spring:
   application:
     name: soybean-auth

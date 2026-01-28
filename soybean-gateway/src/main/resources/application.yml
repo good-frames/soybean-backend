@@ -10,8 +10,8 @@ springdoc:
     urls:
       - name: upms
         url: /soybean-upms/v3/api-docs
-      - name: 鉴权
-        url: /auth/v3/api-docs
+      - name: auth
+        url: /soybean-auth/v3/api-docs
 
 
 spring:

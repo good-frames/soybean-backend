@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Data
 @Component
-@ConfigurationProperties(prefix = "soybean.openapi")
+@ConfigurationProperties(prefix = "springdoc.openapi")
 public class OpenApiProperties {
     private String servicePrefix; // 网关前缀，例如 /soybean-upms
     private String title;         // 文档标题

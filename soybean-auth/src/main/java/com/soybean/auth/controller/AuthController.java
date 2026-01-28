@@ -6,6 +6,7 @@ import com.soybean.auth.domain.vo.LoginVO;
 import com.soybean.auth.service.AuthService;
 import com.soybean.common.core.utils.Result;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "认证管理", description = "提供用户登录、登出等认证相关接口")
 public class AuthController {
 
     private final AuthService authService;
