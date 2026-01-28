@@ -1,0 +1,14 @@
+seata:
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: ${soybean.nacos-host}:${soybean.nacos-port:8848}
+      group: SEATA_GROUP
+      namespace: soybean-dev
+      username: nacos
+      password: nacos
+  tx-service-group: default_tx_group
+  service:
+    vgroup-mapping:
+      default_tx_group: default

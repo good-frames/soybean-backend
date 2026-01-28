@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      # routes: # 路由配置
+      #   - id: soybean-auth
+      #     uri: lb://soybean-auth
+      #     predicates: # 断言
+      #       - Path=/auth/**
+      #   - id: soybean-upms
+      #     uri: lb://soybean-upms
+      #     predicates: # 断言
+      #       - name: Path
+      #         args:
+      #           patterns:
+      #             - /systemManage/menu/**
+      #             - /systemManage/role/**
+      #             - /systemManage/user/**
+      #             - /systemManage/storageConfig/**
+      #             - /systemManage/file/**
+# 放行URL配置
+security:
+  permit-all:
+    urls:
+      - /soybean-upms/v3/api-docs
+      - /webjars/**
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /systemManage/menu/static
+      - /auth/**

@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Tag(name = "按钮权限管理", description = "按钮权限相关接口")
 @RestController
-@RequestMapping("/btn")
+@RequestMapping("/systemManage/btn")
 @RequiredArgsConstructor
 public class SysBtnController {
 

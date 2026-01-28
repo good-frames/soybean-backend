@@ -1,6 +1,19 @@
 server:
   port: 9090
 
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - name: upms
+        url: /soybean-upms/v3/api-docs
+      - name: 鉴权
+        url: /auth/v3/api-docs
+
+
 spring:
   application:
     name: soybean-gateway

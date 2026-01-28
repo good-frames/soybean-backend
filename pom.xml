@@ -72,6 +72,12 @@
                 <version>${springdoc.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+
             <!-- ========================= 对象存储 ============================ -->
             <!-- aliyun oss 客户端 -->
             <dependency>

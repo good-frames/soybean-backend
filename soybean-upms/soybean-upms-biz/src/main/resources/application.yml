@@ -2,17 +2,12 @@ soybean:
   nacos-host: 192.168.22.13
   nacos-port: 8848
 
-#springdoc:
-#  api-docs:
-#    enabled: true
-#    path: /v3/api-docs
-#  swagger-ui:
-#    enabled: true
-#    path: /swagger-ui.html
-#  group-configs:
-#    - group: default
-#      paths-to-match: /**
-#      display-name: Default API
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
 
 server:
   port: 8081

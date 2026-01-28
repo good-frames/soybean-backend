@@ -38,6 +38,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
         return new SaServletFilter()
                 .addInclude("/**")
                 .addExclude("/favicon.ico")
+                .addExclude("/v3/api-docs/**")
                 .setAuth(obj -> {
                     // 根据配置决定是否校验 Same-Token 身份凭证
                     if (securityProperties.isEnableSameToken()) {
