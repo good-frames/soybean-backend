@@ -18,7 +18,7 @@ public interface ResultCode {
     Integer PARAM_ERROR = 400;
 
     /**
-     * 未授权
+     * 未授权,登录过期
      */
     Integer UNAUTHORIZED = 401;
 

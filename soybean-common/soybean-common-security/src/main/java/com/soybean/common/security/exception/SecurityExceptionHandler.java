@@ -30,7 +30,7 @@ public class SecurityExceptionHandler {
                 break;
             case NotLoginException.INVALID_TOKEN:
                 message = "Token无效";
-                break;
+                return Result.unauthorized(message);
             case NotLoginException.TOKEN_TIMEOUT:
                 message = "Token已过期";
                 break;
@@ -45,7 +45,7 @@ public class SecurityExceptionHandler {
                 break;
         }
         log.error("认证异常: {}", message, e);
-        return Result.unauthorized(e.getMessage());
+        return Result.forbidden(message);
     }
 
     /**
