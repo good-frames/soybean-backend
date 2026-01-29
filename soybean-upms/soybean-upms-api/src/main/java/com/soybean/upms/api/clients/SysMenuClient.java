@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(value = "soybean-upms", contextId = "SysMenuClient", path = "/systemManage/menu")
+@FeignClient(value = "soybean-upms", contextId = "SysMenuClient", path = "/menu")
 public interface SysMenuClient {
     /**
      * 根据用户ID查询权限

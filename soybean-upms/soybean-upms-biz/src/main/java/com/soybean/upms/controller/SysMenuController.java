@@ -35,7 +35,7 @@ import java.util.List;
 @Tag(name = "菜单管理", description = "菜单权限的增删改查")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/systemManage/menu")
+@RequestMapping("/menu")
 public class SysMenuController {
 
     private final ISysMenuService menuService;
@@ -161,6 +161,18 @@ public class SysMenuController {
     public Result<List<RouteTreeVO>> getStaticMenuRouteTree() {
         List<RouteTreeVO> routeList = menuService.getStaticMenuRouteTree();
         return Result.ok(routeList);
+    }
+
+    /**
+     * 检查路由名是否存在
+     */
+    @Operation(summary = "检查路由名是否存在", description = "根据路由名检查是否已存在")
+    @GetMapping("/isRouteExist")
+    public Result<Boolean> checkRouteNameExists(
+            @Parameter(description = "路由名", required = true)
+            @RequestParam("routeName") String routeName) {
+        boolean exists = menuService.checkRouteNameExists(routeName);
+        return Result.ok(exists);
     }
 
 }

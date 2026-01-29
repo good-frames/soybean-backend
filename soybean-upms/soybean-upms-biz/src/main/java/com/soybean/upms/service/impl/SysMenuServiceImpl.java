@@ -523,4 +523,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         // 构建路由树
         return buildRouteTree(staticMenus, 0L);
     }
+
+    @Override
+    public boolean checkRouteNameExists(String routeName) {
+        if (StrUtil.isBlank(routeName)) {
+            return false;
+        }
+        long count = count(new LambdaQueryWrapper<SysMenu>()
+                .eq(SysMenu::getRouteName, routeName));
+        return count > 0;
+    }
 }

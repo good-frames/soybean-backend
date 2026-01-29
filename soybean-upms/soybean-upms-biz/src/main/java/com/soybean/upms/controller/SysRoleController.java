@@ -29,7 +29,7 @@ import java.util.List;
  */
 @Tag(name = "角色管理", description = "角色信息的增删改查")
 @RestController
-@RequestMapping("/systemManage/role")
+@RequestMapping("/role")
 @RequiredArgsConstructor
 public class SysRoleController implements SysRoleClient {
 

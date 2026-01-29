@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Tag(name = "存储配置管理", description = "系统文件存储配置的增删改查")
 @RestController
-@RequestMapping("/systemManage/storageConfig")
+@RequestMapping("/storageConfig")
 @RequiredArgsConstructor
 public class SysStorageConfigController {
 

@@ -19,7 +19,7 @@ import java.io.IOException;
  * @since 2024-07-07
  */
 @RestController
-@RequestMapping("/systemManage/file")
+@RequestMapping("/file")
 @RequiredArgsConstructor
 @Tag(name = "文件上传管理", description = "文件上传相关接口")
 public class SysFileUploadController {

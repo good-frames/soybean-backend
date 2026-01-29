@@ -115,4 +115,12 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @return 静态菜单路由树列表
      */
     List<RouteTreeVO> getStaticMenuRouteTree();
+
+    /**
+     * 检查路由名是否存在
+     *
+     * @param routeName 路由名
+     * @return 是否存在
+     */
+    boolean checkRouteNameExists(String routeName);
 }
