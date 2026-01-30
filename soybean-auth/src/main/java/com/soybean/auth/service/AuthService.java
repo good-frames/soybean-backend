@@ -24,4 +24,12 @@ public interface AuthService {
      * @param tokenValue token值
      */
     void logout(String tokenValue);
+
+    /**
+     * 续期当前Token
+     *
+     * @param timeout 续期时长（单位：秒）
+     * @return 是否成功
+     */
+    boolean renewalToken(long timeout);
 }

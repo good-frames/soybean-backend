@@ -55,4 +55,11 @@ public class AuthController {
         Object loginId = StpUtil.getLoginId();
         return Result.ok(loginId);
     }
+
+    @Operation(summary = "续期当前Token", description = "对当前Token进行续期")
+    @PostMapping("/renewalToken")
+    public Result<Boolean> renewalToken(@RequestParam long timeout) {
+        boolean result = authService.renewalToken(timeout);
+        return Result.ok(result);
+    }
 }

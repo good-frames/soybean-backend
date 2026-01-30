@@ -84,4 +84,16 @@ public class AuthServiceImpl implements AuthService {
         StpUtil.logoutByTokenValue(tokenValue);
     }
 
+    @Override
+    public boolean renewalToken(long timeout) {
+        try {
+            // 对当前 Token 的 timeout 值进行续期
+            StpUtil.renewTimeout(timeout);
+            return true;
+        } catch (Exception e) {
+            log.error("Token续期失败", e);
+            return false;
+        }
+    }
+
 }
