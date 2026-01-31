@@ -72,6 +72,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         UserInfoVO userInfoVO = new UserInfoVO();
         BeanUtil.copyProperties(sysUser, userInfoVO);
         userInfoVO.setUserId(sysUser.getUserId());
+        userInfoVO.setUserName(sysUser.getUsername()); // 显式设置userName字段
+        userInfoVO.setNickName(sysUser.getNickname()); // 显式设置nickName字段
 
         return userInfoVO;
     }
